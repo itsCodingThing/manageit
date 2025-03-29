@@ -1,6 +1,6 @@
 import { type FastifyPluginAsync } from "fastify";
 
-import { prisma } from "project/database/db.connection.js";
+import { prisma } from "project/database/db.js";
 import { encryptPassword } from "project/utils/encrypt.js";
 import { parseAsync, zod } from "project/utils/validation.js";
 import { sendErrorResponse, sendSuccessResponse } from "project/utils/serverResponse.js";
@@ -23,7 +23,7 @@ export const schoolAdminUserRoutes: FastifyPluginAsync = async (fastify) => {
       );
       logger.info(query, "get school admin query params");
 
-      const school = await prisma.school.findFirst({where: {id: query.schoolId}});
+      const school = await prisma.school.findFirst({ where: { id: query.schoolId } });
       if (!school) {
         return sendErrorResponse({ msg: "Thers is no school registered with this id", response: res });
       }
@@ -32,7 +32,7 @@ export const schoolAdminUserRoutes: FastifyPluginAsync = async (fastify) => {
         data: await prisma.schoolAdminUser.findMany({
           where: { schoolId: school.id },
           select: { name: true, id: true, contact: true, email: true },
-          orderBy: {name: "asc"}
+          orderBy: { name: "asc" }
         }),
         response: res,
       });

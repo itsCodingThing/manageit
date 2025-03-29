@@ -1,15 +1,15 @@
 import type { FastifyPluginAsync } from "fastify";
 
-import { compareHashPassword, encryptPassword } from "project/utils/encrypt.js";
-import { generateJWT } from "project/utils/jwt.js";
-import { sendErrorResponse, sendSuccessResponse } from "project/utils/serverResponse.js";
-import { parseAsync, zod } from "project/utils/validation.js";
-import { prisma } from "project/database/db.connection.js";
+import { compareHashPassword, encryptPassword } from "project/utils/encrypt";
+import { generateJWT } from "project/utils/jwt";
+import { sendErrorResponse, sendSuccessResponse } from "project/utils/serverResponse";
+import { parseAsync, zod } from "project/utils/validation";
+import { prisma } from "project/database/db";
 
 export const authRoutes: FastifyPluginAsync = async (fastify) => {
   /**
    * @rotue   POST "/api/v1/auth/register"
-   * @desc    Register admin user
+   * @desc    Register users
    */
   fastify.route({
     method: "POST",
@@ -17,6 +17,7 @@ export const authRoutes: FastifyPluginAsync = async (fastify) => {
     handler: async (req, res) => {
       const body = await parseAsync(
         zod.object({
+          type: zod.union([zod.literal("admin"), zod.literal("student"), zod.literal("teacher")]),
           email: zod.string(),
           password: zod.string(),
           name: zod.string().optional(),
@@ -25,20 +26,64 @@ export const authRoutes: FastifyPluginAsync = async (fastify) => {
         req.body
       );
 
-      const user = await prisma.adminUser.findUnique({ where: { email: body.email } });
+      const user = await prisma.authUser.findUnique({ where: { email: body.email } });
       if (user) {
         return sendErrorResponse({ msg: "Email already register with us", response: res });
       }
 
-      return sendSuccessResponse({
-        data: await prisma.adminUser.create({
+
+      const result = await prisma.$transaction(async (tx) => {
+        let userId = 0;
+
+        if (body.type === "admin") {
+          const newUser = await tx.adminUser.create({
+            data: {
+              email: body.email,
+              name: body.name ?? "",
+              contact: body.contact ?? ""
+            },
+          });
+          userId = newUser.id;
+        }
+
+        if (body.type === "student") {
+          const newUser = await tx.student.create({
+            data: {
+              email: body.email,
+              name: body.name ?? "",
+              contact: body.contact ?? "",
+              school_id: 0,
+              address: ""
+            },
+          });
+          userId = newUser.id;
+        }
+
+        if (body.type === "teacher") {
+          const newUser = await tx.teacher.create({
+            data: {
+              email: body.email,
+              name: body.name ?? "",
+              contact: body.contact ?? "",
+              school_id: 0,
+              address: ""
+            },
+          });
+          userId = newUser.id;
+        }
+
+        return await tx.authUser.create({
           data: {
+            type: body.type,
+            user_id: userId,
             email: body.email,
             password: encryptPassword(body.password),
-            name: body.name ?? "admin",
-            contact: "9876543210",
           },
-        }),
+        });
+      })
+
+      return sendSuccessResponse({
+        data: result,
         response: res,
       });
     },
@@ -53,82 +98,26 @@ export const authRoutes: FastifyPluginAsync = async (fastify) => {
     url: "/auth/login",
     handler: async (req, res) => {
       const body = await parseAsync(
-        zod.discriminatedUnion(
-          "type",
-          [
-            zod.object({
-              type: zod.literal("admin"),
-              email: zod.string().email("enter a valid email"),
-              password: zod.string().min(8, "please enter password min 8 charactor long"),
-            }),
-            zod.object({
-              type: zod.literal("school"),
-              email: zod.string().email("enter a valid email"),
-              password: zod.string().min(8, "please enter password min 8 charactor long"),
-              code: zod.string().min(3, "code must atleast be 3 charactor long"),
-            }),
-          ],
-          {
-            errorMap: () => ({ message: "invalid user type" }),
-          }
-        ),
+        zod.object({
+          type: zod.union([zod.literal("admin"), zod.literal("student"), zod.literal("teacher")]),
+          email: zod.string().email("enter a valid email"),
+          password: zod.string().min(8, "please enter password min 8 charactor long"),
+        }),
         req.body
       );
 
-      if (body.type === "admin") {
-        const admin = await prisma.adminUser.findFirst({ where: { email: body.email } });
-        if (!admin) {
-          return sendErrorResponse({ msg: "Admin does not exists", response: res });
-        }
-
-        if (!compareHashPassword(body.password, admin.password)) {
-          return sendErrorResponse({
-            msg: "Invalid password. Please enter correct password and try again",
-            response: res,
-          });
-        }
-
-        const token = generateJWT({ id: admin.id.toString(), type: body.type });
-        return sendSuccessResponse({ data: { token, id: admin.id, name: admin.name, type: "admin" }, response: res });
+      const user = await prisma.authUser.findUnique({ where: { email: body.email, type: body.type } });
+      if (!user) {
+        return sendErrorResponse({ msg: "Email already register with us", response: res });
       }
 
-      if (body.type === "school") {
-        const school = await prisma.school.findFirst({ where: { code: body.code } });
-
-        if (!school) {
-          return sendErrorResponse({ msg: "School does not exists", response: res });
-        }
-
-        const schoolAdmin = await prisma.schoolAdminUser.findFirst({ where: { email: body.email } });
-        if (!schoolAdmin) {
-          return sendErrorResponse({ msg: "Admin does not exists", response: res });
-        }
-
-        if (!compareHashPassword(body.password, schoolAdmin.password)) {
-          return sendErrorResponse({
-            msg: "Invalid password. Please enter correct password and try again",
-            response: res,
-          });
-        }
-
-        return sendSuccessResponse({
-          data: {
-            token: generateJWT({
-              id: schoolAdmin.id.toString(),
-              school: school.id.toString(),
-              type: body.type,
-            }),
-            id: schoolAdmin.id,
-            name: schoolAdmin.name,
-            schoolName: school.id,
-            schoolId: school.id,
-            type: "school-admin",
-          },
-          response: res,
-        });
+      if (!compareHashPassword(body.password, user.password)) {
+        return sendErrorResponse({ msg: "Invalid password", response: res });
       }
 
-      return sendErrorResponse({ msg: "user type is invalid", response: res });
+      const jwt = generateJWT({ id: user.id, type: body.type, school: "0" });
+
+      return sendSuccessResponse({ response: res, data: jwt })
     },
   });
 
@@ -416,35 +405,4 @@ export const authRoutes: FastifyPluginAsync = async (fastify) => {
   //   },
   // });
 
-  /**
-   * @route  POST "/api/v1/auth/app/studentSignupB2C"
-   * @desc   B2C student signup
-   */
-  // fastify.route({
-  //   method: "POST",
-  //   url: "/auth/app/studentSignupB2C",
-  //   handler: async (req, res) => {
-  //     const { name, contact, email, address, school, ...restBody } = req.body as IDBStudent;
-  //
-  //     const found = await StudentService.studentModel
-  //       .findOne({ contact, school, deleted: false })
-  //       .populate("school")
-  //       .populate("batch")
-  //       .lean();
-  //
-  //     if (!found) {
-  //       const student = await StudentService.addStudent({
-  //         ...restBody,
-  //         school: school,
-  //         name: name,
-  //         contact: contact,
-  //         email: email,
-  //         address: address,
-  //       });
-  //       return sendSuccessResponse({ response: res, msg: "successfully created", data: student });
-  //     } else {
-  //       return sendSuccessResponse({ response: res, msg: "successfully created", data: found });
-  //     }
-  //   },
-  // });
 };

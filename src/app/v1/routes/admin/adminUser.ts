@@ -1,6 +1,6 @@
 import { type FastifyPluginAsync } from "fastify";
 
-import { prisma } from "project/database/db.connection.js";
+import { prisma } from "project/database/db.js";
 import { encryptPassword } from "project/utils/encrypt.js";
 import { parseAsync, zod } from "project/utils/validation.js";
 import { sendErrorResponse, sendSuccessResponse } from "project/utils/serverResponse.js";

@@ -1,0 +1,7 @@
+model AuthUser {
+  id       Int    @id @default(autoincrement())
+  user_id  Int
+  type     String
+  email    String @unique
+  password String
+}

@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "build": "bun build ./src/server.ts --outdir ./build --sourcemap=linked --target node",
     "server:prod": "NODE_ENV=production node ./build/server.js",
     "server:dev": "NODE_ENV=development node --enable-source-maps --watch-path=./build ./build/server.js",
     "lint": "eslint --ext .ts src",
@@ -21,7 +22,7 @@
     "@hokify/agenda": "^6.3.0",
     "@immobiliarelabs/fastify-sentry": "^6.0.1",
     "@ladjs/graceful": "^3.2.2",
-    "@prisma/client": "^5.19.1",
+    "@prisma/client": "^6.5.0",
     "@sentry/node": "^7.50.0",
     "axios": "^1.2.1",
     "bcryptjs": "2.4.3",
@@ -88,7 +89,7 @@
     "nodemon": "^2.0.22",
     "pino-pretty": "^10.0.0",
     "prettier": "^2.8.8",
-    "prisma": "^5.19.1",
+    "prisma": "^6.5.0",
     "rimraf": "^5.0.0",
     "supertest": "^6.3.3",
     "ts-jest": "^29.1.0",
@@ -99,7 +100,6 @@
     "typescript": "^5.0.4"
   },
   "volta": {
-    "node": "16.16.0",
-    "npm": "9.3.1"
+    "node": "22.14.0"
   }
 }

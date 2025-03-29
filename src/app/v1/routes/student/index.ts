@@ -2,7 +2,7 @@ import type { FastifyPluginAsync } from "fastify";
 
 import { sendSuccessResponse } from "project/utils/serverResponse.js";
 import { parseAsync, zod } from "project/utils/validation.js";
-import { prisma } from "project/database/db.connection.js";
+import { prisma } from "project/database/db.js";
 
 export const studentRoutes: FastifyPluginAsync = async (fastify) => {
   /**

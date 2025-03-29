@@ -1,8 +1,8 @@
 import chalk from "chalk";
 
-import { buildServer } from "project/app/app.js";
-import { prisma } from "project/database/db.connection.js";
-import { config } from "project/utils/utils.js";
+import { buildServer } from "project/app/app";
+import { prisma } from "project/database/db";
+import { config } from "project/utils/utils";
 
 /**
  * Connect To DB
