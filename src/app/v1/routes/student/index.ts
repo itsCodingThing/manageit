@@ -1,6 +1,6 @@
 import type { FastifyPluginAsync } from "fastify";
 
-import { sendSuccessResponse } from "project/utils/serverResponse.js";
+import { sendSuccessResponse } from "project/utils/server-response.js";
 import { parseAsync, zod } from "project/utils/validation.js";
 import { prisma } from "project/database/db.js";
 

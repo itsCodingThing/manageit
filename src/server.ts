@@ -1,3 +1,4 @@
+import "dotenv/config"
 import chalk from "chalk";
 
 import { buildServer } from "project/app/app";

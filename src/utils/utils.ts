@@ -3,7 +3,7 @@ import { existsSync, mkdirSync } from "node:fs";
 import { resolve, sep } from "node:path";
 import * as url from "url";
 import { v4 as uuid } from "uuid";
-import { getUTCTimestamp } from "./date.js";
+import { getUTCTimestamp } from "./date";
 
 export const dirname = url.fileURLToPath(new URL(".", import.meta.url));
 

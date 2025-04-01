@@ -2,7 +2,7 @@ import type { FastifyPluginAsync } from "fastify";
 
 import { prisma } from "project/database/db.js";
 import { parseAsync, zod } from "project/utils/validation.js";
-import { sendErrorResponse, sendSuccessResponse } from "project/utils/serverResponse.js";
+import { sendErrorResponse, sendSuccessResponse } from "project/utils/server-response.js";
 
 export const teacherRoutes: FastifyPluginAsync = async (fastify) => {
   // fastify.register(paperRoutes);

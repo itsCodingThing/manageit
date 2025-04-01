@@ -1,5 +1,5 @@
 import type { FastifyError, FastifyReply, FastifyRequest } from "fastify";
-import { sendErrorResponse } from "./serverResponse.js";
+import { sendErrorResponse } from "./server-response.js";
 import type { ObjValueAsType } from "./types.js";
 
 const ErrorNames = {

@@ -9,7 +9,7 @@ import { teacherRoutes } from "./routes/teacher/index.js";
 import { studentRoutes } from "./routes/student/index.js";
 import { schoolAdminUserRoutes } from "./routes/school-admin/index.js";
 
-export const tntRoutes: FastifyPluginAsync = async (fastify) => {
+export const routes: FastifyPluginAsync = async (fastify) => {
   /**
    * App request decorator
    */

@@ -3,7 +3,7 @@ import stream from "node:stream";
 import { createWriteStream, readFileSync, unlink } from "node:fs";
 
 import { getFilePathName, getFilePath } from "project/utils/utils.js";
-import { sendSuccessResponse, sendErrorResponse } from "project/utils/serverResponse.js";
+import { sendSuccessResponse, sendErrorResponse } from "project/utils/server-response.js";
 
 export const fileStorageRoutes: FastifyPluginAsync = async (fastify) => {
   /**

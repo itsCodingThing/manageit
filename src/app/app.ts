@@ -3,9 +3,9 @@ import cors from "@fastify/cors";
 import auth from "@fastify/auth";
 import helmet from "@fastify/helmet";
 import multipart from "@fastify/multipart";
-import { logger } from "project/utils/logger.js";
-import { tntRoutes } from "project/app/v1/index.js";
-import { errorHandler, BaseError } from "../utils/error.js";
+import { logger } from "project/utils/logger";
+import { routes } from "project/app/v1/index";
+import { errorHandler, BaseError } from "../utils/error";
 
 export function buildServer() {
   const fastify = Fastify({
@@ -21,7 +21,7 @@ export function buildServer() {
   /**
    * App Routing Handler
    */
-  fastify.register(tntRoutes, { prefix: "api/v1" });
+  fastify.register(routes, { prefix: "api/v1" });
 
   /**
    * App Error Handling

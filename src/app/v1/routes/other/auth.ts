@@ -2,9 +2,11 @@ import type { FastifyPluginAsync } from "fastify";
 
 import { compareHashPassword, encryptPassword } from "project/utils/encrypt";
 import { generateJWT } from "project/utils/jwt";
-import { sendErrorResponse, sendSuccessResponse } from "project/utils/serverResponse";
+import { sendErrorResponse, sendSuccessResponse } from "project/utils/server-response";
 import { parseAsync, zod } from "project/utils/validation";
 import { prisma } from "project/database/db";
+import { sendOTP } from "project/services/otp";
+import { bull } from "project/services/bull";
 
 export const authRoutes: FastifyPluginAsync = async (fastify) => {
   /**
@@ -26,11 +28,10 @@ export const authRoutes: FastifyPluginAsync = async (fastify) => {
         req.body
       );
 
-      const user = await prisma.authUser.findUnique({ where: { email: body.email } });
+      const user = await prisma.authUser.findFirst({ where: { email: body.email } });
       if (user) {
         return sendErrorResponse({ msg: "Email already register with us", response: res });
       }
-
 
       const result = await prisma.$transaction(async (tx) => {
         let userId = 0;
@@ -91,7 +92,7 @@ export const authRoutes: FastifyPluginAsync = async (fastify) => {
 
   /**
    * @rotue   POST "/api/v1/auth/login
-   * @desc    Login admin user
+   * @desc    Login user
    */
   fastify.route({
     method: "POST",
@@ -106,7 +107,7 @@ export const authRoutes: FastifyPluginAsync = async (fastify) => {
         req.body
       );
 
-      const user = await prisma.authUser.findUnique({ where: { email: body.email, type: body.type } });
+      const user = await prisma.authUser.findFirst({ where: { email: body.email, type: body.type } });
       if (!user) {
         return sendErrorResponse({ msg: "Email already register with us", response: res });
       }
@@ -115,294 +116,63 @@ export const authRoutes: FastifyPluginAsync = async (fastify) => {
         return sendErrorResponse({ msg: "Invalid password", response: res });
       }
 
-      const jwt = generateJWT({ id: user.id, type: body.type, school: "0" });
+      if (body.type === "admin") {
+        const jwt = generateJWT({ id: user.id.toString(), type: body.type });
+        return sendSuccessResponse({ response: res, data: jwt })
+      }
 
-      return sendSuccessResponse({ response: res, data: jwt })
+
+      // for other users otp authentication need
+      const otp = await sendOTP("0123456789");
+      const otpAuth = await prisma.userOTP.upsert({
+        where: {
+          user_id: user.id
+        },
+        update: {
+          otp: otp
+        },
+        create: {
+          user_id: user.id,
+          otp: otp
+        }
+      });
+      await bull.scheduleRemoveOTP(otpAuth.id.toString());
+
+      return sendSuccessResponse({ response: res, data: { id: user.id, otp } })
     },
   });
 
-  /**
-   * @route  POST "/api/v1/auth/app/login"
-   * @desc   App user login
-   */
-  // fastify.route({
-  //   method: "POST",
-  //   url: "/auth/app/login",
-  //   handler: async (req, res) => {
-  //     const { code, contact, type } = await validate(
-  //       yup.object({
-  //         code: yup.string().required(),
-  //         type: yup.string().oneOf(["teacher", "student", "evaluator", "parent"]).required(),
-  //         contact: yup.string().required(),
-  //       }),
-  //       req.body
-  //     );
-  //
-  //     const otp = await OTPService.gen4DigitOTP(contact);
-  //
-  //     const responseData = {
-  //       school: "",
-  //       id: "",
-  //       otp: otp,
-  //       contact: contact,
-  //     };
-  //
-  //     if (type === "parent" || type === "evaluator") {
-  //       if (type === "evaluator") {
-  //         const user = await EvaluatorService.findEvaluatorByContact(contact);
-  //         if (!user) {
-  //           return sendErrorResponse({
-  //             response: res,
-  //             msg: "User does not exists",
-  //           });
-  //         }
-  //
-  //         await EvaluatorService.updateEvaluatorOtp({ id: user._id.toString(), otp });
-  //
-  //         responseData.id = user._id.toString();
-  //         responseData.otp = otp;
-  //       }
-  //
-  //       if (type === "parent") {
-  //         const user = await ParentService.findParentByContact(contact);
-  //         if (!user) {
-  //           return sendErrorResponse({
-  //             response: res,
-  //             msg: "User does not exists",
-  //           });
-  //         }
-  //
-  //         await ParentService.updateParentOtp({ id: user._id.toString(), otp });
-  //
-  //         responseData.id = user._id.toString();
-  //         responseData.otp = otp;
-  //       }
-  //     }
-  //
-  //     if (type === "student" || type === "teacher") {
-  //       const school = await SchoolService.findSchoolByCode(code);
-  //       if (!school) {
-  //         return sendErrorResponse({
-  //           response: res,
-  //           msg: "no school with this code",
-  //         });
-  //       }
-  //
-  //       if (type === "student") {
-  //         const user = await StudentService.getStudentBySchoolIdAndContact({
-  //           contact,
-  //           schoolId: school._id.toString(),
-  //         });
-  //         if (!user) {
-  //           return sendErrorResponse({
-  //             response: res,
-  //             msg: "User does not exists",
-  //           });
-  //         }
-  //
-  //         await StudentService.updateStudentOtp({ id: user._id.toString(), otp });
-  //
-  //         responseData.id = user._id.toString();
-  //         responseData.otp = otp;
-  //       }
-  //
-  //       if (type === "teacher") {
-  //         const user = await TeacherService.findTeacherBySchoolIdAndContact({
-  //           contact,
-  //           schoolId: school._id.toString(),
-  //         });
-  //         if (!user) {
-  //           return sendErrorResponse({
-  //             response: res,
-  //             msg: "User does not exists",
-  //           });
-  //         }
-  //
-  //         await TeacherService.updateTeacherOtp({ id: user._id.toString(), otp });
-  //
-  //         responseData.id = user._id.toString();
-  //         responseData.otp = otp;
-  //       }
-  //     }
-  //
-  //     await OTPService.sendOTP(responseData.contact, responseData.otp);
-  //
-  //     return sendSuccessResponse({
-  //       response: res,
-  //       data: responseData,
-  //     });
-  //   },
-  // });
-  //
-  /**
-   * @route  POST "/api/v1/auth/app/verify"
-   * @desc   App user otp verify
-   */
-  // // fastify.route({
-  //   method: "POST",
-  //   url: "/auth/app/verify",
-  //   handler: async (req, res) => {
-  //     const body = await validate(
-  //       yup.object({
-  //         otp: yup.string().required(),
-  //         id: yup.string().required(),
-  //         type: yup.string().oneOf(["teacher", "student", "evaluator", "parent"]).required(),
-  //       }),
-  //       req.body
-  //     );
-  //
-  //     if (body.type === "teacher") {
-  //       const otp = await TeacherService.getTeacherOtpById(body.id);
-  //
-  //       if (!otp) {
-  //         return sendErrorResponse({
-  //           response: res,
-  //           msg: "Invalid OTP. Please enter correct OTP and try again",
-  //         });
-  //       }
-  //
-  //       if (otp !== body.otp) {
-  //         return sendErrorResponse({
-  //           response: res,
-  //           msg: "Invalid OTP. Please enter correct OTP and try again",
-  //         });
-  //       }
-  //
-  //       const user = await TeacherService.updateTeacherOtp({ id: body.id, otp: "" });
-  //       const token = generateJWT({
-  //         id: user?._id.toString() ?? "",
-  //         school: user?.school?._id.toString() ?? "",
-  //         type: body.type,
-  //       });
-  //
-  //       return sendSuccessResponse({
-  //         msg: "Login successfully",
-  //         data: { user, token },
-  //         response: res,
-  //       });
-  //     }
-  //
-  //     if (body.type === "student") {
-  //       const otp = await StudentService.getStudentOtpById(body.id);
-  //
-  //       if (!otp) {
-  //         return sendErrorResponse({
-  //           response: res,
-  //           msg: "Invalid OTP. Please enter correct OTP and try again",
-  //         });
-  //       }
-  //
-  //       if (otp !== body.otp) {
-  //         return sendErrorResponse({
-  //           response: res,
-  //           msg: "Invalid OTP. Please enter correct OTP and try again",
-  //         });
-  //       }
-  //
-  //       const user = await StudentService.updateStudentOtp({ id: body.id, otp: "" });
-  //       const token = generateJWT({
-  //         id: user?._id.toString() ?? "",
-  //         school: user?.school?._id.toString() ?? "",
-  //         type: body.type,
-  //       });
-  //
-  //       return sendSuccessResponse({
-  //         msg: "Login successfully",
-  //         data: { user, token },
-  //         response: res,
-  //       });
-  //     }
-  //
-  //     if (body.type === "evaluator") {
-  //       const otp = await EvaluatorService.getEvaluatorOtpById(body.id);
-  //
-  //       if (!otp) {
-  //         return sendErrorResponse({
-  //           response: res,
-  //           msg: "Invalid OTP. Please enter correct OTP and try again",
-  //         });
-  //       }
-  //
-  //       if (otp !== body.otp) {
-  //         return sendErrorResponse({
-  //           response: res,
-  //           msg: "Invalid OTP. Please enter correct OTP and try again",
-  //         });
-  //       }
-  //
-  //       const user = await EvaluatorService.updateEvaluatorOtp({ id: body.id, otp: "" });
-  //       const token = generateJWT({ id: user?._id.toString() ?? "", school: "", type: body.type });
-  //
-  //       return sendSuccessResponse({
-  //         msg: "Login successfully",
-  //         data: { user, token },
-  //         response: res,
-  //       });
-  //     }
-  //
-  //     if (body.type === "parent") {
-  //       const otp = await ParentService.getParentOtpById(body.id);
-  //
-  //       if (!otp) {
-  //         return sendErrorResponse({
-  //           response: res,
-  //           msg: "Invalid OTP. Please enter correct OTP and try again",
-  //         });
-  //       }
-  //
-  //       if (otp !== body.otp) {
-  //         return sendErrorResponse({
-  //           response: res,
-  //           msg: "Invalid OTP. Please enter correct OTP and try again",
-  //         });
-  //       }
-  //
-  //       const user = await ParentService.updateParentOtp({ id: body.id, otp: "" });
-  //       const token = generateJWT({ id: user?._id.toString() ?? "", school: "", type: body.type });
-  //
-  //       return sendSuccessResponse({
-  //         msg: "Login successfully",
-  //         data: { user, token },
-  //         response: res,
-  //       });
-  //     }
-  //   },
-  // });
 
   /**
-   * @route  POST "/api/v1/auth/app/refresh"
-   * @desc   App user refresh token
+   * @rotue   POST "/api/v1/auth/verify
+   * @desc    verify otp for user
    */
-  // fastify.route({
-  //   method: "POST",
-  //   url: "/auth/app/refresh",
-  //   handler: async (req, res) => {
-  //     const { user_id, device_id, school_id, type } = await validate(
-  //       yup.object({
-  //         school_id: yup.string().required(),
-  //         user_id: yup.string().required(),
-  //         device_id: yup.string().required(),
-  //         type: yup.string().oneOf(["teacher", "student", "evaluator", "parent"]).required(),
-  //       }),
-  //       req.body
-  //     );
-  //
-  //     const device = await DeviceService.deviceModel.findOne({ user_id, device_id, deleted: false }).lean();
-  //     if (!device) {
-  //       return sendErrorResponse({
-  //         code: 400,
-  //         msg: "User device not found",
-  //         response: res,
-  //       });
-  //     }
-  //
-  //     const token = generateJWT({ id: user_id, school: school_id, type: type });
-  //
-  //     return sendSuccessResponse({
-  //       data: { token },
-  //       response: res,
-  //     });
-  //   },
-  // });
+  fastify.route({
+    method: "POST",
+    url: "/auth/verify",
+    handler: async (req, res) => {
+      const body = await parseAsync(
+        zod.object({
+          type: zod.union([zod.literal("admin"), zod.literal("student"), zod.literal("teacher")]),
+          id: zod.string(),
+          otp: zod.string()
+        }),
+        req.body
+      );
 
+      const otpData = await prisma.userOTP.findFirst({ where: { user_id: Number(body.id) } });
+      if (!otpData) {
+        return sendErrorResponse({ msg: "invalid otp", response: res });
+      }
+
+      if (otpData.otp !== body.otp) {
+        return sendErrorResponse({ msg: "invalid otp", response: res });
+      }
+
+      await prisma.userOTP.update({ where: { user_id: Number(body.id) }, data: { otp: "" } });
+
+      const jwt = generateJWT({ id: body.id.toString(), type: body.type });
+      return sendSuccessResponse({ response: res, data: jwt })
+    }
+  });
 };
