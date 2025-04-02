@@ -1,0 +1,31 @@
+model Organization {
+  id      Int                  @id @default(autoincrement())
+  name    String
+  email   String
+  contact String
+  address String               @default("no address available")
+  type    String
+  code    String
+  image   String               @default("no image available")
+  status  String               @default("pending")
+  details OrganizationDetails?
+  admins  OrganizationAdmin[]
+}
+
+model OrganizationAdmin {
+  id             Int          @id @default(autoincrement())
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId Int
+  name           String
+  email          String       @unique
+  contact        String
+}
+
+model OrganizationDetails {
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId Int          @unique
+  total_batches  Int          @default(0)
+  total_papers   Int          @default(0)
+  total_students Int          @default(0)
+  total_teachers Int          @default(0)
+}

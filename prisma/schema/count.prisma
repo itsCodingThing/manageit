@@ -1,0 +1,4 @@
+model Count {
+  type  String @unique
+  total Int
+}

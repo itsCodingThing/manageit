@@ -1,9 +1,9 @@
 import type { FastifyPluginAsync } from "fastify";
 
-import { adminRoutes } from "project/app/v1/routes/admin/index.js";
+import { adminRoutes } from "project/app/v1/routes/admin";
 import { authRoutes } from "./routes/other/auth.js";
 import { publicRoute, testntrackAuth, noAuth } from "project/middleware/auth.js";
-import { schoolRoutes } from "./routes/school/index.js";
+import { organizationRoutes } from "./routes/organization";
 import { fileStorageRoutes } from "./routes/other/file.js";
 import { teacherRoutes } from "./routes/teacher/index.js";
 import { studentRoutes } from "./routes/student/index.js";
@@ -33,7 +33,7 @@ export const routes: FastifyPluginAsync = async (fastify) => {
   /**
    * School routes
    */
-  fastify.register(schoolRoutes);
+  fastify.register(organizationRoutes);
 
   /**
    * School routes
