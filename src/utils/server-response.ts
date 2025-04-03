@@ -1,41 +1,56 @@
 import type { FastifyReply } from "fastify";
 
 interface IResponse {
-    code?: number | 200 | 500;
-    msg?: string;
-    data?: any;
-    status?: boolean;
+	code?: number;
+	msg?: string;
+	data?: unknown;
+	status?: boolean;
+}
+
+export function sendJsonResponse(response: FastifyReply, params: IResponse) {
+	let { msg = "success", data = {}, status = true, code = 200 } = params;
+
+	if (code !== 200) {
+		status = false;
+	}
+
+	return response.code(code).send({ message: msg, data: data, status });
 }
 
 interface ISendResponse extends IResponse {
-    response: FastifyReply;
+	response: FastifyReply;
 }
 
 export function createResponse(params: IResponse) {
-    const { code = 200, msg, data = {}, status } = params;
-    if (Array.isArray(data)) {
-        return { statusCode: code, message: msg, data: data, status, count: data.length };
-    }
+	const { msg = "success", data = {}, status = true, code = 200 } = params;
+	if (Array.isArray(data)) {
+		return {
+			message: msg,
+			data: data,
+			status,
+			count: data.length,
+		};
+	}
 
-    return { statusCode: code, message: msg, data: data, status };
+	return { message: msg, data: data, status };
 }
 
 export function sendResponse(params: ISendResponse): FastifyReply {
-    const { code = 200, msg, data = {}, response, status } = params;
+	const { msg, data = {}, response, status } = params;
 
-    if (response.sent) {
-        return response;
-    }
+	if (response.sent) {
+		return response;
+	}
 
-    return response.code(code).send(createResponse({ code, msg, data, status }));
+	return response.send(createResponse({ msg, data, status }));
 }
 
 export function sendSuccessResponse(params: ISendResponse) {
-    const { code = 200, msg = "success", data = {}, response } = params;
-    return sendResponse({ response, code, msg, data, status: true });
+	const { msg = "success", data = {}, response } = params;
+	return sendResponse({ response, msg, data, status: true });
 }
 
 export function sendErrorResponse(params: ISendResponse) {
-    const { code = 500, msg = "error", data = {}, response } = params;
-    return sendResponse({ response, code, msg, data, status: false });
+	const { msg = "error", data = {}, response } = params;
+	return sendResponse({ response, msg, data, status: false });
 }

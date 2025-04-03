@@ -1,9 +1,16 @@
-import "dotenv/config"
+import "dotenv/config";
 import chalk from "chalk";
 
-import { buildServer } from "project/app/app";
+import { Server } from "project/app/app";
 import { prisma } from "project/database/db";
-import { config } from "project/utils/utils";
+import config from "project/config/config";
+import { createAppDataFolders } from "./utils/utils";
+
+/**
+ *  Create app data folders for storage
+ */
+createAppDataFolders();
+console.log(chalk.bgYellowBright("App storage folders created 🚀"));
 
 /**
  * Connect To DB
@@ -14,7 +21,7 @@ console.log(chalk.bgMagentaBright("Connected to database 🚀"));
 /**
  * Build Server
  */
-const server = buildServer();
+const server = Server();
 
 /**
  * Server Listen
@@ -34,4 +41,8 @@ await server.listen({ port: config.server.port, host: config.server.host });
 // });
 // graceful.listen();
 
-console.log(chalk.bgGreen(`Api running on: http://${config.server.host}:${config.server.port}`));
+console.log(
+	chalk.bgGreen(
+		`Api running on: http://${config.server.host}:${config.server.port}`,
+	),
+);
