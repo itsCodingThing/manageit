@@ -4,18 +4,20 @@ import { config } from "./utils.js";
 const { jwt } = config;
 
 interface IPayload {
-  id: string;
-  type: string;
+	id: string;
+	type: string;
 }
 
 export type JwtVerifyPayload = IPayload & JwtPayload;
 
 export function generateJWT(payload: IPayload) {
-  const token = jsonwebtoken.sign(payload, jwt.publicKey, { expiresIn: jwt.expiresIn });
-  return token;
+	const token = jsonwebtoken.sign(payload, jwt.publicKey, {
+		expiresIn: jwt.expiresIn,
+	});
+	return token;
 }
 
 export function verifyJWT(token: string) {
-  const payload = jsonwebtoken.verify(token, jwt.publicKey);
-  return payload as JwtVerifyPayload;
+	const payload = jsonwebtoken.verify(token, jwt.publicKey);
+	return payload as JwtVerifyPayload;
 }

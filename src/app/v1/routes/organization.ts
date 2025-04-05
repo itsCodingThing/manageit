@@ -33,7 +33,7 @@ export const organizationRoutes: FastifyPluginAsync = async (fastify) => {
 
 	/**
 	 * @route   POST "/api/v1/org"
-	 * @desc    Create org by admin
+	 * @desc    Create org with a master admin
 	 */
 	fastify.route({
 		method: "POST",
@@ -109,7 +109,7 @@ export const organizationRoutes: FastifyPluginAsync = async (fastify) => {
 
 	/**
 	 * @route   PUT "/api/v1/org"
-	 * @desc    Update org by admin
+	 * @desc    Update org details
 	 */
 	fastify.route({
 		method: "PUT",

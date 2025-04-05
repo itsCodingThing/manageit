@@ -28,19 +28,6 @@ const server = Server();
  */
 await server.listen({ port: config.server.port, host: config.server.host });
 
-/**
- * Graceful Listen
- */
-// const graceful = new Graceful({
-//   servers: [server],
-//   customHandlers: [
-//     async () => {
-//       await prisma.$disconnect();
-//     },
-//   ],
-// });
-// graceful.listen();
-
 console.log(
 	chalk.bgGreen(
 		`Api running on: http://${config.server.host}:${config.server.port}`,

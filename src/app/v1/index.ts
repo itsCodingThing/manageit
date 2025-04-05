@@ -1,57 +1,60 @@
 import type { FastifyPluginAsync } from "fastify";
 
 import { adminRoutes } from "project/app/v1/routes/admin";
-import { authRoutes } from "./routes/other/auth.js";
-import { publicRoute, testntrackAuth, noAuth } from "project/middleware/auth.js";
+import { noAuth, publicRoute, testntrackAuth } from "project/middleware/auth";
+import { authRoutes } from "./routes/auth";
+import { fileStorageRoutes } from "./routes/file";
 import { organizationRoutes } from "./routes/organization";
-import { fileStorageRoutes } from "./routes/other/file.js";
-import { teacherRoutes } from "./routes/teacher/index.js";
-import { studentRoutes } from "./routes/student/index.js";
 import { schoolAdminUserRoutes } from "./routes/school-admin/index.js";
+import { studentRoutes } from "./routes/student/index.js";
+import { teacherRoutes } from "./routes/teacher/index.js";
 
 export const routes: FastifyPluginAsync = async (fastify) => {
-  /**
-   * App request decorator
-   */
-  fastify.decorateRequest("payload", null);
+	/**
+	 * App request decorator
+	 */
+	fastify.decorateRequest("payload", null);
 
-  /**
-   * App prehandler hook
-   */
-  fastify.addHook("preHandler", fastify.auth([publicRoute, testntrackAuth, noAuth]));
+	/**
+	 * App prehandler hook
+	 */
+	fastify.addHook(
+		"preHandler",
+		fastify.auth([publicRoute, testntrackAuth, noAuth]),
+	);
 
-  /**
-   * Auth routes
-   */
-  fastify.register(authRoutes);
+	/**
+	 * Auth routes
+	 */
+	fastify.register(authRoutes);
 
-  /**
-   * Admin routes
-   */
-  fastify.register(adminRoutes);
+	/**
+	 * Admin routes
+	 */
+	fastify.register(adminRoutes);
 
-  /**
-   * School routes
-   */
-  fastify.register(organizationRoutes);
+	/**
+	 * School routes
+	 */
+	fastify.register(organizationRoutes);
 
-  /**
-   * School routes
-   */
-  fastify.register(schoolAdminUserRoutes);
+	/**
+	 * School admin routes
+	 */
+	fastify.register(schoolAdminUserRoutes);
 
-  /**
-   * Teacher routes
-   */
-  fastify.register(teacherRoutes);
+	/**
+	 * Teacher routes
+	 */
+	fastify.register(teacherRoutes);
 
-  /**
-   * Student routes
-   */
-  fastify.register(studentRoutes);
+	/**
+	 * Student routes
+	 */
+	fastify.register(studentRoutes);
 
-  /**
-   * File storage routes
-   */
-  fastify.register(fileStorageRoutes);
+	/**
+	 * File storage routes
+	 */
+	fastify.register(fileStorageRoutes);
 };

@@ -1,15 +1,16 @@
-import { resolve } from "node:path";
 import { createReadStream, createWriteStream } from "node:fs";
+import { resolve } from "node:path";
 import { pipeline } from "node:stream/promises";
 import type { FastifyPluginAsync } from "fastify";
-import { fileTypeFromFile, fileTypeFromStream } from "file-type";
+import { fileTypeFromFile } from "file-type";
 
 import {
-	sendJsonResponse,
 	sendErrorResponse,
+	sendJsonResponse,
 } from "project/utils/server-response";
-import { genFilePathName, storagePath } from "project/utils/utils";
+import { storagePath } from "project/utils/utils";
 import { parseAsync, zod } from "project/utils/validation";
+import { getUTCTimestamp } from "project/utils/date";
 
 export const fileStorageRoutes: FastifyPluginAsync = async (fastify) => {
 	/**
@@ -20,9 +21,8 @@ export const fileStorageRoutes: FastifyPluginAsync = async (fastify) => {
 		method: "POST",
 		url: "/file/upload",
 		handler: async (req, res) => {
-			const bytes = 1000000 * 10;
+			const bytes = 1000000 * 200; // mb;
 			const data = await req.file({ limits: { fileSize: bytes } });
-			const savedFile = await req.saveRequestFiles();
 
 			if (!data) {
 				return sendErrorResponse({
@@ -31,27 +31,12 @@ export const fileStorageRoutes: FastifyPluginAsync = async (fastify) => {
 				});
 			}
 
-			const type = await fileTypeFromStream(data.file);
-			if (!type) {
-				return sendJsonResponse(res, {
-					code: 500,
-					msg: "unable to determine file type",
-				});
-			}
+			const filename = `${getUTCTimestamp()}-${data.filename.replaceAll(" ", "")}`;
+			const filepath = resolve(storagePath.general, filename);
 
-			const file = genFilePathName({
-				mime: type.mime,
-				ext: type.ext,
-			});
-			if (!file) {
-				return sendJsonResponse(res, {
-					code: 500,
-					msg: "unable to determine file type",
-				});
-			}
+			await pipeline(data.file, createWriteStream(filepath));
 
-			await pipeline(createReadStream(savedFile.at(0)?.filepath ?? "", createWriteStream(file.filepath));
-			return sendJsonResponse(res, { data: file.filename });
+			return sendJsonResponse(res, { data: filename });
 		},
 	});
 
@@ -69,13 +54,21 @@ export const fileStorageRoutes: FastifyPluginAsync = async (fastify) => {
 			);
 
 			const filepath = resolve(storagePath.general, filename);
-			const type = await fileTypeFromFile(filepath);
 
-			if (!type) {
+			let mime: string;
+			try {
+				const type = await fileTypeFromFile(filepath);
+
+				if (!type) {
+					return sendJsonResponse(res, { msg: "unable to find file" });
+				}
+
+				mime = type.mime;
+			} catch {
 				return sendJsonResponse(res, { msg: "unable to find file" });
 			}
 
-			res.type(type?.mime ?? "application/octet-stream");
+			res.type(mime ?? "application/octet-stream");
 			return res.send(createReadStream(filepath));
 		},
 	});

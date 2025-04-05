@@ -3,14 +3,15 @@ import cors from "@fastify/cors";
 import auth from "@fastify/auth";
 import helmet from "@fastify/helmet";
 import multipart from "@fastify/multipart";
+
 import { logger } from "project/utils/logger";
 import { routes } from "project/app/v1/index";
-import { errorHandler, BaseError } from "../utils/error";
+import { errorHandler, BaseError } from "project/utils/error";
 
 export function Server() {
 	const fastify = Fastify({
 		bodyLimit: 314572800,
-		logger: logger,
+		loggerInstance: logger,
 	});
 
 	fastify.register(multipart);
