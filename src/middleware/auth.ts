@@ -1,7 +1,8 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
 
-import { verifyJWT } from "project/utils/jwt";
-import { sendErrorResponse } from "project/utils/server-response";
+import { getToken, verifyJWT } from "project/services/jwt";
+import { ApiError, ValidationError } from "project/utils/error";
+import { sendJsonResponse } from "project/utils/server-response";
 import { parseAsync, zod } from "project/utils/validation";
 
 const publicRoutes = [
@@ -17,8 +18,7 @@ const publicRoutes = [
 ];
 
 export async function noAuth(_req: FastifyRequest, res: FastifyReply) {
-  return sendErrorResponse({
-    response: res,
+  return sendJsonResponse(res, {
     msg: "Invalid authorization",
     code: 403,
   });
@@ -28,31 +28,41 @@ export async function publicRoute(req: FastifyRequest) {
   const NON_AUTH_URLS = publicRoutes;
 
   // check for exceptional routes
-  if (NON_AUTH_URLS.some((v) => req.url.toLowerCase().includes(v.toLocaleLowerCase()))) {
+  if (
+    NON_AUTH_URLS.some((v) =>
+      req.url.toLowerCase().includes(v.toLocaleLowerCase()),
+    )
+  ) {
     return;
   }
 
-  throw new Error("Public routes error");
+  throw new ApiError({ msg: "Public routes error" });
 }
 
 export async function testntrackAuth(req: FastifyRequest) {
   const { authorization } = await parseAsync(
     zod.object({
-      authorization: zod.string(),
+      authorization: zod.string().min(1),
     }),
-    req.headers
+    req.headers,
   );
 
-  try {
-    const token = authorization.split(" ")[1];
-    if (!token) {
-      throw new Error("Auth Error");
-    }
+  const opaqueToken = authorization.split(" ")[1];
+  if (!opaqueToken) {
+    throw new ValidationError({ msg: "need auth token" });
+  }
 
+  const token = await getToken(opaqueToken);
+  if (!token) {
+    throw new ValidationError({ msg: "invalid token" });
+  }
+
+  try {
     const payload = verifyJWT(token);
     req.payload = payload;
+
     return;
   } catch (error) {
-    throw new Error("Auth Error");
+    throw new ValidationError({ msg: "invalid token" });
   }
 }

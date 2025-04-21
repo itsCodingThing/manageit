@@ -1,12 +1,12 @@
-import Fastify from "fastify";
-import cors from "@fastify/cors";
 import auth from "@fastify/auth";
+import cors from "@fastify/cors";
 import helmet from "@fastify/helmet";
 import multipart from "@fastify/multipart";
+import Fastify from "fastify";
 
-import { logger } from "project/utils/logger";
 import { routes } from "project/app/v1/index";
-import { errorHandler, BaseError } from "project/utils/error";
+import { errorHandler } from "project/utils/error";
+import { logger } from "project/utils/logger";
 
 export function Server() {
 	const fastify = Fastify({
@@ -19,6 +19,12 @@ export function Server() {
 	fastify.register(cors);
 	fastify.register(auth);
 
+	fastify.route({
+		method: "GET",
+		url: "/ping",
+		handler: (_, res) => res.send("pong"),
+	});
+
 	/**
 	 * App Routing Handler
 	 */
@@ -28,17 +34,6 @@ export function Server() {
 	 * App Error Handling
 	 */
 	fastify.setErrorHandler(async (error, req, res) => {
-		if (
-			process.env.NODE_ENV === "production" &&
-			!(error instanceof BaseError)
-		) {
-			logger.info(error, "production level error logger");
-		}
-
-		if (!(error instanceof BaseError)) {
-			// await sendErrorMail(error);
-		}
-
 		return await errorHandler(error, req, res);
 	});
 

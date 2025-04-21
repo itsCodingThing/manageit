@@ -1,0 +1,32 @@
+model Paper {
+  id                    Int          @id @default(autoincrement())
+  name                  String
+  school                Int
+  board                 String
+  class                 String
+  subject               String[]
+  type                  PaerType
+  variant               String[]
+  total_marks           Int
+  no_of_questions       Int
+  negative_marks        Int
+  is_descriptive_result Boolean
+  question_type         QuestionType
+  // questions: IDBQuestion[]; need question schema for individual questions
+  pdf_paper             String
+  answer_key            String[]
+  solution_pdf          String
+  solution_video        String
+}
+
+enum PaerType {
+  Subjective
+  Objective
+}
+
+enum QuestionType {
+  Pdf
+  Individual
+  Questions
+  Sections
+}

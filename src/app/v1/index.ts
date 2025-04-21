@@ -5,9 +5,9 @@ import { noAuth, publicRoute, testntrackAuth } from "project/middleware/auth";
 import { authRoutes } from "./routes/auth";
 import { fileStorageRoutes } from "./routes/file";
 import { organizationRoutes } from "./routes/organization";
-import { schoolAdminUserRoutes } from "./routes/school-admin/index.js";
-import { studentRoutes } from "./routes/student/index.js";
-import { teacherRoutes } from "./routes/teacher/index.js";
+import { organizationAdminRoutes } from "./routes/organization-admin";
+import { studentRoutes } from "./routes/student";
+import { teacherRoutes } from "./routes/teacher";
 
 export const routes: FastifyPluginAsync = async (fastify) => {
 	/**
@@ -39,9 +39,9 @@ export const routes: FastifyPluginAsync = async (fastify) => {
 	fastify.register(organizationRoutes);
 
 	/**
-	 * School admin routes
+	 * Organization admin routes
 	 */
-	fastify.register(schoolAdminUserRoutes);
+	fastify.register(organizationAdminRoutes);
 
 	/**
 	 * Teacher routes

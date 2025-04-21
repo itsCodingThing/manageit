@@ -2,9 +2,10 @@ import "dotenv/config";
 import chalk from "chalk";
 
 import { Server } from "project/app/app";
-import { prisma } from "project/database/db";
+import { connectDB } from "project/database/db";
 import config from "project/config/config";
 import { createAppDataFolders } from "./utils/utils";
+import { connectRedis } from "./services/redis";
 
 /**
  *  Create app data folders for storage
@@ -15,8 +16,14 @@ console.log(chalk.bgYellowBright("App storage folders created 🚀"));
 /**
  * Connect To DB
  */
-await prisma.$connect();
+await connectDB();
 console.log(chalk.bgMagentaBright("Connected to database 🚀"));
+
+/**
+ * Connect To Redis
+ */
+await connectRedis();
+console.log(chalk.bgBlueBright("Connected to redis 🚀"));
 
 /**
  * Build Server

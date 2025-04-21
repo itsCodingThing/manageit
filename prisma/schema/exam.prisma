@@ -1,0 +1,34 @@
+model Exam {
+  id                       Int          @id @default(autoincrement())
+  paper                    Int
+  name                     String
+  school                   Int
+  board                    String
+  class                    String
+  subject                  String[]
+  type                     String[]
+  variant                  String[]
+  total_marks              Int
+  no_of_questions          Int
+  negative_marks           Int
+  schedule_type            ScheduleType
+  student_list             Int[]
+  copy_checking_teachers   Int[]
+  copy_upload_teachers     Int[]
+  copy_alter_teachers      Int[]
+  checking_instructions    String[]
+  level_of_checking        String
+  result_declared_type     String
+  rejoin                   Int
+  start_time               DateTime
+  end_time                 DateTime
+  result_declared_teachers Int[]
+  copy_submit_time         DateTime
+  completed                Boolean
+}
+
+enum ScheduleType {
+  Offline
+  Online
+  Hybrid
+}

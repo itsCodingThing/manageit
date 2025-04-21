@@ -1,7 +1,8 @@
+import { v4 } from "uuid";
 import { homedir } from "node:os";
 import { randomInt } from "node:crypto";
 import { existsSync, mkdirSync } from "node:fs";
-import { resolve, sep } from "node:path";
+import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { getUTCTimestamp } from "./date";
@@ -71,3 +72,5 @@ export function genFilePathName(params: {
 export function genRandom4DigitInt() {
 	return randomInt(1000, 10000);
 }
+
+export const uuidv4 = v4;

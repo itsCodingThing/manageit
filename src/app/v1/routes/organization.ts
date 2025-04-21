@@ -4,6 +4,7 @@ import { prisma } from "project/database/db";
 import { encryptPassword } from "project/utils/encrypt";
 import {
 	sendErrorResponse,
+	sendJsonResponse,
 	sendSuccessResponse,
 } from "project/utils/server-response";
 import { parseAsync, zod } from "project/utils/validation";
@@ -170,11 +171,11 @@ export const organizationRoutes: FastifyPluginAsync = async (fastify) => {
 			);
 
 			await prisma.$transaction(async (tx) => {
+				// when org is deleted other resources need to be remove
 				await tx.organization.delete({ where: { id: orgId } });
 			});
 
-			return sendSuccessResponse({
-				response: res,
+			return sendJsonResponse(res, {
 				msg: "school removed successfully",
 			});
 		},

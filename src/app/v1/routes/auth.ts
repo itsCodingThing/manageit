@@ -1,15 +1,16 @@
 import type { FastifyPluginAsync } from "fastify";
 
 import { compareHashPassword, encryptPassword } from "project/utils/encrypt";
-import { generateJWT } from "project/utils/jwt";
+import { createToken, verifyJWT, removeOldTokens } from "project/services/jwt";
 import {
-	sendErrorResponse,
+	sendJsonResponse,
 	sendSuccessResponse,
 } from "project/utils/server-response";
 import { parseAsync, zod } from "project/utils/validation";
 import { prisma } from "project/database/db";
 import { sendOTP } from "project/services/otp";
 import { scheduler } from "project/services/scheduler";
+import { ApiError } from "project/utils/error";
 
 export const authRoutes: FastifyPluginAsync = async (fastify) => {
 	/**
@@ -39,10 +40,7 @@ export const authRoutes: FastifyPluginAsync = async (fastify) => {
 				where: { email: body.email },
 			});
 			if (user) {
-				return sendErrorResponse({
-					msg: "Email already register with us",
-					response: res,
-				});
+				throw new ApiError({ msg: "Email already register with us" });
 			}
 
 			const result = await prisma.$transaction(async (tx) => {
@@ -95,9 +93,8 @@ export const authRoutes: FastifyPluginAsync = async (fastify) => {
 				});
 			});
 
-			return sendSuccessResponse({
+			return sendJsonResponse(res, {
 				data: result,
-				response: res,
 			});
 		},
 	});
@@ -129,22 +126,27 @@ export const authRoutes: FastifyPluginAsync = async (fastify) => {
 				where: { email: body.email, type: body.type },
 			});
 			if (!user) {
-				return sendErrorResponse({
-					msg: "Email already register with us",
-					response: res,
-				});
+				throw new ApiError({ msg: "Email already register with us" });
 			}
 
 			if (!compareHashPassword(body.password, user.password)) {
-				return sendErrorResponse({ msg: "Invalid password", response: res });
+				throw new ApiError({ msg: "invalid password" });
 			}
 
+			// if user is admin then we create token and return the response
 			if (body.type === "admin") {
-				const jwt = generateJWT({ id: user.id.toString(), type: body.type });
-				return sendSuccessResponse({ response: res, data: jwt });
+				const { opaqueToken, refreshToken } = await createToken({
+					userId: user.id.toString(),
+					userType: body.type,
+				});
+
+				return sendJsonResponse(res, {
+					data: { token: opaqueToken, refreshToken },
+					msg: "successfully logged in",
+				});
 			}
 
-			// for other users otp authentication need
+			// for other users otp authentication needed
 			const otp = await sendOTP("0123456789");
 			const otpAuth = await prisma.userOTP.upsert({
 				where: {
@@ -160,7 +162,7 @@ export const authRoutes: FastifyPluginAsync = async (fastify) => {
 			});
 			await scheduler.scheduleRemoveOTP(otpAuth.id.toString());
 
-			return sendSuccessResponse({ response: res, data: { id: user.id, otp } });
+			return sendJsonResponse(res, { data: { id: user.id, otp } });
 		},
 	});
 
@@ -174,11 +176,7 @@ export const authRoutes: FastifyPluginAsync = async (fastify) => {
 		handler: async (req, res) => {
 			const body = await parseAsync(
 				zod.object({
-					type: zod.union([
-						zod.literal("admin"),
-						zod.literal("student"),
-						zod.literal("teacher"),
-					]),
+					type: zod.union([zod.literal("student"), zod.literal("teacher")]),
 					id: zod.string(),
 					otp: zod.string(),
 				}),
@@ -189,11 +187,11 @@ export const authRoutes: FastifyPluginAsync = async (fastify) => {
 				where: { user_id: Number(body.id) },
 			});
 			if (!otpData) {
-				return sendErrorResponse({ msg: "invalid otp", response: res });
+				throw new ApiError({ msg: "no otp available" });
 			}
 
 			if (otpData.otp !== body.otp) {
-				return sendErrorResponse({ msg: "invalid otp", response: res });
+				throw new ApiError({ msg: "invalid otp" });
 			}
 
 			await prisma.userOTP.update({
@@ -201,8 +199,45 @@ export const authRoutes: FastifyPluginAsync = async (fastify) => {
 				data: { otp: "" },
 			});
 
-			const jwt = generateJWT({ id: body.id.toString(), type: body.type });
-			return sendSuccessResponse({ response: res, data: jwt });
+			const { opaqueToken, refreshToken } = await createToken({
+				userId: body.id.toString(),
+				userType: body.type,
+			});
+
+			return sendSuccessResponse({
+				response: res,
+				data: { token: opaqueToken, refreshToken },
+			});
+		},
+	});
+
+	/**
+	 * @rotue   POST "/api/v1/auth/refresh
+	 * @desc    refresh user token
+	 */
+	fastify.route({
+		method: "POST",
+		url: "/auth/refresh",
+		handler: async (req, res) => {
+			const body = await parseAsync(
+				zod.object({
+					refreshToken: zod.string(),
+				}),
+				req.body,
+			);
+
+			const payload = verifyJWT(body.refreshToken);
+
+			await removeOldTokens(body.refreshToken);
+
+			const tokens = await createToken({
+				userId: payload.id,
+				userType: payload.type,
+			});
+
+			return sendJsonResponse(res, {
+				data: { token: tokens.opaqueToken, refreshToken: tokens.refreshToken },
+			});
 		},
 	});
 };
