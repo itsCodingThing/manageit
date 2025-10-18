@@ -1,0 +1,21 @@
+model Teacher {
+  id            String   @id @default(uuid())
+  schoolId      String
+  name          String
+  email         String
+  phoneNumber   String
+  address       String?  @default("")
+  image         String?  @default("https://picsum.photos/200")
+  dob           DateTime @default(now())
+  status        String   @default("active")
+  isSchoolAdmin Boolean  @default(false)
+  batches       String[]
+  createdAt     DateTime @default(now())
+}
+
+model TeacherExamDetails {
+  id          String   @id @default(uuid())
+  teacherId   String
+  activeExams String[]
+  createdAt   DateTime @default(now())
+}

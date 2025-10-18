@@ -1,0 +1,7 @@
+model Exam {
+  id        String   @id @default(uuid())
+  name      String
+  schooldId String
+  teacherId String
+  createdAt DateTime @default(now())
+}

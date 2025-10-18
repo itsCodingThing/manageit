@@ -1,0 +1,21 @@
+model Student {
+  id          String    @id @default(uuid())
+  schoolId    String
+  name        String
+  dob         DateTime? @default(now())
+  rollNo      String?   @default("")
+  email       String
+  phoneNumber String
+  image       String?   @default("https://picsum.photos/200")
+  address     String?   @default("")
+  status      String    @default("active")
+  batchs      String[]
+  createdAt   DateTime  @default(now())
+}
+
+model StudentExamDetails {
+  id          String   @id @default(uuid())
+  studentId   String
+  activeExams String[]
+  createdAt   DateTime @default(now())
+}

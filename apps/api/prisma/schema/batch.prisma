@@ -1,0 +1,9 @@
+model Batch {
+  id        String   @id @default(uuid())
+  schoolId  String
+  name      String
+  image     String?  @default("")
+  teachers  String[]
+  students  String[]
+  createdAt DateTime @default(now())
+}

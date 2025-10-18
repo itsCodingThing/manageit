@@ -1,0 +1,23 @@
+model School {
+  id            String         @id @default(uuid())
+  name          String
+  email         String
+  phoneNumber   String
+  address       String         @default("no address available")
+  type          String
+  code          String
+  image         String         @default("no image available")
+  status        String         @default("pending")
+  createdAt     DateTime       @default(now())
+  schoolDetails SchoolDetails?
+  schoolAdmins  String[]
+}
+
+model SchoolDetails {
+  school        School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  schoolId      String @unique
+  totalBatches  Int    @default(0)
+  totalExams    Int    @default(0)
+  totalStudents Int    @default(0)
+  totalTeachers Int    @default(0)
+}
