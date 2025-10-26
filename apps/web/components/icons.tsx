@@ -1,4 +1,8 @@
 export {
+  PlusIcon,
+  Edit2Icon,
+  Trash2Icon,
+  EyeIcon,
   BarChart3Icon,
   UsersIcon,
   SchoolIcon,

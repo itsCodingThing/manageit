@@ -5,13 +5,13 @@ import backendAPI from "@/lib/backend-apis";
 import { createSession, deleteSession } from "@/lib/session";
 import { redirect } from "next/navigation";
 
-const schema = z.object({
+const loginSchema = z.object({
   email: z.string(),
   password: z.string(),
 });
 
 export async function login(initialState: any, formData: FormData) {
-  const validatedFields = schema.safeParse({
+  const validatedFields = loginSchema.safeParse({
     email: formData.get("email"),
     password: formData.get("password"),
   });

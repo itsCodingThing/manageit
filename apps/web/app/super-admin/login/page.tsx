@@ -6,11 +6,13 @@ import { useActionState } from "react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
-import { login } from "@/app/super-admin/actions/auth";
+import { loginSchema } from "@/app/super-admin/actions/auth";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
-  const [state, formAction, pending] = useActionState(login, { message: "" });
+  const [state, formAction, pending] = useActionState(loginSchema, {
+    message: "",
+  });
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted flex items-center justify-center p-4">
