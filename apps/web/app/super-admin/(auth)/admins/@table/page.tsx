@@ -1,54 +1,12 @@
-"use client";
-
 import { Edit2, Trash2, Eye } from "lucide-react";
-import { useState } from "react";
+import { getAdmins } from "@/app/super-admin/actions/admin";
+import { formatDate } from "@/utils/date";
 
-interface Admin {
-  id: string;
-  name: string;
-  email: string;
-  school: string;
-  status: "active" | "inactive";
-  joinDate: string;
-}
-
-const adminsData: Admin[] = [
-  {
-    id: "1",
-    name: "John Doe",
-    email: "john@example.com",
-    school: "Central High School",
-    status: "active",
-    joinDate: "2024-01-15",
-  },
-  {
-    id: "2",
-    name: "Jane Smith",
-    email: "jane@example.com",
-    school: "St. Mary Academy",
-    status: "active",
-    joinDate: "2024-02-20",
-  },
-  {
-    id: "3",
-    name: "Mike Johnson",
-    email: "mike@example.com",
-    school: "Lincoln High",
-    status: "inactive",
-    joinDate: "2024-01-10",
-  },
-  {
-    id: "4",
-    name: "Sarah Williams",
-    email: "sarah@example.com",
-    school: "Washington Academy",
-    status: "active",
-    joinDate: "2024-03-05",
-  },
-];
-
-export default function AdminTable() {
-  const [admins, setAdmins] = useState<Admin[]>(adminsData);
+export default async function AdminTable() {
+  const results = await getAdmins();
+  if (!results) {
+    return <span>no admins</span>;
+  }
 
   return (
     <div className="bg-card border border-border rounded-lg overflow-hidden">
@@ -77,7 +35,7 @@ export default function AdminTable() {
             </tr>
           </thead>
           <tbody>
-            {admins.map((admin) => (
+            {results.map((admin) => (
               <tr
                 key={admin.id}
                 className="border-b border-border hover:bg-muted/30 transition-colors"
@@ -89,7 +47,7 @@ export default function AdminTable() {
                   {admin.email}
                 </td>
                 <td className="px-6 py-4 text-sm text-muted-foreground">
-                  {admin.school}
+                  school
                 </td>
                 <td className="px-6 py-4 text-sm">
                   <span
@@ -103,7 +61,7 @@ export default function AdminTable() {
                   </span>
                 </td>
                 <td className="px-6 py-4 text-sm text-muted-foreground">
-                  {admin.joinDate}
+                  {formatDate(admin.createdAt)}
                 </td>
                 <td className="px-6 py-4 text-sm">
                   <div className="flex items-center gap-2">

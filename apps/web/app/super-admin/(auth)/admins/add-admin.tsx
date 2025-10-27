@@ -1,8 +1,15 @@
 import { Button } from "@/components/ui/button";
+import { useActionState } from "react";
+import { createAdmin } from "@/app/super-admin/actions/admin";
 
 export default function AddAdminForm() {
+  const [formState, formAction, isPending] = useActionState(createAdmin, null);
+
   return (
-    <div className="bg-card border border-border rounded-lg p-6 mb-6">
+    <form
+      action={formAction}
+      className="bg-card border border-border rounded-lg p-6 mb-6"
+    >
       <h2 className="text-lg font-semibold text-foreground mb-4">
         Create New Admin
       </h2>
@@ -12,6 +19,7 @@ export default function AddAdminForm() {
             Full Name
           </label>
           <input
+            name="name"
             type="text"
             placeholder="Enter admin name"
             className="w-full px-4 py-2 bg-input border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
@@ -22,6 +30,7 @@ export default function AddAdminForm() {
             Email
           </label>
           <input
+            name="email"
             type="email"
             placeholder="Enter email address"
             className="w-full px-4 py-2 bg-input border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
@@ -32,6 +41,7 @@ export default function AddAdminForm() {
             Phone
           </label>
           <input
+            name="phoneNumber"
             type="text"
             placeholder="Enter phone number"
             className="w-full px-4 py-2 bg-input border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
@@ -42,20 +52,24 @@ export default function AddAdminForm() {
             Password
           </label>
           <input
-            type="password"
+            name="password"
+            type="text"
             placeholder="Enter password"
             className="w-full px-4 py-2 bg-input border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
           />
         </div>
       </div>
       <div className="flex gap-3 mt-4">
-        <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
+        <Button
+          disabled={isPending}
+          className="bg-primary text-primary-foreground hover:bg-primary/90"
+        >
           Create Admin
         </Button>
         <Button className="bg-muted text-muted-foreground hover:bg-muted/80">
           Cancel
         </Button>
       </div>
-    </div>
+    </form>
   );
 }

@@ -3,9 +3,5 @@
 import { SuperAdminSidebar } from "@/components/super-admin/sidebar";
 
 export default function AdminsPage() {
-  return (
-    <div className="flex min-h-screen bg-background">
-      <SuperAdminSidebar />
-    </div>
-  );
+  return <div className="flex min-h-screen bg-background"></div>;
 }

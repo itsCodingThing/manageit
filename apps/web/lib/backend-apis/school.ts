@@ -36,6 +36,7 @@ const school = {
       }),
     });
   },
+
   async getAllSchools() {
     return await $fetch("/school", {
       method: "GET",

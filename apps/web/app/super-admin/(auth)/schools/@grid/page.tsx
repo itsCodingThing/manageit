@@ -1,60 +1,6 @@
 import { Edit2Icon, Trash2Icon, EyeIcon } from "@/components/icons";
 import { getAllSchools } from "@/app/super-admin/actions/school";
 
-interface School {
-  id: string;
-  name: string;
-  location: string;
-  admin: string;
-  students: number;
-  teachers: number;
-  status: "active" | "inactive";
-  registeredDate: string;
-}
-
-const schoolsData: School[] = [
-  {
-    id: "1",
-    name: "Central High School",
-    location: "New York, NY",
-    admin: "John Doe",
-    students: 450,
-    teachers: 35,
-    status: "active",
-    registeredDate: "2024-01-15",
-  },
-  {
-    id: "2",
-    name: "St. Mary Academy",
-    location: "Boston, MA",
-    admin: "Jane Smith",
-    students: 320,
-    teachers: 28,
-    status: "active",
-    registeredDate: "2024-02-20",
-  },
-  {
-    id: "3",
-    name: "Lincoln High",
-    location: "Chicago, IL",
-    admin: "Mike Johnson",
-    students: 380,
-    teachers: 32,
-    status: "active",
-    registeredDate: "2024-01-10",
-  },
-  {
-    id: "4",
-    name: "Washington Academy",
-    location: "DC, Washington",
-    admin: "Sarah Williams",
-    students: 290,
-    teachers: 24,
-    status: "inactive",
-    registeredDate: "2024-03-05",
-  },
-];
-
 export default async function SchoolGrid() {
   const result = await getAllSchools();
 
@@ -64,7 +10,7 @@ export default async function SchoolGrid() {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {result.data.map((school) => (
+      {result.map((school) => (
         <div
           key={school.id}
           className="bg-card border border-border rounded-lg p-6 hover:shadow-lg transition-shadow"
@@ -90,6 +36,10 @@ export default async function SchoolGrid() {
           </div>
 
           <div className="space-y-2 mb-4 pb-4 border-b border-border">
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-muted-foreground">Code:</span>
+              <span className="text-foreground font-medium">{school.code}</span>
+            </div>
             <div className="flex items-center justify-between text-sm">
               <span className="text-muted-foreground">Admin:</span>
               <span className="text-foreground font-medium">23</span>

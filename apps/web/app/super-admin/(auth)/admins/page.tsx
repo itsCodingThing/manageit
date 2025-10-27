@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import AddAdminForm from "./add-admin";
-import AdminTable from "./admin-table";
 
 export default function AdminsPage() {
   const [showForm, setShowForm] = useState(false);
@@ -27,10 +26,11 @@ export default function AdminsPage() {
         </Button>
       </div>
 
-      <div className="p-6">
-        {showForm && <AddAdminForm />}
-        <AdminTable />
-      </div>
+      {showForm && (
+        <div className="p-6">
+          <AddAdminForm />
+        </div>
+      )}
     </>
   );
 }
