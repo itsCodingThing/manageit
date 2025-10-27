@@ -5,6 +5,7 @@ const secretKey = process.env.SESSION_SECRET;
 const encodedKey = new TextEncoder().encode(secretKey);
 
 interface SessionPayload extends JWTPayload {
+  userType: "admin" | "teacher" | "student" | "school-admin";
   token: string;
   expiresAt: Date;
 }
@@ -29,9 +30,12 @@ export async function decrypt(session: string) {
   }
 }
 
-export async function createSession(token: string) {
+export async function createSession(data: {
+  token: string;
+  userType: SessionPayload["userType"];
+}) {
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-  const session = await encrypt({ token, expiresAt });
+  const session = await encrypt({ ...data, expiresAt });
   const cookieStore = await cookies();
 
   cookieStore.set("session", session, {
@@ -44,25 +48,24 @@ export async function createSession(token: string) {
 }
 
 export async function verifySession(): Promise<
-  { isAuth: true; token: string } | { isAuth: false; token: null }
+  { isAuth: true; session: SessionPayload } | { isAuth: false; session: null }
 > {
   try {
     const cookieStore = await cookies();
     const sessionCookie = cookieStore.get("session")?.value;
     if (!sessionCookie) {
-      return { isAuth: false, token: null };
+      return { isAuth: false, session: null };
     }
 
     const session = await decrypt(sessionCookie);
-    console.log(session);
 
     if (!session) {
-      return { isAuth: false, token: null };
+      return { isAuth: false, session: null };
     }
 
-    return { isAuth: true, token: session.token };
+    return { isAuth: true, session: session };
   } catch {
-    return { isAuth: false, token: null };
+    return { isAuth: false, session: null };
   }
 }
 

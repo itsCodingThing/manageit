@@ -24,7 +24,7 @@ export async function login(initialState: any, formData: FormData) {
 
   try {
     const res = await backendAPI.auth.login(validatedFields.data);
-    await createSession(res.data.token);
+    await createSession({ token: res.data.token, userType: "admin" });
 
     return {
       message: "success",

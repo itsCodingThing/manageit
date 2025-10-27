@@ -1,24 +1,31 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useActionState, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { login } from "@/app/school-admin/actions/auth";
 
 export default function SchoolAdminLoginPage() {
+  const [formState, formAction, isPending] = useActionState(login, {
+    success: true,
+    message: "",
+    formInputs: { email: "", password: "" },
+  });
   const [showPassword, setShowPassword] = useState(false);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        {/* Logo */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-primary mb-2">EduAdmin</h1>
           <p className="text-muted-foreground">School Admin Portal</p>
         </div>
 
-        {/* Login Card */}
-        <div className="bg-card border border-border rounded-lg p-8 shadow-lg">
+        <form
+          action={formAction}
+          className="bg-card border border-border rounded-lg p-8 shadow-lg"
+        >
           <h2 className="text-2xl font-bold text-foreground mb-2">
             School Admin Login
           </h2>
@@ -26,7 +33,6 @@ export default function SchoolAdminLoginPage() {
             Manage your school and users
           </p>
 
-          {/* Email Input */}
           <div className="mb-4">
             <label className="block text-sm font-medium text-foreground mb-2">
               Email Address
@@ -37,6 +43,9 @@ export default function SchoolAdminLoginPage() {
                 size={20}
               />
               <input
+                required
+                defaultValue={formState.formInputs?.email}
+                name="email"
                 type="email"
                 placeholder="Enter your email"
                 className="w-full pl-10 pr-4 py-2 bg-input border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
@@ -44,7 +53,6 @@ export default function SchoolAdminLoginPage() {
             </div>
           </div>
 
-          {/* Password Input */}
           <div className="mb-6">
             <label className="block text-sm font-medium text-foreground mb-2">
               Password
@@ -55,6 +63,9 @@ export default function SchoolAdminLoginPage() {
                 size={20}
               />
               <input
+                required
+                defaultValue={formState.formInputs?.password}
+                name="password"
                 type={showPassword ? "text" : "password"}
                 placeholder="Enter your password"
                 className="w-full pl-10 pr-10 py-2 bg-input border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
@@ -68,7 +79,6 @@ export default function SchoolAdminLoginPage() {
             </div>
           </div>
 
-          {/* Remember Me & Forgot Password */}
           <div className="flex items-center justify-between mb-6">
             <label className="flex items-center gap-2 cursor-pointer">
               <input
@@ -85,29 +95,20 @@ export default function SchoolAdminLoginPage() {
             </Link>
           </div>
 
-          {/* Login Button */}
-          <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90 py-2 font-medium mb-4">
+          <Button
+            disabled={isPending}
+            type="submit"
+            className="w-full bg-primary text-primary-foreground hover:bg-primary/90 py-2 font-medium mb-4"
+          >
             Login
           </Button>
 
-          {/* Back to Main Login */}
           <p className="text-center text-sm text-muted-foreground">
             <Link href="/login" className="text-primary hover:underline">
               Back to main login
             </Link>
           </p>
-        </div>
-
-        {/* Demo Credentials */}
-        <div className="mt-6 bg-card border border-border rounded-lg p-4">
-          <p className="text-xs font-semibold text-foreground mb-2">
-            Demo Credentials:
-          </p>
-          <p className="text-xs text-muted-foreground">
-            Email: schooladmin@school.com
-          </p>
-          <p className="text-xs text-muted-foreground">Password: password123</p>
-        </div>
+        </form>
       </div>
     </div>
   );
