@@ -10,4 +10,6 @@ export {
   LogOutIcon,
   ArrowLeftFromLineIcon,
   ArrowRightFromLineIcon,
+  SaveIcon,
+  UserIcon,
 } from "lucide-react";

@@ -21,7 +21,7 @@ export default async function AdminTable() {
                 Email
               </th>
               <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
-                School
+                Phone
               </th>
               <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
                 Status
@@ -47,7 +47,7 @@ export default async function AdminTable() {
                   {admin.email}
                 </td>
                 <td className="px-6 py-4 text-sm text-muted-foreground">
-                  school
+                  {admin.email}
                 </td>
                 <td className="px-6 py-4 text-sm">
                   <span
