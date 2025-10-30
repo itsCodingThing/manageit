@@ -1,8 +1,6 @@
-import { APIError as BetterAuthAPIError } from "better-auth";
-import { createResponse } from "./response.js";
-import type { ObjValueAsType } from "./types.js";
+import type { ObjValueAsType } from "./types";
 
-const ErrorNames = {
+export const ErrorNames = {
   validation: "ValidationError",
   api: "ApiError",
   service: "ServiceError",
@@ -70,23 +68,4 @@ export class ServiceError extends BaseError {
   ) {
     super({ name: ErrorNames.service, msg, data });
   }
-}
-
-export function createErrorResponse(error?: Error) {
-  if (error instanceof BaseError) {
-    return createResponse({
-      code: error.code,
-      msg: `${error.name}: ${error.msg}`.trim(),
-      data: error.data,
-    });
-  }
-
-  if (error instanceof BetterAuthAPIError) {
-    return createResponse({
-      code: 500,
-      msg: error.message,
-    });
-  }
-
-  return createResponse({ msg: ErrorNames.internal, code: 500 });
 }

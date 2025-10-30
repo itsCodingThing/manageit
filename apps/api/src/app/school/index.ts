@@ -4,159 +4,135 @@ import { parseAsync, zod } from "@/utils/validation";
 import { createResponse } from "@/utils/response";
 import { hono } from "@/app/hono-factory";
 import { authAPI } from "@/services/auth";
+import schoolValidators from "./validators";
+import { ApiError } from "@/utils/error";
 
 const school = hono.createApp();
 
 /**
  * @route   GET "/api/school"
- * @desc    list school by admin
+ * @desc    list school
  */
 school.get("/", async (ctx) => {
-  return ctx.json(createResponse({ data: await prisma.school.findMany() }));
+	return ctx.json(createResponse({ data: await prisma.school.findMany() }));
 });
 
 /**
  * @route   POST "/api/school"
- * @desc    create school by admin
+ * @desc    create school
  */
 school.post(
-  "/",
-  validator("json", async (value) => {
-    const body = await parseAsync(
-      zod.object({
-        name: zod.string().min(1, "Please enter name"),
-        email: zod.email("Please enter a valid email"),
-        phoneNumber: zod.string().length(10, "Please enter a valid contact"),
-        address: zod.string().min(1, "Please enter a valid address"),
-        image: zod.string().default(""),
-        code: zod.string().min(3, "Code must be atleast 3 digit long"),
-        type: zod.string().min(1, "Please enter a valid type"),
-        password: zod.string().min(8, "Password must be 8 charactor long"),
-      }),
-      value,
-    );
+	"/",
+	validator(
+		"json",
+		async (value) => await parseAsync(schoolValidators.createSchoolBody, value),
+	),
+	async (ctx) => {
+		const body = ctx.req.valid("json");
 
-    return body;
-  }),
-  async (ctx) => {
-    const body = ctx.req.valid("json");
+		// check if school exists with email or code
+		let [school, teacher] = await Promise.all([
+			prisma.school.findFirst({
+				select: { id: true, name: true },
+				where: { OR: [{ email: body.email }, { code: body.code }] },
+			}),
+			prisma.user.findFirst({
+				select: { id: true, name: true },
+				where: {
+					OR: [{ email: body.email }, { phoneNumber: body.phoneNumber }],
+				},
+			}),
+		]);
 
-    // check if school exists with email or code
-    let school = await prisma.school.findFirst({
-      select: { id: true, name: true },
-      where: { OR: [{ email: body.email }, { code: body.code }] },
-    });
-    if (school) {
-      return ctx.json(
-        createResponse({
-          code: 400,
-          msg: "Email or Code already register with us",
-        }),
-        400,
-      );
-    }
+		if (school) {
+			throw new ApiError({
+				msg: "Email or Code already register with us",
+			});
+		}
 
-    let teacher = await prisma.user.findFirst({
-      select: { id: true, name: true },
-      where: { OR: [{ email: body.email }, { phoneNumber: body.phoneNumber }] },
-    });
-    if (teacher) {
-      return ctx.json(
-        createResponse({
-          code: 400,
-          msg: "Email or Phone number already register with us",
-        }),
-        400,
-      );
-    }
+		if (teacher) {
+			throw new ApiError({
+				msg: "Email or Phone number already register with us",
+			});
+		}
 
-    // create school with given info
-    school = await prisma.school.create({
-      data: {
-        name: body.name,
-        email: body.email,
-        phoneNumber: body.phoneNumber,
-        code: body.code,
-        type: body.type,
-        schoolAdmins: [],
-        schoolDetails: {
-          create: {},
-        },
-      },
-    });
+		prisma.$transaction(async (tx) => {
+			school = await tx.school.create({
+				data: {
+					name: body.name,
+					email: body.email,
+					phoneNumber: body.phoneNumber,
+					code: body.code,
+					type: body.type,
+					schoolAdmins: [],
+					schoolDetails: {
+						create: {},
+					},
+				},
+			});
 
-    teacher = await prisma.teacher.create({
-      data: {
-        schoolId: school.id,
-        name: body.name,
-        email: body.email,
-        phoneNumber: body.phoneNumber,
-        isSchoolAdmin: true,
-      },
-    });
+			teacher = await tx.teacher.create({
+				data: {
+					schoolId: school.id,
+					name: body.name,
+					email: body.email,
+					phoneNumber: body.phoneNumber,
+					isSchoolAdmin: true,
+				},
+			});
 
-    await authAPI.signUpEmail({
-      body: {
-        type: "teacher",
-        name: body.name,
-        email: body.email,
-        password: body.password,
-        phoneNumber: body.phoneNumber,
-      },
-    });
+			await tx.school.update({
+				where: { id: school.id },
+				data: {
+					schoolAdmins: { push: teacher.id },
+				},
+			});
 
-    return ctx.json(
-      createResponse({
-        data: "created successfully",
-      }),
-    );
-  },
+			await authAPI.signUpEmail({
+				body: {
+					type: "teacher",
+					name: body.name,
+					email: body.email,
+					password: body.password,
+					phoneNumber: body.phoneNumber,
+				},
+			});
+		});
+
+		return ctx.json(
+			createResponse({
+				data: "created successfully",
+			}),
+		);
+	},
 );
 
 /**
  * @route   PUT "/api/school"
- * @desc    update school by admin
+ * @desc    update school
  */
 school.put("/", async (ctx) => {
-  const body = await parseAsync(
-    zod.object({
-      id: zod.string(),
-      name: zod.string().optional(),
-      address: zod.string().optional(),
-      email: zod.string().optional(),
-      image: zod.string().optional(),
-      phoneNumber: zod.string().optional(),
-    }),
-    await ctx.req.json(),
-  );
-  const { id, ...update } = body;
+	const body = await parseAsync(
+		zod.object({
+			id: zod.string(),
+			name: zod.string().optional(),
+			address: zod.string().optional(),
+			image: zod.string().optional(),
+		}),
+		await ctx.req.json(),
+	);
+	const { id, ...update } = body;
 
-  if (body.email || body.phoneNumber) {
-    const exists = await prisma.school.findFirst({
-      where: {
-        id: { not: id },
-        OR: [{ email: body.email }, { phoneNumber: body.phoneNumber }],
-      },
-    });
+	await prisma.school.update({
+		where: { id: id },
+		data: update,
+	});
 
-    if (exists) {
-      return ctx.json(
-        createResponse({ msg: "Email or Contact already exists" }),
-        400,
-      );
-    }
-  }
-
-  await prisma.school.update({
-    where: { id: id },
-    data: update,
-  });
-
-  return ctx.json(
-    createResponse({
-      msg: "school details updated successfully",
-    }),
-  );
+	return ctx.json(
+		createResponse({
+			msg: "school details updated successfully",
+		}),
+	);
 });
 
 /**
@@ -164,7 +140,7 @@ school.put("/", async (ctx) => {
  * @desc    Remove school by admin
  */
 school.delete("/:schoolId", async (ctx) => {
-  return ctx.json(createResponse({ msg: "school removed successfully" }));
+	return ctx.json(createResponse({ msg: "school removed successfully" }));
 });
 
 export type SchoolApiType = typeof school;

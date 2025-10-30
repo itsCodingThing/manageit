@@ -1,5 +1,5 @@
 import { createFactory } from "hono/factory";
-import type { auth } from "project/services/auth";
+import type { auth } from "@/services/auth";
 
 type Env = {
   Variables: {
