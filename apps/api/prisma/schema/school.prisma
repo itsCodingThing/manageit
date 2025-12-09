@@ -11,6 +11,8 @@ model School {
   createdAt     DateTime       @default(now())
   schoolDetails SchoolDetails?
   schoolAdmins  String[]
+
+  @@map("school")
 }
 
 model SchoolDetails {
@@ -20,4 +22,6 @@ model SchoolDetails {
   totalExams    Int    @default(0)
   totalStudents Int    @default(0)
   totalTeachers Int    @default(0)
+
+  @@map("schoolDetails")
 }

@@ -11,6 +11,8 @@ model Student {
   status      String    @default("active")
   batchs      String[]
   createdAt   DateTime  @default(now())
+
+  @@map("student")
 }
 
 model StudentExamDetails {
@@ -18,4 +20,6 @@ model StudentExamDetails {
   studentId   String
   activeExams String[]
   createdAt   DateTime @default(now())
+
+  @@map("studentExamDetails")
 }

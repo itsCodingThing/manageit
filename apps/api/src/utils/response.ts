@@ -1,13 +1,13 @@
 import { APIError as BetterAuthAPIError } from "better-auth";
 import { BaseError, ErrorNames } from "./error";
 
-interface Response {
+interface ResponseParams {
   code?: number;
   msg?: string;
   data?: any;
 }
 
-export function createResponse(params: Response) {
+export function createResponse(params: ResponseParams) {
   const { code = 200, msg = "success", data = {} } = params;
   return { statusCode: code, message: msg, data: data };
 }
@@ -28,5 +28,6 @@ export function createErrorResponse(error?: Error) {
     });
   }
 
+  console.log(error);
   return createResponse({ msg: ErrorNames.internal, code: 500 });
 }

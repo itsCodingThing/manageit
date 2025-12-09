@@ -2,11 +2,9 @@ generator client {
   provider        = "prisma-client"
   engineType      = "client"
   previewFeatures = ["typedSql"]
-  runtime         = "bun"
   output          = "../../src/prisma-generated/"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }

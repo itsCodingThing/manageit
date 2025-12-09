@@ -1,11 +1,11 @@
 import { validator } from "hono/validator";
-import { createResponse } from "@/utils/response";
-import { parseAsync } from "@/utils/validation";
-import { authAPI } from "@/services/auth";
-import { hono } from "@/app/hono-factory";
-import { prisma } from "@/database/db.connection";
-import authValidators from "@/app/auth/validators";
 import { ApiError } from "@/utils/error";
+import { betterAuthApi } from "@/services/auth";
+import { hono } from "@/app/hono-factory";
+import Messages from "@/constants/messages";
+import { createResponse } from "@/utils/response";
+import { parseAsync, zod } from "@/utils/validation";
+import { prisma } from "@/database/db.connection";
 
 const auth = hono.createApp();
 
@@ -15,16 +15,23 @@ const auth = hono.createApp();
  */
 auth.post(
 	"/sign-up",
-	validator(
-		"json",
-		async (value) => await parseAsync(authValidators.signUp, value),
-	),
+	validator("json", async (value) => {
+		return await parseAsync(
+			zod.object({
+				type: zod.literal(["teacher", "student"]),
+				email: zod.email(),
+				password: zod.string().min(5),
+				name: zod.string().default(() => new Date().toUTCString()),
+				contact: zod.string().length(10),
+			}),
+			value,
+		);
+	}),
 	async (ctx) => {
 		const body = ctx.req.valid("json");
 
-		const authenticate = await authAPI.signUpEmail({
+		const authenticate = await betterAuthApi.signUpEmail({
 			body: {
-				type: body.type,
 				name: body.name,
 				email: body.email,
 				password: body.password,
@@ -46,15 +53,29 @@ auth.post(
  */
 auth.post(
 	"/sign-in",
-	validator(
-		"json",
-		async (value) => await parseAsync(authValidators.signIn, value),
-	),
+	validator("json", async (value) => {
+		return await parseAsync(
+			zod.discriminatedUnion("loginMethod", [
+				zod.object({
+					loginMethod: zod.literal("contact"),
+					type: zod.literal(["teacher", "student"]),
+					contact: zod.string().length(10),
+				}),
+				zod.object({
+					loginMethod: zod.literal("password"),
+					type: zod.literal(["teacher", "student"]),
+					email: zod.email(),
+					password: zod.string(),
+				}),
+			]),
+			value,
+		);
+	}),
 	async (ctx) => {
 		const body = ctx.req.valid("json");
 
 		if (body.loginMethod === "password") {
-			const user = await authAPI.signInEmail({
+			const user = await betterAuthApi.signInEmail({
 				body: {
 					email: body.email,
 					password: body.password,
@@ -63,23 +84,26 @@ auth.post(
 
 			return ctx.json(
 				createResponse({
+					msg: Messages.SUCCESS.AUTH_LOGIN_SUCCESS.message,
 					data: { token: user.token, user: user.user },
 				}),
 			);
 		}
 
 		if (body.loginMethod === "contact") {
-			await authAPI.sendPhoneNumberOTP({ body: { phoneNumber: body.contact } });
+			await betterAuthApi.sendPhoneNumberOTP({
+				body: { phoneNumber: body.contact },
+			});
 
 			return ctx.json(
 				createResponse({
-					msg: "otp send successfully",
+					msg: Messages.SUCCESS.AUTH_OTP_SENT.message,
 				}),
 			);
 		}
 
 		throw new ApiError({
-			msg: "need valid login method",
+			msg: Messages.ERROR.INVALID_LOGIN_METHOD.message,
 		});
 	},
 );
@@ -90,14 +114,19 @@ auth.post(
  */
 auth.post(
 	"/verify-otp",
-	validator(
-		"json",
-		async (value) => await parseAsync(authValidators.verifyOtp, value),
-	),
+	validator("json", async (value) => {
+		return await parseAsync(
+			zod.object({
+				contact: zod.string(),
+				otp: zod.string(),
+			}),
+			value,
+		);
+	}),
 	async (ctx) => {
 		const body = ctx.req.valid("json");
 
-		const data = await authAPI.verifyPhoneNumber({
+		const data = await betterAuthApi.verifyPhoneNumber({
 			body: {
 				phoneNumber: body.contact,
 				code: body.otp,
@@ -112,7 +141,7 @@ auth.post(
 
 		return ctx.json(
 			createResponse({
-				data: { token: data.token, user: data.user },
+				data: { token: data.token, user: { id: data.user.id } },
 			}),
 		);
 	},
@@ -124,16 +153,22 @@ auth.post(
  */
 auth.post(
 	"/admin/sign-up",
-	validator(
-		"json",
-		async (value) => await parseAsync(authValidators.adminSignUp, value),
-	),
+	validator("json", async (value) => {
+		return await parseAsync(
+			zod.object({
+				email: zod.email(),
+				password: zod.string().min(5),
+				name: zod.string().min(1),
+				phoneNumber: zod.string().length(10),
+			}),
+			value,
+		);
+	}),
 	async (ctx) => {
 		const body = ctx.req.valid("json");
 
-		const authenticate = await authAPI.signUpEmail({
+		const result = await betterAuthApi.signUpEmail({
 			body: {
-				type: "admin",
 				name: body.name,
 				email: body.email,
 				password: body.password,
@@ -151,7 +186,8 @@ auth.post(
 
 		return ctx.json(
 			createResponse({
-				data: { token: authenticate.token },
+				msg: Messages.SUCCESS.USER_CREATED.message,
+				data: { token: result.token, user: { id: result.user.id } },
 			}),
 		);
 	},
@@ -165,12 +201,19 @@ auth.post(
 	"/admin/sign-in",
 	validator(
 		"json",
-		async (value) => await parseAsync(authValidators.adminSignIn, value),
+		async (value) =>
+			await parseAsync(
+				zod.object({
+					email: zod.email(),
+					password: zod.string(),
+				}),
+				value,
+			),
 	),
 	async (ctx) => {
 		const body = ctx.req.valid("json");
 
-		const authenticate = await authAPI.signInEmail({
+		const authenticate = await betterAuthApi.signInEmail({
 			body: {
 				email: body.email,
 				password: body.password,

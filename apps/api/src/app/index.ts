@@ -1,7 +1,6 @@
-import "dotenv/config";
 import { except } from "hono/combine";
 import { cors } from "hono/cors";
-import { logger as honoLogger } from "hono/logger";
+import { logger } from "hono/logger";
 import { secureHeaders } from "hono/secure-headers";
 import type { ContentfulStatusCode } from "hono/utils/http-status";
 
@@ -13,7 +12,7 @@ import { Routes } from "./routes";
 const api = hono.createApp().basePath("/api");
 
 api.use(secureHeaders());
-api.use(honoLogger());
+api.use(logger());
 api.use(cors());
 
 // auth middleware

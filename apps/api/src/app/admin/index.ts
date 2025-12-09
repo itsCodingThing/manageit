@@ -4,7 +4,6 @@ import { parseAsync, zod } from "@/utils/validation";
 import { createResponse } from "@/utils/response";
 import Messages from "@/constants/messages";
 import { validator } from "hono/validator";
-import adminValidators from "./validators";
 import { ApiError } from "@/utils/error";
 
 const admin = hono.createApp();
@@ -14,42 +13,47 @@ const admin = hono.createApp();
  *  @desc   Get all admins
  */
 admin.get(
-  "/",
-  validator(
-    "query",
-    async (value) => await parseAsync(adminValidators.getAdminsQuery, value),
-  ),
-  async (ctx) => {
-    const query = ctx.req.valid("query");
+	"/",
+	validator("query", async (value) => {
+		return await parseAsync(
+			zod.object({
+				page: zod.coerce.number().min(1).default(1),
+				count: zod.coerce.number().min(1).default(10),
+			}),
+			value,
+		);
+	}),
+	async (ctx) => {
+		const query = ctx.req.valid("query");
 
-    // this type of pagination is not scalable at large datasets (use cursor based pagination)
-    let skip = 0;
-    if (query.page > 1) {
-      skip = query.page * query.count;
-    }
+		// this type of pagination is not scalable at large datasets (use cursor based pagination)
+		let skip = 0;
+		if (query.page > 1) {
+			skip = query.page * query.count;
+		}
 
-    const results = await prisma.admin.findMany({
-      select: {
-        name: true,
-        id: true,
-        email: true,
-        createdAt: true,
-        status: true,
-      },
-      skip: skip,
-      take: query.count,
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
+		const results = await prisma.admin.findMany({
+			select: {
+				name: true,
+				id: true,
+				email: true,
+				createdAt: true,
+				status: true,
+			},
+			skip: skip,
+			take: query.count,
+			orderBy: {
+				createdAt: "desc",
+			},
+		});
 
-    return ctx.json(
-      createResponse({
-        msg: Messages.SUCCESS.RECORDS_FETCHED.message,
-        data: results,
-      }),
-    );
-  },
+		return ctx.json(
+			createResponse({
+				msg: Messages.SUCCESS.RECORDS_FETCHED.message,
+				data: results,
+			}),
+		);
+	},
 );
 
 /**
@@ -57,30 +61,34 @@ admin.get(
  *  @desc   Get admin details
  */
 admin.get(
-  "/:adminId",
-  validator(
-    "param",
-    async (value) =>
-      await parseAsync(adminValidators.getAdminDetailsParams, value),
-  ),
-  async (ctx) => {
-    const { adminId } = ctx.req.valid("param");
+	"/:adminId",
+	validator("param", async (value) => {
+		return await parseAsync(zod.object({ adminId: zod.string() }), value);
+	}),
+	async (ctx) => {
+		const { adminId } = ctx.req.valid("param");
 
-    return ctx.json(
-      createResponse({
-        msg: Messages.SUCCESS.RECORD_FETCHED.message,
-        data: await prisma.admin.findFirst({
-          where: { id: adminId },
-          select: {
-            name: true,
-            id: true,
-            email: true,
-            status: true,
-          },
-        }),
-      }),
-    );
-  },
+		const result = await prisma.admin.findFirst({
+			where: { id: adminId },
+			select: {
+				name: true,
+				id: true,
+				email: true,
+				status: true,
+			},
+		});
+
+		if (!result) {
+			throw new ApiError({ msg: Messages.ERROR.RECORD_NOT_FOUND.message });
+		}
+
+		return ctx.json(
+			createResponse({
+				msg: Messages.SUCCESS.RECORD_FETCHED.message,
+				data: result,
+			}),
+		);
+	},
 );
 
 /**
@@ -88,42 +96,49 @@ admin.get(
  *  @desc    Create new admin
  */
 admin.post(
-  "/",
-  validator(
-    "json",
-    async (value) => await parseAsync(adminValidators.createAdminBody, value),
-  ),
-  async (ctx) => {
-    const body = ctx.req.valid("json");
+	"/",
+	validator("json", async (value) => {
+		return await parseAsync(
+			zod.object({
+				name: zod.string().min(1),
+				email: zod.email(),
+				password: zod.string().min(8),
+				phoneNumber: zod.string().length(10),
+			}),
+			value,
+		);
+	}),
+	async (ctx) => {
+		const body = ctx.req.valid("json");
 
-    // check if the admin user exists with this email
-    const alreadyExistUser = await prisma.admin.findFirst({
-      where: { email: body.email },
-    });
-    if (alreadyExistUser) {
-      throw new ApiError({
-        msg: "Email already register with us",
-      });
-    }
+		// check if the admin user exists with this email
+		const alreadyExistUser = await prisma.admin.findFirst({
+			where: { email: body.email },
+		});
+		if (alreadyExistUser) {
+			throw new ApiError({
+				msg: "Email already register with us",
+			});
+		}
 
-    // create new admin user
-    const user = await prisma.admin.create({
-      data: {
-        ...body,
-      },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-      },
-    });
+		// create new admin user
+		const user = await prisma.admin.create({
+			data: {
+				...body,
+			},
+			select: {
+				id: true,
+				name: true,
+				email: true,
+			},
+		});
 
-    return ctx.json(
-      createResponse({
-        data: user,
-      }),
-    );
-  },
+		return ctx.json(
+			createResponse({
+				data: user,
+			}),
+		);
+	},
 );
 
 /**
@@ -131,42 +146,42 @@ admin.post(
  *  @desc    update user
  */
 admin.put("/", async (ctx) => {
-  const { adminId, ...body } = await parseAsync(
-    zod.object({
-      adminId: zod.string(),
-      name: zod.string().min(1, "please enter admin name").optional(),
-      email: zod.email("please enter a valid email").optional(),
-    }),
-    await ctx.req.json(),
-  );
+	const { adminId, ...body } = await parseAsync(
+		zod.object({
+			adminId: zod.string(),
+			name: zod.string().min(1, "please enter admin name").optional(),
+			email: zod.email("please enter a valid email").optional(),
+		}),
+		await ctx.req.json(),
+	);
 
-  // check if the user exists with this email
-  if (body.email) {
-    const alreadyExistUser = await prisma.admin.findFirst({
-      where: { email: body.email, id: { not: adminId } },
-    });
-    if (alreadyExistUser) {
-      const code = 500;
-      ctx.status(code);
-      return ctx.json(
-        createResponse({ code, msg: "Email already register with us" }),
-      );
-    }
-  }
+	// check if the user exists with this email
+	if (body.email) {
+		const alreadyExistUser = await prisma.admin.findFirst({
+			where: { email: body.email, id: { not: adminId } },
+		});
+		if (alreadyExistUser) {
+			const code = 500;
+			ctx.status(code);
+			return ctx.json(
+				createResponse({ code, msg: "Email already register with us" }),
+			);
+		}
+	}
 
-  // create new admin user
-  const user = await prisma.admin.update({
-    where: {
-      id: adminId,
-    },
-    data: body,
-  });
+	// create new admin user
+	const user = await prisma.admin.update({
+		where: {
+			id: adminId,
+		},
+		data: body,
+	});
 
-  return ctx.json(
-    createResponse({
-      data: user,
-    }),
-  );
+	return ctx.json(
+		createResponse({
+			data: user,
+		}),
+	);
 });
 
 /**
@@ -174,13 +189,13 @@ admin.put("/", async (ctx) => {
  * @desc    Remove admin
  */
 admin.delete("/:adminId", async (ctx) => {
-  const { adminId } = await parseAsync(
-    zod.object({ adminId: zod.string() }),
-    ctx.req.param(),
-  );
-  await prisma.admin.delete({ where: { id: adminId } });
+	const { adminId } = await parseAsync(
+		zod.object({ adminId: zod.string() }),
+		ctx.req.param(),
+	);
+	await prisma.admin.delete({ where: { id: adminId } });
 
-  return ctx.json(createResponse({ data: "admin deleted successfully" }));
+	return ctx.json(createResponse({ data: "admin deleted successfully" }));
 });
 
 export type AdminApiType = typeof admin;

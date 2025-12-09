@@ -11,6 +11,8 @@ model Teacher {
   isSchoolAdmin Boolean  @default(false)
   batches       String[]
   createdAt     DateTime @default(now())
+
+  @@map("teacher")
 }
 
 model TeacherExamDetails {
@@ -18,4 +20,6 @@ model TeacherExamDetails {
   teacherId   String
   activeExams String[]
   createdAt   DateTime @default(now())
+
+  @@map("teacherExamDetails")
 }

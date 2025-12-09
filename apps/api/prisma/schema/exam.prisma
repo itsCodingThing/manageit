@@ -4,4 +4,6 @@ model Exam {
   schooldId String
   teacherId String
   createdAt DateTime @default(now())
+
+  @@map("exam")
 }

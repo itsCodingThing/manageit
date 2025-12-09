@@ -6,4 +6,6 @@ model Batch {
   teachers  String[]
   students  String[]
   createdAt DateTime @default(now())
+
+  @@map("batch")
 }

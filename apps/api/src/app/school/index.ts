@@ -3,8 +3,7 @@ import { prisma } from "@/database/db.connection";
 import { parseAsync, zod } from "@/utils/validation";
 import { createResponse } from "@/utils/response";
 import { hono } from "@/app/hono-factory";
-import { authAPI } from "@/services/auth";
-import schoolValidators from "./validators";
+import { betterAuthApi } from "@/services/auth";
 import { ApiError } from "@/utils/error";
 
 const school = hono.createApp();
@@ -25,7 +24,20 @@ school.post(
 	"/",
 	validator(
 		"json",
-		async (value) => await parseAsync(schoolValidators.createSchoolBody, value),
+		async (value) =>
+			await parseAsync(
+				zod.object({
+					name: zod.string().min(1, "Please enter name"),
+					email: zod.email("Please enter a valid email"),
+					phoneNumber: zod.string().length(10, "Please enter a valid contact"),
+					address: zod.string().min(1, "Please enter a valid address"),
+					image: zod.string().default(""),
+					code: zod.string().min(3, "Code must be atleast 3 digit long"),
+					type: zod.string().min(1, "Please enter a valid type"),
+					password: zod.string().min(8, "Password must be 8 charactor long"),
+				}),
+				value,
+			),
 	),
 	async (ctx) => {
 		const body = ctx.req.valid("json");
@@ -56,7 +68,7 @@ school.post(
 			});
 		}
 
-		prisma.$transaction(async (tx) => {
+		await prisma.$transaction(async (tx) => {
 			school = await tx.school.create({
 				data: {
 					name: body.name,
@@ -88,13 +100,11 @@ school.post(
 				},
 			});
 
-			await authAPI.signUpEmail({
+			await betterAuthApi.signUpEmail({
 				body: {
-					type: "teacher",
 					name: body.name,
 					email: body.email,
 					password: body.password,
-					phoneNumber: body.phoneNumber,
 				},
 			});
 		});
@@ -134,6 +144,43 @@ school.put("/", async (ctx) => {
 		}),
 	);
 });
+
+/**
+ * @route   GET "/api/school/check-code/:code"
+ * @desc    checking school code
+ */
+school.get(
+	"/check-code/:code",
+	validator("param", async (value) => {
+		return await parseAsync(
+			zod.object({
+				code: zod
+					.string()
+					.regex(/^[a-zA-Z0-9]+$/, "code must be a alphanumeric string"),
+			}),
+			value,
+		);
+	}),
+	async (ctx) => {
+		const { code } = ctx.req.valid("param");
+
+		const result = await prisma.school.findFirst({
+			where: { code },
+			select: { id: true },
+		});
+
+		if (result) {
+			throw new ApiError({ msg: "code is already in use" });
+		}
+
+		return ctx.json(
+			createResponse({
+				data: code,
+				msg: "school details updated successfully",
+			}),
+		);
+	},
+);
 
 /**
  * @route   DELETE "/api/v1/school/:schoolId"
