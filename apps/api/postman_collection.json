@@ -1,0 +1,1129 @@
+{
+	"info": {
+		"_postman_id": "manageit-api-collection",
+		"name": "ManageIT API",
+		"description": "Postman collection for ManageIT API. Authenticated routes require a Bearer token.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Health",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/health",
+							"host": ["{{base_url}}"],
+							"path": ["health"]
+						},
+						"description": "Check API health status. Returns 200 with status and timestamp."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Student/Teacher Sign Up",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/auth/sign-up",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "sign-up"]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"type\": \"student\",\n  \"email\": \"student@example.com\",\n  \"password\": \"password123\",\n  \"name\": \"John Student\",\n  \"contact\": \"9876543210\",\n  \"schoolCode\": \"SCH001\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "Register a new student or teacher account"
+					},
+					"response": []
+				},
+				{
+					"name": "Student/Teacher Sign In - Email",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/auth/sign-in",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "sign-in"]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"type\": \"student\",\n  \"loginMethod\": \"email\",\n  \"email\": \"student@example.com\",\n  \"password\": \"password123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "Login using email and password"
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json();",
+									"if (response.data && response.data.token) {",
+									"  pm.collectionVariables.set(\"auth_token\", response.data.token);",
+									"  console.log(\"Token saved to collection\");",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"response": []
+				},
+				{
+					"name": "Student/Teacher Sign In - Contact",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/auth/sign-in",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "sign-in"]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"type\": \"student\",\n  \"loginMethod\": \"contact\",\n  \"contact\": \"9876543210\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "Login using phone contact number"
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json();",
+									"if (response.data && response.data.token) {",
+									"  pm.collectionVariables.set(\"auth_token\", response.data.token);",
+									"  console.log(\"Token saved to collection\");",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"response": []
+				},
+				{
+					"name": "Admin Sign In",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/auth/admin/sign-in",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "admin", "sign-in"]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"password123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "Login as admin user"
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json();",
+									"if (response.data && response.data.token) {",
+									"  pm.collectionVariables.set(\"auth_token\", response.data.token);",
+									"  console.log(\"Admin token saved to collection\");",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "Get All Admins",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin",
+							"host": ["{{base_url}}"],
+							"path": ["admin"]
+						},
+						"description": "Get all admins"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Admin By ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/REPLACE_WITH_ADMIN_ID",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "REPLACE_WITH_ADMIN_ID"]
+						},
+						"description": "Get admin details by ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Admin",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin",
+							"host": ["{{base_url}}"],
+							"path": ["admin"]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": \"REPLACE_WITH_USER_ID\",\n  \"name\": \"John Admin\",\n  \"email\": \"admin@example.com\",\n  \"phoneNumber\": \"9876543210\",\n  \"status\": \"pending\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "Create a new admin. userId is required. Status can be: active, inactive, pending"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Admin",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/REPLACE_WITH_ADMIN_ID",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "REPLACE_WITH_ADMIN_ID"]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"John Admin Updated\",\n  \"email\": \"admin@example.com\",\n  \"phoneNumber\": \"9876543210\",\n  \"status\": \"active\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "Update admin details. All fields are optional. Status can be: active, inactive, pending"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Admin",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/REPLACE_WITH_ADMIN_ID",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "REPLACE_WITH_ADMIN_ID"]
+						},
+						"description": "Delete an admin by ID"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "School Admin",
+			"item": [
+				{
+					"name": "Get All School Admins",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/school-admin?page=1&limit=10&schoolId=REPLACE_WITH_SCHOOL_ID",
+							"host": ["{{base_url}}"],
+							"path": ["school-admin"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "schoolId",
+									"value": "REPLACE_WITH_SCHOOL_ID"
+								}
+							]
+						},
+						"description": "Get all school admins (teachers with admin/master_admin roles) with optional school filter"
+					},
+					"response": []
+				},
+				{
+					"name": "Get School Admin By ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/school-admin/REPLACE_WITH_ADMIN_ID",
+							"host": ["{{base_url}}"],
+							"path": ["school-admin", "REPLACE_WITH_ADMIN_ID"]
+						},
+						"description": "Get school admin details by ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Create School Admin",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/school-admin",
+							"host": ["{{base_url}}"],
+							"path": ["school-admin"]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"schoolId\": \"REPLACE_WITH_SCHOOL_ID\",\n  \"name\": \"School Admin\",\n  \"email\": \"schooladmin@example.com\",\n  \"password\": \"password123\",\n  \"phoneNumber\": \"9876543215\",\n  \"dob\": \"1990-01-01T00:00:00Z\",\n  \"image\": \"https://example.com/admin.png\",\n  \"address\": \"123 Admin Street\",\n  \"role\": \"admin\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "Create a new school admin (teacher with admin/master_admin role). Role can be 'admin' or 'master_admin'."
+					},
+					"response": []
+				},
+				{
+					"name": "Update School Admin",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/school-admin/REPLACE_WITH_ADMIN_ID",
+							"host": ["{{base_url}}"],
+							"path": ["school-admin", "REPLACE_WITH_ADMIN_ID"]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"School Admin Updated\",\n  \"email\": \"schooladmin@example.com\",\n  \"phoneNumber\": \"9876543215\",\n  \"address\": \"123 Admin Street\",\n  \"roles\": [\"admin\", \"teacher\"],\n  \"status\": \"active\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "Update school admin details. Roles can be: teacher, admin, principal, master_admin"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete School Admin",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/school-admin/REPLACE_WITH_ADMIN_ID",
+							"host": ["{{base_url}}"],
+							"path": ["school-admin", "REPLACE_WITH_ADMIN_ID"]
+						},
+						"description": "Delete a school admin"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Student",
+			"item": [
+				{
+					"name": "Get All Students",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/student?page=1&limit=10&schoolId=REPLACE_WITH_SCHOOL_ID",
+							"host": ["{{base_url}}"],
+							"path": ["student"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "schoolId",
+									"value": "REPLACE_WITH_SCHOOL_ID"
+								}
+							]
+						},
+						"description": "Get all students with pagination and optional school filter"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Student",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/student",
+							"host": ["{{base_url}}"],
+							"path": ["student"]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Jane Student\",\n  \"email\": \"student@example.com\",\n  \"phoneNumber\": \"9876543211\",\n  \"password\": \"password123\",\n  \"schoolId\": \"REPLACE_WITH_SCHOOL_ID\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "Create a new student account"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Student By ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/student/REPLACE_WITH_STUDENT_ID",
+							"host": ["{{base_url}}"],
+							"path": ["student", "REPLACE_WITH_STUDENT_ID"]
+						},
+						"description": "Get student details by ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Student",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/student/REPLACE_WITH_STUDENT_ID",
+							"host": ["{{base_url}}"],
+							"path": ["student", "REPLACE_WITH_STUDENT_ID"]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Jane Student Updated\",\n  \"email\": \"student@example.com\",\n  \"phoneNumber\": \"9876543211\",\n  \"address\": \"456 Student Avenue\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "Update student details"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Student",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/student/REPLACE_WITH_STUDENT_ID",
+							"host": ["{{base_url}}"],
+							"path": ["student", "REPLACE_WITH_STUDENT_ID"]
+						},
+						"description": "Delete a student account"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Teacher",
+			"item": [
+				{
+					"name": "Get All Teachers",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/teacher",
+							"host": ["{{base_url}}"],
+							"path": ["teacher"]
+						},
+						"description": "Get all teachers"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Teacher",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/teacher",
+							"host": ["{{base_url}}"],
+							"path": ["teacher"]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Mr. Smith\",\n  \"email\": \"teacher@example.com\",\n  \"phoneNumber\": \"9876543212\",\n  \"schoolId\": \"REPLACE_WITH_SCHOOL_ID\",\n  \"password\": \"password123\",\n  \"address\": \"789 Teacher Road\",\n  \"image\": \"https://example.com/teacher.png\",\n  \"roles\": [\"teacher\"],\n  \"status\": \"pending\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "Create a new teacher account. Roles can be: teacher, admin, principal, master_admin"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Teacher By ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/teacher/REPLACE_WITH_TEACHER_ID",
+							"host": ["{{base_url}}"],
+							"path": ["teacher", "REPLACE_WITH_TEACHER_ID"]
+						},
+						"description": "Get teacher details by ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Teacher",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/teacher/REPLACE_WITH_TEACHER_ID",
+							"host": ["{{base_url}}"],
+							"path": ["teacher", "REPLACE_WITH_TEACHER_ID"]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Mr. Smith Updated\",\n  \"email\": \"teacher@example.com\",\n  \"phoneNumber\": \"9876543212\",\n  \"address\": \"789 Teacher Road\",\n  \"image\": \"https://example.com/teacher.png\",\n  \"roles\": [\"teacher\", \"admin\"],\n  \"status\": \"active\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "Update teacher details. Roles can be: teacher, admin, principal, master_admin"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Teacher",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/teacher/REPLACE_WITH_TEACHER_ID",
+							"host": ["{{base_url}}"],
+							"path": ["teacher", "REPLACE_WITH_TEACHER_ID"]
+						},
+						"description": "Delete a teacher account"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "School",
+			"item": [
+				{
+					"name": "Get All Schools",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/school",
+							"host": ["{{base_url}}"],
+							"path": ["school"]
+						},
+						"description": "Get all schools"
+					},
+					"response": []
+				},
+				{
+					"name": "Create School (with Admin Teacher)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/school",
+							"host": ["{{base_url}}"],
+							"path": ["school"]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"schoolCode\": \"SCH001\",\n  \"name\": \"Example High School\",\n  \"email\": \"school@example.com\",\n  \"phone\": \"9876543213\",\n  \"address\": \"101 School Lane\",\n  \"city\": \"New York\",\n  \"state\": \"NY\",\n  \"country\": \"USA\",\n  \"postalCode\": \"10001\",\n  \"logo\": \"https://example.com/logo.png\",\n  \"website\": \"https://school.example.com\",\n  \"description\": \"A leading educational institution\",\n  \"establishedYear\": \"1990\",\n  \"board\": \"State Board\",\n  \"status\": \"active\",\n  \"maxStudents\": \"1000\",\n  \"maxTeachers\": \"50\",\n  \"accreditation\": \"ISO 9001\",\n  \"facilities\": \"Library, Sports Ground, Computer Lab\",\n  \"adminName\": \"School Admin\",\n  \"adminEmail\": \"admin@example.com\",\n  \"adminPassword\": \"password123\",\n  \"adminPhone\": \"9876543214\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "Create a new school with a default admin teacher. The admin teacher is automatically created with admin role. Requires unique schoolCode, email, and phone."
+					},
+					"response": []
+				},
+				{
+					"name": "Get School By ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/school/REPLACE_WITH_SCHOOL_ID",
+							"host": ["{{base_url}}"],
+							"path": ["school", "REPLACE_WITH_SCHOOL_ID"]
+						},
+						"description": "Get school details by ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Update School",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/school/REPLACE_WITH_SCHOOL_ID",
+							"host": ["{{base_url}}"],
+							"path": ["school", "REPLACE_WITH_SCHOOL_ID"]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Example High School Updated\",\n  \"email\": \"school@example.com\",\n  \"phone\": \"9876543213\",\n  \"address\": \"101 School Lane\",\n  \"city\": \"New York\",\n  \"state\": \"NY\",\n  \"country\": \"USA\",\n  \"postalCode\": \"10001\",\n  \"schoolType\": \"Public\",\n  \"logo\": \"https://example.com/logo.png\",\n  \"website\": \"https://school.example.com\",\n  \"description\": \"A leading educational institution\",\n  \"establishedYear\": \"1990\",\n  \"board\": \"State Board\",\n  \"status\": \"active\",\n  \"maxStudents\": \"1000\",\n  \"maxTeachers\": \"50\",\n  \"accreditation\": \"ISO 9001\",\n  \"facilities\": \"Library, Sports Ground, Computer Lab\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "Update school details"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete School",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/school/REPLACE_WITH_SCHOOL_ID",
+							"host": ["{{base_url}}"],
+							"path": ["school", "REPLACE_WITH_SCHOOL_ID"]
+						},
+						"description": "Delete a school"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Batch",
+			"item": [
+				{
+					"name": "Get All Batches",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/batch?schoolId=REPLACE_WITH_SCHOOL_ID&page=1&limit=10",
+							"host": ["{{base_url}}"],
+							"path": ["batch"],
+							"query": [
+								{
+									"key": "schoolId",
+									"value": "REPLACE_WITH_SCHOOL_ID"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Get all batches for a school with pagination"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Batch By ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/batch/REPLACE_WITH_BATCH_ID",
+							"host": ["{{base_url}}"],
+							"path": ["batch", "REPLACE_WITH_BATCH_ID"]
+						},
+						"description": "Get batch details by ID including teachers and students"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Batch",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/batch",
+							"host": ["{{base_url}}"],
+							"path": ["batch"]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"schoolId\": \"REPLACE_WITH_SCHOOL_ID\",\n  \"name\": \"Class 10-A\",\n  \"description\": \"Tenth Grade Section A\",\n  \"image\": \"https://example.com/batch.png\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "Create a new batch for a school"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Batch",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/batch/REPLACE_WITH_BATCH_ID",
+							"host": ["{{base_url}}"],
+							"path": ["batch", "REPLACE_WITH_BATCH_ID"]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Class 10-A Updated\",\n  \"description\": \"Tenth Grade Section A\",\n  \"image\": \"https://example.com/batch.png\",\n  \"status\": \"active\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "Update batch details"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Batch",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/batch/REPLACE_WITH_BATCH_ID",
+							"host": ["{{base_url}}"],
+							"path": ["batch", "REPLACE_WITH_BATCH_ID"]
+						},
+						"description": "Delete a batch"
+					},
+					"response": []
+				},
+				{
+					"name": "Add Teachers to Batch",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/batch/REPLACE_WITH_BATCH_ID/teachers",
+							"host": ["{{base_url}}"],
+							"path": ["batch", "REPLACE_WITH_BATCH_ID", "teachers"]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"teacherIds\": [\"REPLACE_WITH_TEACHER_ID_1\", \"REPLACE_WITH_TEACHER_ID_2\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "Add teachers to a batch"
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Teachers from Batch",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/batch/REPLACE_WITH_BATCH_ID/teachers",
+							"host": ["{{base_url}}"],
+							"path": ["batch", "REPLACE_WITH_BATCH_ID", "teachers"]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"teacherIds\": [\"REPLACE_WITH_TEACHER_ID_1\", \"REPLACE_WITH_TEACHER_ID_2\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "Remove teachers from a batch"
+					},
+					"response": []
+				},
+				{
+					"name": "Add Students to Batch",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/batch/REPLACE_WITH_BATCH_ID/students",
+							"host": ["{{base_url}}"],
+							"path": ["batch", "REPLACE_WITH_BATCH_ID", "students"]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"studentIds\": [\"REPLACE_WITH_STUDENT_ID_1\", \"REPLACE_WITH_STUDENT_ID_2\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "Add students to a batch"
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Students from Batch",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/batch/REPLACE_WITH_BATCH_ID/students",
+							"host": ["{{base_url}}"],
+							"path": ["batch", "REPLACE_WITH_BATCH_ID", "students"]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"studentIds\": [\"REPLACE_WITH_STUDENT_ID_1\", \"REPLACE_WITH_STUDENT_ID_2\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "Remove students from a batch"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080/api",
+			"type": "string"
+		},
+		{
+			"key": "auth_token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
