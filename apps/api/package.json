@@ -6,7 +6,7 @@
 		"lint": "biome lint",
 		"fmt": "biome format --write",
 		"test": "bun test --preload ./backend/tests/setup.ts",
-    "build:api": "bun build --minify --target=node --outfile=./dist/api.js ./app/index.ts",
+		"build:api": "bun build --minify --target=node --outfile=./dist/api.js ./app/index.ts",
 		"db:push": "drizzle-kit push",
 		"db:studio": "drizzle-kit studio",
 		"auth:gen": "bunx @better-auth/cli generate --config ./services/auth.ts --output ./database/schema/auth.ts",

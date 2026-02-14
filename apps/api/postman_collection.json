@@ -467,25 +467,30 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/student?page=1&limit=10&schoolId=REPLACE_WITH_SCHOOL_ID",
+							"raw": "{{base_url}}/student",
 							"host": ["{{base_url}}"],
-							"path": ["student"],
-							"query": [
-								{
-									"key": "page",
-									"value": "1"
-								},
-								{
-									"key": "limit",
-									"value": "10"
-								},
-								{
-									"key": "schoolId",
-									"value": "REPLACE_WITH_SCHOOL_ID"
-								}
-							]
+							"path": ["student"]
 						},
-						"description": "Get all students with pagination and optional school filter"
+						"description": "Get all students"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Student By ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/student/REPLACE_WITH_STUDENT_ID",
+							"host": ["{{base_url}}"],
+							"path": ["student", "REPLACE_WITH_STUDENT_ID"]
+						},
+						"description": "Get student details by ID"
 					},
 					"response": []
 				},
@@ -510,7 +515,7 @@
 						},
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"name\": \"Jane Student\",\n  \"email\": \"student@example.com\",\n  \"phoneNumber\": \"9876543211\",\n  \"password\": \"password123\",\n  \"schoolId\": \"REPLACE_WITH_SCHOOL_ID\"\n}",
+							"raw": "{\n  \"schoolId\": \"REPLACE_WITH_SCHOOL_ID\",\n  \"name\": \"Jane Student\",\n  \"email\": \"student@example.com\",\n  \"phoneNumber\": \"9876543211\",\n  \"password\": \"password123\",\n  \"dob\": \"2010-01-01T00:00:00Z\",\n  \"image\": \"https://example.com/student.png\",\n  \"address\": \"123 Student Street\",\n  \"batchIds\": [],\n  \"status\": \"pending\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -518,25 +523,6 @@
 							}
 						},
 						"description": "Create a new student account"
-					},
-					"response": []
-				},
-				{
-					"name": "Get Student By ID",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{auth_token}}"
-							}
-						],
-						"url": {
-							"raw": "{{base_url}}/student/REPLACE_WITH_STUDENT_ID",
-							"host": ["{{base_url}}"],
-							"path": ["student", "REPLACE_WITH_STUDENT_ID"]
-						},
-						"description": "Get student details by ID"
 					},
 					"response": []
 				},
@@ -561,14 +547,14 @@
 						},
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"name\": \"Jane Student Updated\",\n  \"email\": \"student@example.com\",\n  \"phoneNumber\": \"9876543211\",\n  \"address\": \"456 Student Avenue\"\n}",
+							"raw": "{\n  \"name\": \"Jane Student Updated\",\n  \"email\": \"student@example.com\",\n  \"phoneNumber\": \"9876543211\",\n  \"address\": \"456 Student Avenue\",\n  \"batchIds\": [\"REPLACE_WITH_BATCH_ID\"],\n  \"status\": \"active\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"description": "Update student details"
+						"description": "Update student details. Status can be: active, inactive, pending"
 					},
 					"response": []
 				},
