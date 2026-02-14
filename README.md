@@ -1,36 +1,82 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ManageIt
 
-## Getting Started
+A full-stack monorepo application built with Next.js, Bun, and Elysia.
 
-First, run the development server:
+## Project Structure
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+manageit/
+├── apps/
+│   ├── web/      # Next.js frontend
+│   └── api/      # Elysia API server
+└── package.json  # Turborepo workspace
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Prerequisites
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- [Bun](https://bun.sh) (v1.3.9+)
+- [PostgreSQL](https://www.postgresql.org/) database
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Setup
 
-## Learn More
+1. **Install dependencies:**
+   ```bash
+   bun install
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+2. **Configure environment variables:**
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+   Create `.env` files in both apps:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+   - `apps/api/.env`:
+     ```env
+     DATABASE_URL=postgresql://user:password@localhost:5432/manageit
+     BETTER_AUTH_SECRET=your-secret-key
+     BETTER_AUTH_URL=http://localhost:3000
+     ```
 
-## Deploy on Vercel
+   - `apps/web/.env.local`:
+     ```env
+     NEXT_PUBLIC_API_URL=http://localhost:3001
+     ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+3. **Set up the database:**
+   ```bash
+   cd apps/api
+   bun run db:push
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+4. **Generate auth schema (if needed):**
+   ```bash
+   cd apps/api
+   bun run auth:gen
+   ```
+
+## Development
+
+Run both apps concurrently with Turborepo:
+```bash
+bun run dev
+```
+
+Or run individually:
+```bash
+# API server (port 3001)
+cd apps/api && bun run dev
+
+# Web app (port 3000)
+cd apps/web && bun run dev
+```
+
+## Available Scripts
+
+### API (`apps/api`)
+- `bun run dev` - Start development server
+- `bun run lint` - Lint code with Biome
+- `bun run fmt` - Format code with Biome
+- `bun run db:push` - Push schema to database
+- `bun run db:studio` - Open Drizzle Studio
+- `bun run test` - Run tests
+
+### Web (`apps/web`)
+- `bun run dev` - Start Next.js development server
