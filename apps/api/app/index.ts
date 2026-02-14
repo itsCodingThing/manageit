@@ -10,6 +10,7 @@ import health from "./health";
 import school from "./school";
 import teacher from "./teacher";
 import student from "./student";
+import schoolAdmin from "./school-admin";
 
 const app = new Elysia()
 	.error({ BaseError })
@@ -36,7 +37,8 @@ const app = new Elysia()
 	.use(admin)
 	.use(school)
 	.use(teacher)
-	.use(student);
+	.use(student)
+	.use(schoolAdmin);
 
 export type AppType = typeof app;
 export default app;

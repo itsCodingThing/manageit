@@ -327,25 +327,17 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/school-admin?page=1&limit=10&schoolId=REPLACE_WITH_SCHOOL_ID",
+							"raw": "{{base_url}}/school-admin?schoolId=REPLACE_WITH_SCHOOL_ID",
 							"host": ["{{base_url}}"],
 							"path": ["school-admin"],
 							"query": [
-								{
-									"key": "page",
-									"value": "1"
-								},
-								{
-									"key": "limit",
-									"value": "10"
-								},
 								{
 									"key": "schoolId",
 									"value": "REPLACE_WITH_SCHOOL_ID"
 								}
 							]
 						},
-						"description": "Get all school admins (teachers with admin/master_admin roles) with optional school filter"
+						"description": "Get all school admins (teachers with admin/master_admin/principal roles) with optional school filter"
 					},
 					"response": []
 				},
@@ -389,14 +381,14 @@
 						},
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"schoolId\": \"REPLACE_WITH_SCHOOL_ID\",\n  \"name\": \"School Admin\",\n  \"email\": \"schooladmin@example.com\",\n  \"password\": \"password123\",\n  \"phoneNumber\": \"9876543215\",\n  \"dob\": \"1990-01-01T00:00:00Z\",\n  \"image\": \"https://example.com/admin.png\",\n  \"address\": \"123 Admin Street\",\n  \"role\": \"admin\"\n}",
+							"raw": "{\n  \"schoolId\": \"REPLACE_WITH_SCHOOL_ID\",\n  \"name\": \"School Admin\",\n  \"email\": \"schooladmin@example.com\",\n  \"password\": \"password123\",\n  \"phoneNumber\": \"9876543215\",\n  \"dob\": \"1990-01-01T00:00:00Z\",\n  \"image\": \"https://example.com/admin.png\",\n  \"address\": \"123 Admin Street\",\n  \"role\": \"admin\",\n  \"status\": \"pending\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"description": "Create a new school admin (teacher with admin/master_admin role). Role can be 'admin' or 'master_admin'."
+						"description": "Create a new school admin (teacher with admin/master_admin/principal role)"
 					},
 					"response": []
 				},
