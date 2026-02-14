@@ -5,7 +5,7 @@ import { ApiError } from "@/utils/error";
 import { createJsonResponse } from "@/utils/response";
 import { zod } from "@/utils/validation";
 import { betterAuthApi } from "@/services/auth";
-import { eq, or } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { Elysia } from "elysia";
 
 const schoolAdmin = new Elysia({ prefix: "/api/school-admin" })
