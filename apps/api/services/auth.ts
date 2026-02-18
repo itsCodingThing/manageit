@@ -5,6 +5,9 @@ import { db } from "@/database/db";
 import * as authSchema from "@/database/schema/auth";
 
 const auth = betterAuth({
+  logger: {
+    disabled: true
+  },
 	emailAndPassword: {
 		enabled: true,
 	},
