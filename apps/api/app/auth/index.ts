@@ -118,7 +118,6 @@ const auth = new Elysia({ prefix: "/api/auth" })
 	.post(
 		"/admin/sign-in",
 		async ({ body }) => {
-			console.log(body);
 			const authenticate = await betterAuthApi.signInEmail({
 				body: { email: body.email, password: body.password },
 			});
