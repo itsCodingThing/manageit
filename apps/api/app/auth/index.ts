@@ -1,8 +1,10 @@
 import { db } from "@/database/db";
 import { schoolTable, studentTable, teacherTable } from "@/database/schema";
 import { betterAuthApi } from "@/services/auth";
+import { ApiError } from "@/utils/error";
 import { createJsonResponse } from "@/utils/response";
 import { zod } from "@/utils/validation";
+import { eq } from "drizzle-orm";
 import { Elysia } from "elysia";
 
 const auth = new Elysia({ prefix: "/api/auth" })
@@ -11,14 +13,19 @@ const auth = new Elysia({ prefix: "/api/auth" })
 		async ({ body }) => {
 			const [school] = await db
 				.select({ id: schoolTable.id })
-				.from(schoolTable);
+				.from(schoolTable)
+				.where(eq(schoolTable.schoolCode, body.schoolCode));
+
+			if (!school) {
+				throw new ApiError({ msg: "invalid school code" });
+			}
 
 			const authenticate = await betterAuthApi.signUpEmail({
 				body: {
 					name: body.name,
 					email: body.email,
 					password: body.password,
-					phoneNumber: body.contact,
+					phoneNumber: body.phoneNumber,
 				},
 			});
 
@@ -26,7 +33,7 @@ const auth = new Elysia({ prefix: "/api/auth" })
 				await db.insert(studentTable).values({
 					name: body.name,
 					email: body.email,
-					phoneNumber: body.contact,
+					phoneNumber: body.phoneNumber,
 					userId: authenticate.user.id,
 					schoolId: school.id,
 				});
@@ -36,7 +43,7 @@ const auth = new Elysia({ prefix: "/api/auth" })
 				await db.insert(teacherTable).values({
 					name: body.name,
 					email: body.email,
-					phoneNumber: body.contact,
+					phoneNumber: body.phoneNumber,
 					userId: authenticate.user.id,
 					schoolId: school.id,
 				});
@@ -54,10 +61,12 @@ const auth = new Elysia({ prefix: "/api/auth" })
 					.string("password required")
 					.min(5, "password minimum length should be 5"),
 				name: zod.string("name required").min(1, "need name field"),
-				contact: zod.string("contact required").length(10, "invalid contact"),
+				phoneNumber: zod
+					.string("phoneNumber required")
+					.length(10, "invalid contact"),
 				schoolCode: zod
 					.string("school code required")
-					.length(1, "invalid school code"),
+					.min(1, "invalid school code"),
 			}),
 		},
 	)
@@ -109,6 +118,7 @@ const auth = new Elysia({ prefix: "/api/auth" })
 	.post(
 		"/admin/sign-in",
 		async ({ body }) => {
+			console.log(body);
 			const authenticate = await betterAuthApi.signInEmail({
 				body: { email: body.email, password: body.password },
 			});

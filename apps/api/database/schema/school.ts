@@ -43,3 +43,5 @@ export const schoolRelations = relations(schoolTable, ({ many }) => ({
 	teachers: many(teacherTable),
 	batches: many(batchTable),
 }));
+
+export type School = typeof schoolTable.$inferSelect;

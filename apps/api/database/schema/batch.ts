@@ -54,3 +54,5 @@ export const batchRelations = relations(batchTable, ({ one }) => ({
 		references: [schoolTable.id],
 	}),
 }));
+
+export type Batch = typeof batchTable.$inferSelect;

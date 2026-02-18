@@ -1,5 +1,10 @@
 import { beforeAll, afterAll } from "bun:test";
+import { seedDatabase, cleanDatabase } from "./seed";
 
-beforeAll(() => {});
+beforeAll(async () => {
+	await seedDatabase();
+});
 
-afterAll(() => {});
+afterAll(async () => {
+	await cleanDatabase();
+});

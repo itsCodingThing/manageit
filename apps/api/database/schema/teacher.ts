@@ -50,3 +50,5 @@ export const teacherRelations = relations(teacherTable, ({ one }) => ({
 		references: [schoolTable.id],
 	}),
 }));
+
+export type Teacher = typeof teacherTable.$inferSelect;
