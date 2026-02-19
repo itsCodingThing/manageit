@@ -25,5 +25,14 @@ const admins = Array.from({length: 100}).map(async (_,i) => {
     });
 })
 
+const schools = Array.from({length: 100}).map(async (_,i) => {
+  const res = await betterAuthApi.signInEmail({body: {
+    email: "admin1@test.com",
+    password: "admin123"
+  }});
+
+
+})
+
 await Promise.all(admins);
 console.log("admins created")
