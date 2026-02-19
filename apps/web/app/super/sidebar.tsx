@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import {
 	Home,
@@ -9,6 +11,7 @@ import {
 	LogOut,
 	Shield,
 } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 interface SidebarLinkProps {
 	href: string;
@@ -38,11 +41,9 @@ function SidebarLink({
 	);
 }
 
-interface SidebarProps {
-	activePath: string;
-}
+export default function Sidebar() {
+	const pathname = usePathname();
 
-export default function Sidebar({ activePath }: SidebarProps) {
 	const navItems = [
 		{ href: "/super", icon: Home, label: "Dashboard" },
 		{ href: "/super/schools", icon: Building2, label: "Schools" },
@@ -70,7 +71,7 @@ export default function Sidebar({ activePath }: SidebarProps) {
 						href={item.href}
 						icon={item.icon}
 						label={item.label}
-						active={activePath === item.href}
+						active={pathname === item.href}
 					/>
 				))}
 			</nav>
@@ -80,7 +81,7 @@ export default function Sidebar({ activePath }: SidebarProps) {
 					href="/super/settings"
 					icon={Settings}
 					label="System Settings"
-					active={activePath === "/super/admin/settings"}
+					active={pathname === "/super/admin/settings"}
 				/>
 				<Link
 					href="/"
