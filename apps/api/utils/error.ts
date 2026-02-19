@@ -9,29 +9,29 @@ export const ErrorNames = {
 } as const;
 export type ErrorName = ObjValueAsType<typeof ErrorNames>;
 
-interface BaseErrorParams {
+interface BaseErrorParams<Data> {
 	name: ErrorName;
-	code?: number;
-	msg?: string;
-	data?: unknown;
+	code: number;
+	msg: string;
+	data?: Data;
 }
 
 export type ResponseErrorMsg = `${ErrorName}: ${string}`;
 
-export class BaseError extends Error {
+export class BaseError<Data> extends Error {
 	code: number;
 	msg: string;
 	status: number;
-	data: unknown;
+	data: Data;
 	name: ErrorName;
 
-	constructor(errorParams: BaseErrorParams) {
+	constructor(errorParams: BaseErrorParams<Data>) {
 		super(errorParams.msg);
-		this.status = errorParams.code ?? 500;
-		this.msg = errorParams.msg ?? "";
+		this.status = errorParams.code;
+		this.msg = errorParams.msg;
 		this.name = errorParams.name;
-		this.code = errorParams.code ?? 500;
-		this.data = errorParams.data;
+		this.code = errorParams.code;
+		this.data = errorParams.data ?? ({} as Data);
 
 		Error.captureStackTrace(this);
 	}
@@ -44,50 +44,39 @@ export class BaseError extends Error {
 	}
 }
 
-export class ValidationError extends BaseError {
-	constructor(params: Partial<Pick<BaseErrorParams, "msg" | "data" | "code">>) {
-		const defaultApiErrorParams = { msg: "", data: [], code: 400 };
-
-		if (!params) {
-			params = defaultApiErrorParams;
-		}
-
-		const {
-			msg = defaultApiErrorParams.msg,
-			data = defaultApiErrorParams.data,
-			code = defaultApiErrorParams.code,
-		} = params;
-		super({ name: ErrorNames.validation, code, msg, data });
+export class ValidationError<Data> extends BaseError<Data> {
+	constructor(
+		params: Partial<Pick<BaseErrorParams<Data>, "msg" | "data" | "code">>,
+	) {
+		super({
+			name: ErrorNames.validation,
+			code: params.code ?? 400,
+			msg: params.msg ?? "",
+			data: params.data,
+		});
 	}
 }
 
-export class ApiError extends BaseError {
+export class ApiError<Data> extends BaseError<Data> {
 	constructor(
-		params?: Partial<Pick<BaseErrorParams, "msg" | "data" | "code">>,
+		params: Partial<Pick<BaseErrorParams<Data>, "msg" | "data" | "code">>,
 	) {
-		const defaultApiErrorParams = { msg: "", data: [], code: 500 };
-
-		if (!params) {
-			params = defaultApiErrorParams;
-		}
-
-		const {
-			msg = defaultApiErrorParams.msg,
-			data = defaultApiErrorParams.data,
-			code = defaultApiErrorParams.code,
-		} = params;
-
-		super({ name: ErrorNames.api, msg, data, code });
+		super({
+			name: ErrorNames.api,
+			msg: params.msg ?? "",
+			data: params.data,
+			code: params.code ?? 500,
+		});
 	}
 }
 
-export class ServiceError extends BaseError {
-	constructor(
-		{ msg = "", data }: Partial<Pick<BaseErrorParams, "msg" | "data">> = {
-			msg: "",
-			data: [],
-		},
-	) {
-		super({ name: ErrorNames.service, msg, data });
+export class ServiceError<Data> extends BaseError<Data> {
+	constructor(params: Partial<Pick<BaseErrorParams<Data>, "msg" | "data">>) {
+		super({
+			name: ErrorNames.service,
+			msg: params.msg ?? "",
+			data: params.data,
+			code: 500,
+		});
 	}
 }
