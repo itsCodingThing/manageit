@@ -3,7 +3,9 @@
 	"scripts": {
 		"dev": "next dev --turbo",
 		"build": "next build --turbo",
-		"start": "next start"
+		"start": "next start",
+		"lint": "biome lint",
+		"fmt": "biome format --write"
 	},
 	"dependencies": {
 		"@tailwindcss/postcss": "^4.1.18",

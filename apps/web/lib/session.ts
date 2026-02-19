@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import { JWTPayload, SignJWT, jwtVerify } from "jose";
+import { type JWTPayload, SignJWT, jwtVerify } from "jose";
 
 const secretKey = process.env.SESSION_SECRET;
 const encodedKey = new TextEncoder().encode(secretKey);
