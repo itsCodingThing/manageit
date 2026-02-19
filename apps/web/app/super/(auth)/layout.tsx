@@ -1,6 +1,7 @@
 import { Inter } from "next/font/google";
 import type { Metadata } from "next";
 import Sidebar from "./sidebar";
+import { AuthorizeSession } from "./authorize-session";
 
 export const metadata: Metadata = {
 	title: "ManageIt - School Management System",
@@ -17,8 +18,10 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<body className={inter.className}>
-				<Sidebar />
-				{children}
+        <AuthorizeSession>
+          <Sidebar />
+          {children}
+        </AuthorizeSession>
 			</body>
 		</html>
 	);

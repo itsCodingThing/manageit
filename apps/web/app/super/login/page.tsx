@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,16 +11,23 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { GraduationCap } from "lucide-react";
+import { GraduationCapIcon, LoaderCircleIcon } from "lucide-react";
+import { useActionState } from "react";
+import { login } from "./action";
 
-export default function LoginPage() {
+export default function SuperLoginPage() {
+	const [state, action, isPending] = useActionState(login, {
+		ok: true,
+		state: { email: "", password: "" },
+	});
+
 	return (
 		<div className="min-h-screen bg-zinc-50">
 			{/* Header */}
 			<nav className="border-b border-zinc-200 bg-white">
 				<div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
 					<Link href="/" className="flex items-center gap-2">
-						<GraduationCap className="h-8 w-8 text-zinc-900" />
+						<GraduationCapIcon className="h-8 w-8 text-zinc-900" />
 						<span className="text-xl font-bold text-zinc-900">ManageIt</span>
 					</Link>
 				</div>
@@ -36,10 +45,11 @@ export default function LoginPage() {
 						</CardDescription>
 					</CardHeader>
 					<CardContent className="space-y-4">
-						<form className="space-y-4">
+						<form className="space-y-4" action={action}>
 							<div className="space-y-2">
 								<Label htmlFor="email">Email</Label>
 								<Input
+									name="email"
 									id="email"
 									type="email"
 									placeholder="admin@school.edu"
@@ -49,13 +59,17 @@ export default function LoginPage() {
 							<div className="space-y-2">
 								<Label htmlFor="password">Password</Label>
 								<Input
+									name="password"
 									id="password"
 									type="password"
 									placeholder="********"
 									required
 								/>
 							</div>
-							<Button type="submit" className="w-full">
+							<Button type="submit" className="w-full" disabled={isPending}>
+                {isPending && (
+                <LoaderCircleIcon className="animate-spin" />
+                )}
 								Sign In
 							</Button>
 						</form>
