@@ -13,13 +13,18 @@
 					"name": "Health Check",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
 						"url": {
-							"raw": "{{base_url}}/health",
+							"raw": "{{base_url}}/api/health",
 							"host": ["{{base_url}}"],
-							"path": ["health"]
+							"path": ["api", "health"]
 						},
-						"description": "Check API health status. Returns 200 with status and timestamp."
+						"description": "Check API health status. Returns 200 with status and timestamp. Requires authentication."
 					},
 					"response": []
 				}
@@ -45,7 +50,7 @@
 						},
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"type\": \"student\",\n  \"email\": \"student@example.com\",\n  \"password\": \"password123\",\n  \"name\": \"John Student\",\n  \"contact\": \"9876543210\",\n  \"schoolCode\": \"SCH001\"\n}",
+							"raw": "{\n  \"type\": \"student\",\n  \"email\": \"student@example.com\",\n  \"password\": \"password123\",\n  \"name\": \"John Student\",\n  \"phoneNumber\": \"9876543210\",\n  \"schoolCode\": \"SCH001\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -123,7 +128,7 @@
 								}
 							}
 						},
-						"description": "Login using phone contact number"
+						"description": "Login using phone contact number (NOTE: Not yet fully implemented - returns mock token)"
 					},
 					"event": [
 						{
@@ -507,14 +512,14 @@
 						},
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"schoolId\": \"REPLACE_WITH_SCHOOL_ID\",\n  \"name\": \"Jane Student\",\n  \"email\": \"student@example.com\",\n  \"phoneNumber\": \"9876543211\",\n  \"password\": \"password123\",\n  \"dob\": \"2010-01-01T00:00:00Z\",\n  \"image\": \"https://example.com/student.png\",\n  \"address\": \"123 Student Street\",\n  \"batchIds\": [],\n  \"status\": \"pending\"\n}",
+							"raw": "{\n  \"schoolId\": \"REPLACE_WITH_SCHOOL_ID\",\n  \"name\": \"Jane Student\",\n  \"email\": \"student@example.com\",\n  \"phoneNumber\": \"9876543211\",\n  \"dob\": \"2010-01-01T00:00:00Z\",\n  \"image\": \"https://example.com/student.png\",\n  \"address\": \"123 Student Street\",\n  \"batchIds\": [],\n  \"status\": \"pending\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"description": "Create a new student account"
+						"description": "Create a new student account (password is auto-generated)"
 					},
 					"response": []
 				},
@@ -614,14 +619,14 @@
 						},
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"name\": \"Mr. Smith\",\n  \"email\": \"teacher@example.com\",\n  \"phoneNumber\": \"9876543212\",\n  \"schoolId\": \"REPLACE_WITH_SCHOOL_ID\",\n  \"password\": \"password123\",\n  \"address\": \"789 Teacher Road\",\n  \"image\": \"https://example.com/teacher.png\",\n  \"roles\": [\"teacher\"],\n  \"status\": \"pending\"\n}",
+							"raw": "{\n  \"name\": \"Mr. Smith\",\n  \"email\": \"teacher@example.com\",\n  \"phone\": \"9876543212\",\n  \"schoolId\": \"REPLACE_WITH_SCHOOL_ID\",\n  \"password\": \"password123\",\n  \"address\": \"789 Teacher Road\",\n  \"image\": \"https://example.com/teacher.png\",\n  \"roles\": [\"teacher\"],\n  \"status\": \"pending\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"description": "Create a new teacher account. Roles can be: teacher, admin, principal, master_admin"
+						"description": "Create a new teacher account. Roles can be: teacher, school_admin"
 					},
 					"response": []
 				},
@@ -665,7 +670,7 @@
 						},
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"name\": \"Mr. Smith Updated\",\n  \"email\": \"teacher@example.com\",\n  \"phoneNumber\": \"9876543212\",\n  \"address\": \"789 Teacher Road\",\n  \"image\": \"https://example.com/teacher.png\",\n  \"roles\": [\"teacher\", \"admin\"],\n  \"status\": \"active\"\n}",
+							"raw": "{\n  \"name\": \"Mr. Smith Updated\",\n  \"email\": \"teacher@example.com\",\n  \"phone\": \"9876543212\",\n  \"address\": \"789 Teacher Road\",\n  \"image\": \"https://example.com/teacher.png\",\n  \"roles\": [\"teacher\", \"admin\"],\n  \"status\": \"active\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -791,7 +796,7 @@
 						},
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"name\": \"Example High School Updated\",\n  \"email\": \"school@example.com\",\n  \"phone\": \"9876543213\",\n  \"address\": \"101 School Lane\",\n  \"city\": \"New York\",\n  \"state\": \"NY\",\n  \"country\": \"USA\",\n  \"postalCode\": \"10001\",\n  \"schoolType\": \"Public\",\n  \"logo\": \"https://example.com/logo.png\",\n  \"website\": \"https://school.example.com\",\n  \"description\": \"A leading educational institution\",\n  \"establishedYear\": \"1990\",\n  \"board\": \"State Board\",\n  \"status\": \"active\",\n  \"maxStudents\": \"1000\",\n  \"maxTeachers\": \"50\",\n  \"accreditation\": \"ISO 9001\",\n  \"facilities\": \"Library, Sports Ground, Computer Lab\"\n}",
+							"raw": "{\n  \"name\": \"Example High School Updated\",\n  \"email\": \"school@example.com\",\n  \"phone\": \"9876543213\",\n  \"address\": \"101 School Lane\",\n  \"city\": \"New York\",\n  \"state\": \"NY\",\n  \"country\": \"USA\",\n  \"postalCode\": \"10001\",\n  \"logo\": \"https://example.com/logo.png\",\n  \"website\": \"https://school.example.com\",\n  \"description\": \"A leading educational institution\",\n  \"establishedYear\": \"1990\",\n  \"board\": \"State Board\",\n  \"status\": \"active\",\n  \"maxStudents\": \"1000\",\n  \"maxTeachers\": \"50\",\n  \"accreditation\": \"ISO 9001\",\n  \"facilities\": \"Library, Sports Ground, Computer Lab\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -822,280 +827,12 @@
 					"response": []
 				}
 			]
-		},
-		{
-			"name": "Batch",
-			"item": [
-				{
-					"name": "Get All Batches",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{auth_token}}"
-							}
-						],
-						"url": {
-							"raw": "{{base_url}}/batch?schoolId=REPLACE_WITH_SCHOOL_ID&page=1&limit=10",
-							"host": ["{{base_url}}"],
-							"path": ["batch"],
-							"query": [
-								{
-									"key": "schoolId",
-									"value": "REPLACE_WITH_SCHOOL_ID"
-								},
-								{
-									"key": "page",
-									"value": "1"
-								},
-								{
-									"key": "limit",
-									"value": "10"
-								}
-							]
-						},
-						"description": "Get all batches for a school with pagination"
-					},
-					"response": []
-				},
-				{
-					"name": "Get Batch By ID",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{auth_token}}"
-							}
-						],
-						"url": {
-							"raw": "{{base_url}}/batch/REPLACE_WITH_BATCH_ID",
-							"host": ["{{base_url}}"],
-							"path": ["batch", "REPLACE_WITH_BATCH_ID"]
-						},
-						"description": "Get batch details by ID including teachers and students"
-					},
-					"response": []
-				},
-				{
-					"name": "Create Batch",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{auth_token}}"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{base_url}}/batch",
-							"host": ["{{base_url}}"],
-							"path": ["batch"]
-						},
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"schoolId\": \"REPLACE_WITH_SCHOOL_ID\",\n  \"name\": \"Class 10-A\",\n  \"description\": \"Tenth Grade Section A\",\n  \"image\": \"https://example.com/batch.png\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"description": "Create a new batch for a school"
-					},
-					"response": []
-				},
-				{
-					"name": "Update Batch",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{auth_token}}"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{base_url}}/batch/REPLACE_WITH_BATCH_ID",
-							"host": ["{{base_url}}"],
-							"path": ["batch", "REPLACE_WITH_BATCH_ID"]
-						},
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"name\": \"Class 10-A Updated\",\n  \"description\": \"Tenth Grade Section A\",\n  \"image\": \"https://example.com/batch.png\",\n  \"status\": \"active\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"description": "Update batch details"
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Batch",
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{auth_token}}"
-							}
-						],
-						"url": {
-							"raw": "{{base_url}}/batch/REPLACE_WITH_BATCH_ID",
-							"host": ["{{base_url}}"],
-							"path": ["batch", "REPLACE_WITH_BATCH_ID"]
-						},
-						"description": "Delete a batch"
-					},
-					"response": []
-				},
-				{
-					"name": "Add Teachers to Batch",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{auth_token}}"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{base_url}}/batch/REPLACE_WITH_BATCH_ID/teachers",
-							"host": ["{{base_url}}"],
-							"path": ["batch", "REPLACE_WITH_BATCH_ID", "teachers"]
-						},
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"teacherIds\": [\"REPLACE_WITH_TEACHER_ID_1\", \"REPLACE_WITH_TEACHER_ID_2\"]\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"description": "Add teachers to a batch"
-					},
-					"response": []
-				},
-				{
-					"name": "Remove Teachers from Batch",
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{auth_token}}"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{base_url}}/batch/REPLACE_WITH_BATCH_ID/teachers",
-							"host": ["{{base_url}}"],
-							"path": ["batch", "REPLACE_WITH_BATCH_ID", "teachers"]
-						},
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"teacherIds\": [\"REPLACE_WITH_TEACHER_ID_1\", \"REPLACE_WITH_TEACHER_ID_2\"]\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"description": "Remove teachers from a batch"
-					},
-					"response": []
-				},
-				{
-					"name": "Add Students to Batch",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{auth_token}}"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{base_url}}/batch/REPLACE_WITH_BATCH_ID/students",
-							"host": ["{{base_url}}"],
-							"path": ["batch", "REPLACE_WITH_BATCH_ID", "students"]
-						},
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"studentIds\": [\"REPLACE_WITH_STUDENT_ID_1\", \"REPLACE_WITH_STUDENT_ID_2\"]\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"description": "Add students to a batch"
-					},
-					"response": []
-				},
-				{
-					"name": "Remove Students from Batch",
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{auth_token}}"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{base_url}}/batch/REPLACE_WITH_BATCH_ID/students",
-							"host": ["{{base_url}}"],
-							"path": ["batch", "REPLACE_WITH_BATCH_ID", "students"]
-						},
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"studentIds\": [\"REPLACE_WITH_STUDENT_ID_1\", \"REPLACE_WITH_STUDENT_ID_2\"]\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"description": "Remove students from a batch"
-					},
-					"response": []
-				}
-			]
 		}
 	],
 	"variable": [
 		{
 			"key": "base_url",
-			"value": "http://localhost:8080/api",
+			"value": "http://localhost:3001",
 			"type": "string"
 		},
 		{
