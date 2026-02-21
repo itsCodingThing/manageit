@@ -13,9 +13,7 @@ import {
 	Bell,
 	Search,
 	Plus,
-	MoreVertical,
 	GraduationCap,
-	MapPin,
 	School,
 	Filter,
 } from "lucide-react";
@@ -81,50 +79,7 @@ export default function SchoolsPage() {
 							</div>
 						</CardHeader>
 						<CardContent>
-							<div className="space-y-4">
-								<SchoolRow
-									name="Lincoln High School"
-									location="New York, USA"
-									students={1248}
-									plan="Enterprise"
-									status="Active"
-								/>
-								<SchoolRow
-									name="Riverside Academy"
-									location="Los Angeles, USA"
-									students={856}
-									plan="Professional"
-									status="Active"
-								/>
-								<SchoolRow
-									name="Maple Elementary"
-									location="Chicago, USA"
-									students={432}
-									plan="Basic"
-									status="Pending"
-								/>
-								<SchoolRow
-									name="Oakridge International"
-									location="Houston, USA"
-									students={2156}
-									plan="Enterprise"
-									status="Active"
-								/>
-								<SchoolRow
-									name="Sunset Valley School"
-									location="Phoenix, USA"
-									students={678}
-									plan="Basic"
-									status="Suspended"
-								/>
-								<SchoolRow
-									name="Northwood Academy"
-									location="Seattle, USA"
-									students={943}
-									plan="Professional"
-									status="Active"
-								/>
-							</div>
+							<div className="space-y-4"></div>
 						</CardContent>
 					</Card>
 				</main>
@@ -156,58 +111,5 @@ function StatCard({
 				</div>
 			</CardContent>
 		</Card>
-	);
-}
-
-function SchoolRow({
-	name,
-	location,
-	students,
-	plan,
-	status,
-}: {
-	name: string;
-	location: string;
-	students: number;
-	plan: string;
-	status: string;
-}) {
-	return (
-		<div className="flex items-center justify-between rounded-lg border border-zinc-100 p-4">
-			<div className="flex items-center gap-4">
-				<div className="flex h-10 w-10 items-center justify-center rounded-lg bg-zinc-100">
-					<School className="h-5 w-5 text-zinc-600" />
-				</div>
-				<div>
-					<p className="font-medium text-zinc-900">{name}</p>
-					<div className="flex items-center gap-2 text-sm text-zinc-500">
-						<MapPin className="h-3 w-3" />
-						{location}
-					</div>
-				</div>
-			</div>
-			<div className="flex items-center gap-6">
-				<div className="text-right">
-					<p className="text-sm font-medium text-zinc-900">
-						{students.toLocaleString()} students
-					</p>
-					<p className="text-sm text-zinc-500">{plan} Plan</p>
-				</div>
-				<span
-					className={`rounded-full px-3 py-1 text-xs font-medium ${
-						status === "Active"
-							? "bg-green-100 text-green-700"
-							: status === "Pending"
-								? "bg-yellow-100 text-yellow-700"
-								: "bg-red-100 text-red-700"
-					}`}
-				>
-					{status}
-				</span>
-				<Button variant="ghost" size="sm">
-					<MoreVertical className="h-4 w-4" />
-				</Button>
-			</div>
-		</div>
 	);
 }

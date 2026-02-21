@@ -12,6 +12,8 @@ import {
 	Shield,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { logoutAction } from "@/app/action";
 
 interface SidebarLinkProps {
 	href: string;
@@ -46,8 +48,8 @@ export default function Sidebar() {
 
 	const navItems = [
 		{ href: "/super", icon: Home, label: "Dashboard" },
-		{ href: "/super/schools", icon: Building2, label: "Schools" },
 		{ href: "/super/admins", icon: Users, label: "Admins" },
+		{ href: "/super/schools", icon: Building2, label: "Schools" },
 		{
 			href: "/super/subscriptions",
 			icon: CreditCard,
@@ -76,21 +78,15 @@ export default function Sidebar() {
 				))}
 			</nav>
 
-			<div className="absolute bottom-0 left-0 right-0 border-t border-zinc-200 p-4">
-				<SidebarLink
-					href="/super/settings"
-					icon={Settings}
-					label="System Settings"
-					active={pathname === "/super/admin/settings"}
-				/>
-				<Link
-					href="/"
-					className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50"
-				>
+			<form
+				action={logoutAction}
+				className="absolute bottom-0 left-0 right-0 border-t border-zinc-200 p-4"
+			>
+				<Button className="w-full rounded-lg px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50">
 					<LogOut className="h-5 w-5" />
 					Sign Out
-				</Link>
-			</div>
+				</Button>
+			</form>
 		</aside>
 	);
 }

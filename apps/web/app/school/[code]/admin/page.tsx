@@ -20,7 +20,7 @@ import {
 	Home,
 } from "lucide-react";
 
-export default function AdminDashboard() {
+export default async function AdminDashboard() {
 	return (
 		<div className="min-h-screen bg-zinc-50">
 			{/* Sidebar */}

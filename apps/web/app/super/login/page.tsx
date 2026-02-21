@@ -11,15 +11,21 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { GraduationCapIcon, LoaderCircleIcon } from "lucide-react";
-import { useActionState } from "react";
-import { login } from "./action";
+import {
+	GraduationCapIcon,
+	LoaderCircleIcon,
+	EyeIcon,
+	EyeOffIcon,
+} from "lucide-react";
+import { useActionState, useState } from "react";
+import { loginAction } from "@/app/action";
 
 export default function SuperLoginPage() {
-	const [state, action, isPending] = useActionState(login, {
-		ok: true,
+	const [state, action, isPending] = useActionState(loginAction, {
+		error: null,
 		state: { email: "", password: "" },
 	});
+	const [showPassword, setShowPassword] = useState(false);
 
 	return (
 		<div className="min-h-screen bg-zinc-50">
@@ -58,18 +64,28 @@ export default function SuperLoginPage() {
 							</div>
 							<div className="space-y-2">
 								<Label htmlFor="password">Password</Label>
-								<Input
-									name="password"
-									id="password"
-									type="password"
-									placeholder="********"
-									required
-								/>
+								<div className="flex gap-1">
+									<Input
+										name="password"
+										id="password"
+										type={showPassword ? "text" : "password"}
+										placeholder="********"
+										required
+									/>
+									<Button
+										type="button"
+										size="icon"
+										onClick={() => {
+											setShowPassword((prev) => !prev);
+										}}
+									>
+										{showPassword ? <EyeOffIcon /> : <EyeIcon />}
+									</Button>
+								</div>
 							</div>
+							{state.error && <p className="text-red-600">{state.error}</p>}
 							<Button type="submit" className="w-full" disabled={isPending}>
-                {isPending && (
-                <LoaderCircleIcon className="animate-spin" />
-                )}
+								{isPending && <LoaderCircleIcon className="animate-spin" />}
 								Sign In
 							</Button>
 						</form>

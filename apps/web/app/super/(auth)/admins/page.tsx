@@ -7,6 +7,7 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Admin, ApiResponse, safeApi } from "@/lib/api";
 import {
 	Users,
 	Bell,
@@ -19,7 +20,10 @@ import {
 	Filter,
 } from "lucide-react";
 
-export default function AdminsPage() {
+export default async function AdminsPage() {
+	const res = await safeApi.get("admin/").json<ApiResponse<Admin[]>>();
+	console.log(res.message);
+
 	return (
 		<div className="min-h-screen bg-zinc-50">
 			<div className="ml-64">
@@ -81,46 +85,19 @@ export default function AdminsPage() {
 						</CardHeader>
 						<CardContent>
 							<div className="space-y-4">
-								<AdminRow
-									name="John Smith"
-									email="john.smith@lincoln.edu"
-									school="Lincoln High School"
-									jobTitle="Principal"
-									status="Active"
-									lastActive="2 hours ago"
-								/>
-								<AdminRow
-									name="Sarah Johnson"
-									email="sarah.j@riverside.edu"
-									school="Riverside Academy"
-									jobTitle="Vice Principal"
-									status="Active"
-									lastActive="5 minutes ago"
-								/>
-								<AdminRow
-									name="Michael Brown"
-									email="mbrown@maple.edu"
-									school="Maple Elementary"
-									jobTitle="Administrator"
-									status="Pending"
-									lastActive="Never"
-								/>
-								<AdminRow
-									name="Emily Davis"
-									email="emily.davis@oakridge.edu"
-									school="Oakridge International"
-									jobTitle="Director"
-									status="Active"
-									lastActive="1 day ago"
-								/>
-								<AdminRow
-									name="Robert Wilson"
-									email="rwilson@sunset.edu"
-									school="Sunset Valley School"
-									jobTitle="Principal"
-									status="Suspended"
-									lastActive="3 weeks ago"
-								/>
+								{res.data.map((admin) => {
+									return (
+										<AdminRow
+											key={admin.id}
+											name={admin.name}
+											email={admin.email}
+											school="Lincoln High School"
+											jobTitle="Principal"
+											status="Active"
+											lastActive="2 hours ago"
+										/>
+									);
+								})}
 							</div>
 						</CardContent>
 					</Card>

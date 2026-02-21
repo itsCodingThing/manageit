@@ -7,9 +7,9 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-    <AuthorizeSession>
-      <Sidebar />
-      {children}
-    </AuthorizeSession>
+		<AuthorizeSession>
+			<Sidebar />
+			{children}
+		</AuthorizeSession>
 	);
 }
