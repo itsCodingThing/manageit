@@ -5,182 +5,180 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { TrendingUpIcon, UsersIcon, Building2Icon } from "@/components/icons";
-import Header from "../header";
+import {
+	TrendingUpIcon,
+	UsersIcon,
+	Building2Icon,
+	GraduationCapIcon,
+	ArrowUpRightIcon,
+	ArrowDownRightIcon,
+} from "@/components/icons";
 
 export default function AnalyticsPage() {
 	return (
-		<div className="min-h-screen bg-zinc-50">
-			<div className="ml-[var(--sidebar-width,16rem)]">
-				<Header title="Analytics" />
-
-				<main className="p-8">
-					<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-						<StatCard
-							title="Total Revenue"
-							value="$582K"
-							change="+15.3%"
-							trend="up"
-							icon={TrendingUpIcon}
-						/>
-						<StatCard
-							title="New Schools"
-							value="23"
-							change="+8.2%"
-							trend="up"
-							icon={Building2Icon}
-						/>
-						<StatCard
-							title="Active Users"
-							value="48.5K"
-							change="-2.1%"
-							trend="down"
-							icon={UsersIcon}
-						/>
-						<StatCard
-							title="Churn Rate"
-							value="2.4%"
-							change="-0.5%"
-							trend="up"
-							icon={GraduationCap}
-						/>
-					</div>
-
-					<div className="mt-8 grid gap-6 lg:grid-cols-3">
-						<Card className="lg:col-span-2">
-							<CardHeader>
-								<CardTitle>Revenue Growth</CardTitle>
-								<CardDescription>
-									Monthly revenue over the past year
-								</CardDescription>
-							</CardHeader>
-							<CardContent>
-								<div className="flex h-64 items-end justify-between gap-2">
-									{[
-										{ month: "Mar", height: 35 },
-										{ month: "Apr", height: 42 },
-										{ month: "May", height: 38 },
-										{ month: "Jun", height: 45 },
-										{ month: "Jul", height: 52 },
-										{ month: "Aug", height: 48 },
-										{ month: "Sep", height: 55 },
-										{ month: "Oct", height: 62 },
-										{ month: "Nov", height: 58 },
-										{ month: "Dec", height: 65 },
-										{ month: "Jan", height: 72 },
-										{ month: "Feb", height: 78 },
-									].map((data) => (
-										<div
-											key={data.month}
-											className="flex-1 rounded-t bg-zinc-200 hover:bg-zinc-300 transition-colors"
-											style={{ height: `${data.height}%` }}
-										/>
-									))}
-								</div>
-								<div className="mt-4 flex justify-between text-sm text-zinc-500">
-									<span>Mar</span>
-									<span>Apr</span>
-									<span>May</span>
-									<span>Jun</span>
-									<span>Jul</span>
-									<span>Aug</span>
-									<span>Sep</span>
-									<span>Oct</span>
-									<span>Nov</span>
-									<span>Dec</span>
-									<span>Jan</span>
-									<span>Feb</span>
-								</div>
-							</CardContent>
-						</Card>
-
-						<Card>
-							<CardHeader>
-								<CardTitle>School Growth</CardTitle>
-								<CardDescription>New schools per month</CardDescription>
-							</CardHeader>
-							<CardContent>
-								<div className="space-y-4">
-									<GrowthItem month="February" count={23} previous={18} />
-									<GrowthItem month="January" count={18} previous={15} />
-									<GrowthItem month="December" count={15} previous={22} />
-									<GrowthItem month="November" count={22} previous={19} />
-									<GrowthItem month="October" count={19} previous={17} />
-								</div>
-							</CardContent>
-						</Card>
-					</div>
-
-					<div className="mt-8 grid gap-6 lg:grid-cols-2">
-						<Card>
-							<CardHeader>
-								<CardTitle>Plan Distribution</CardTitle>
-								<CardDescription>Subscription plan breakdown</CardDescription>
-							</CardHeader>
-							<CardContent>
-								<div className="space-y-4">
-									<PlanBar
-										plan="Enterprise"
-										count={42}
-										total={156}
-										color="bg-zinc-900"
-									/>
-									<PlanBar
-										plan="Professional"
-										count={68}
-										total={156}
-										color="bg-zinc-600"
-									/>
-									<PlanBar
-										plan="Basic"
-										count={46}
-										total={156}
-										color="bg-zinc-400"
-									/>
-								</div>
-							</CardContent>
-						</Card>
-
-						<Card>
-							<CardHeader>
-								<CardTitle>Top Performing Schools</CardTitle>
-								<CardDescription>
-									Schools with highest engagement
-								</CardDescription>
-							</CardHeader>
-							<CardContent>
-								<div className="space-y-4">
-									<TopSchoolRow
-										name="Oakridge International"
-										students={2156}
-										engagement="94%"
-										rank={1}
-									/>
-									<TopSchoolRow
-										name="Lincoln High School"
-										students={1248}
-										engagement="91%"
-										rank={2}
-									/>
-									<TopSchoolRow
-										name="Northwood Academy"
-										students={943}
-										engagement="89%"
-										rank={3}
-									/>
-									<TopSchoolRow
-										name="Riverside Academy"
-										students={856}
-										engagement="87%"
-										rank={4}
-									/>
-								</div>
-							</CardContent>
-						</Card>
-					</div>
-				</main>
+		<>
+			<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+				<StatCard
+					title="Total Revenue"
+					value="$582K"
+					change="+15.3%"
+					trend="up"
+					icon={TrendingUpIcon}
+				/>
+				<StatCard
+					title="New Schools"
+					value="23"
+					change="+8.2%"
+					trend="up"
+					icon={Building2Icon}
+				/>
+				<StatCard
+					title="Active Users"
+					value="48.5K"
+					change="-2.1%"
+					trend="down"
+					icon={UsersIcon}
+				/>
+				<StatCard
+					title="Churn Rate"
+					value="2.4%"
+					change="-0.5%"
+					trend="up"
+					icon={GraduationCapIcon}
+				/>
 			</div>
-		</div>
+
+			<div className="mt-8 grid gap-6 lg:grid-cols-3">
+				<Card className="lg:col-span-2">
+					<CardHeader>
+						<CardTitle>Revenue Growth</CardTitle>
+						<CardDescription>
+							Monthly revenue over the past year
+						</CardDescription>
+					</CardHeader>
+					<CardContent>
+						<div className="flex h-64 items-end justify-between gap-2">
+							{[
+								{ month: "Mar", height: 35 },
+								{ month: "Apr", height: 42 },
+								{ month: "May", height: 38 },
+								{ month: "Jun", height: 45 },
+								{ month: "Jul", height: 52 },
+								{ month: "Aug", height: 48 },
+								{ month: "Sep", height: 55 },
+								{ month: "Oct", height: 62 },
+								{ month: "Nov", height: 58 },
+								{ month: "Dec", height: 65 },
+								{ month: "Jan", height: 72 },
+								{ month: "Feb", height: 78 },
+							].map((data) => (
+								<div
+									key={data.month}
+									className="flex-1 rounded-t bg-zinc-200 hover:bg-zinc-300 transition-colors"
+									style={{ height: `${data.height}%` }}
+								/>
+							))}
+						</div>
+						<div className="mt-4 flex justify-between text-sm text-zinc-500">
+							<span>Mar</span>
+							<span>Apr</span>
+							<span>May</span>
+							<span>Jun</span>
+							<span>Jul</span>
+							<span>Aug</span>
+							<span>Sep</span>
+							<span>Oct</span>
+							<span>Nov</span>
+							<span>Dec</span>
+							<span>Jan</span>
+							<span>Feb</span>
+						</div>
+					</CardContent>
+				</Card>
+
+				<Card>
+					<CardHeader>
+						<CardTitle>School Growth</CardTitle>
+						<CardDescription>New schools per month</CardDescription>
+					</CardHeader>
+					<CardContent>
+						<div className="space-y-4">
+							<GrowthItem month="February" count={23} previous={18} />
+							<GrowthItem month="January" count={18} previous={15} />
+							<GrowthItem month="December" count={15} previous={22} />
+							<GrowthItem month="November" count={22} previous={19} />
+							<GrowthItem month="October" count={19} previous={17} />
+						</div>
+					</CardContent>
+				</Card>
+			</div>
+
+			<div className="mt-8 grid gap-6 lg:grid-cols-2">
+				<Card>
+					<CardHeader>
+						<CardTitle>Plan Distribution</CardTitle>
+						<CardDescription>Subscription plan breakdown</CardDescription>
+					</CardHeader>
+					<CardContent>
+						<div className="space-y-4">
+							<PlanBar
+								plan="Enterprise"
+								count={42}
+								total={156}
+								color="bg-zinc-900"
+							/>
+							<PlanBar
+								plan="Professional"
+								count={68}
+								total={156}
+								color="bg-zinc-600"
+							/>
+							<PlanBar
+								plan="Basic"
+								count={46}
+								total={156}
+								color="bg-zinc-400"
+							/>
+						</div>
+					</CardContent>
+				</Card>
+
+				<Card>
+					<CardHeader>
+						<CardTitle>Top Performing Schools</CardTitle>
+						<CardDescription>Schools with highest engagement</CardDescription>
+					</CardHeader>
+					<CardContent>
+						<div className="space-y-4">
+							<TopSchoolRow
+								name="Oakridge International"
+								students={2156}
+								engagement="94%"
+								rank={1}
+							/>
+							<TopSchoolRow
+								name="Lincoln High School"
+								students={1248}
+								engagement="91%"
+								rank={2}
+							/>
+							<TopSchoolRow
+								name="Northwood Academy"
+								students={943}
+								engagement="89%"
+								rank={3}
+							/>
+							<TopSchoolRow
+								name="Riverside Academy"
+								students={856}
+								engagement="87%"
+								rank={4}
+							/>
+						</div>
+					</CardContent>
+				</Card>
+			</div>
+		</>
 	);
 }
 
@@ -211,9 +209,9 @@ function StatCard({
 				</div>
 				<div className="mt-4 flex items-center">
 					{trend === "up" ? (
-						<ArrowUpRight className="mr-1 h-4 w-4 text-green-600" />
+						<ArrowUpRightIcon className="mr-1 h-4 w-4 text-green-600" />
 					) : (
-						<ArrowDownRight className="mr-1 h-4 w-4 text-red-600" />
+						<ArrowDownRightIcon className="mr-1 h-4 w-4 text-red-600" />
 					)}
 					<span
 						className={`text-sm font-medium ${

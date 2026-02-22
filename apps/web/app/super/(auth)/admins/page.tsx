@@ -18,67 +18,61 @@ import {
 	UserCheckIcon,
 	FilterIcon,
 } from "@/components/icons";
-import Header from "../header";
 
 export default async function AdminsPage() {
 	const res = await getAdmins();
 
 	return (
-		<div className="min-h-screen bg-zinc-50">
-			<div className="ml-(--sidebar-width,16rem)">
-				<Header title="Admins" />
-				<main className="p-8">
-					<div className="mb-6 flex items-center justify-between">
-						<div className="flex items-center gap-4">
-							<div className="relative">
-								<SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
-								<Input placeholder="Search admins..." className="w-80 pl-10" />
-							</div>
-							<Button variant="outline" size="sm">
-								<FilterIcon className="mr-2 h-4 w-4" />
-								Filter
-							</Button>
-						</div>
-						<AddAdminModal />
+		<>
+			<div className="mb-6 flex items-center justify-between">
+				<div className="flex items-center gap-4">
+					<div className="relative">
+						<SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
+						<Input placeholder="Search admins..." className="w-80 pl-10" />
 					</div>
-
-					<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-						<StatCard title="Total Admins" value="342" icon={UsersIcon} />
-						<StatCard title="Active Admins" value="328" icon={UserCheckIcon} />
-						<StatCard title="Pending Invites" value="12" icon={MailIcon} />
-						<StatCard title="Suspended" value="2" icon={ShieldIcon} />
-					</div>
-
-					<Card className="mt-8">
-						<CardHeader className="flex flex-row items-center justify-between">
-							<div>
-								<CardTitle>All Admins</CardTitle>
-								<CardDescription>
-									Manage all school administrators across the platform
-								</CardDescription>
-							</div>
-						</CardHeader>
-						<CardContent>
-							<div className="space-y-4">
-								{res.data.map((admin) => {
-									return (
-										<AdminRow
-											key={admin.id}
-											name={admin.name}
-											email={admin.email}
-											school="Lincoln High School"
-											jobTitle="Principal"
-											status="Active"
-											lastActive="2 hours ago"
-										/>
-									);
-								})}
-							</div>
-						</CardContent>
-					</Card>
-				</main>
+					<Button variant="outline" size="sm">
+						<FilterIcon className="mr-2 h-4 w-4" />
+						Filter
+					</Button>
+				</div>
+				<AddAdminModal />
 			</div>
-		</div>
+
+			<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+				<StatCard title="Total Admins" value="342" icon={UsersIcon} />
+				<StatCard title="Active Admins" value="328" icon={UserCheckIcon} />
+				<StatCard title="Pending Invites" value="12" icon={MailIcon} />
+				<StatCard title="Suspended" value="2" icon={ShieldIcon} />
+			</div>
+
+			<Card className="mt-8">
+				<CardHeader className="flex flex-row items-center justify-between">
+					<div>
+						<CardTitle>All Admins</CardTitle>
+						<CardDescription>
+							Manage all school administrators across the platform
+						</CardDescription>
+					</div>
+				</CardHeader>
+				<CardContent>
+					<div className="space-y-4">
+						{res.data.map((admin) => {
+							return (
+								<AdminRow
+									key={admin.id}
+									name={admin.name}
+									email={admin.email}
+									school="Lincoln High School"
+									jobTitle="Principal"
+									status="Active"
+									lastActive="2 hours ago"
+								/>
+							);
+						})}
+					</div>
+				</CardContent>
+			</Card>
+		</>
 	);
 }
 

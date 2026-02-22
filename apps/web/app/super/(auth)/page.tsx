@@ -19,14 +19,6 @@ import {
 
 export default function SuperAdminDashboard() {
 	return (
-		<div className="p-8 bg-red-300">
-			<Content />
-		</div>
-	);
-}
-
-function Content() {
-	return (
 		<>
 			<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
 				<StatCard

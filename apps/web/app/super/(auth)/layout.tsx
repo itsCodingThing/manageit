@@ -8,9 +8,9 @@ export default function SuperRootLayout({ children }: LayoutProps<"/super">) {
 		<AuthorizeSession>
 			<SidebarProvider>
 				<NavSidebar />
-				<main className="bg-amber-100 max-h-dvh max-w-dvw h-dvh w-dvw">
+				<main className="bg-amber-100 w-full">
 					<Header />
-					{children}
+					<div className="p-8">{children}</div>
 				</main>
 			</SidebarProvider>
 		</AuthorizeSession>

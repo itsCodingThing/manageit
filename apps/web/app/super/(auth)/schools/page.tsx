@@ -17,57 +17,47 @@ import {
 	FilterIcon,
 } from "@/components/icons";
 import { SchoolTable } from "./school-table";
-import Header from "../header";
 
 export default function SchoolsPage() {
 	return (
-		<div className="min-h-screen bg-zinc-50">
-			<div className="ml-[var(--sidebar-width,16rem)]">
-				<Header title="Schools" />
-				<main className="p-8">
-					<div className="mb-6 flex items-center justify-between">
-						<div className="flex items-center gap-4">
-							<div className="relative">
-								<SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
-								<Input placeholder="Search schools..." className="w-80 pl-10" />
-							</div>
-							<Button variant="outline" size="sm">
-								<FilterIcon className="mr-2 h-4 w-4" />
-								Filter
-							</Button>
-						</div>
-						<AddSchoolModal />
+		<>
+			<div className="mb-6 flex items-center justify-between">
+				<div className="flex items-center gap-4">
+					<div className="relative">
+						<SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
+						<Input placeholder="Search schools..." className="w-80 pl-10" />
 					</div>
-
-					<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-						<StatCard title="Total Schools" value="156" icon={Building2Icon} />
-						<StatCard title="Active Schools" value="142" icon={SchoolIcon} />
-						<StatCard
-							title="Pending Approval"
-							value="8"
-							icon={GraduationCapIcon}
-						/>
-						<StatCard title="Suspended" value="6" icon={UsersIcon} />
-					</div>
-
-					<Card className="mt-8">
-						<CardHeader className="flex flex-row items-center justify-between">
-							<div>
-								<CardTitle>All Schools</CardTitle>
-								<CardDescription>
-									Manage and monitor all registered schools
-								</CardDescription>
-							</div>
-						</CardHeader>
-						<CardContent>
-							<div className="space-y-4">
-								<SchoolTable />
-							</div>
-						</CardContent>
-					</Card>
-				</main>
+					<Button variant="outline" size="sm">
+						<FilterIcon className="mr-2 h-4 w-4" />
+						Filter
+					</Button>
+				</div>
+				<AddSchoolModal />
 			</div>
-		</div>
+
+			<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+				<StatCard title="Total Schools" value="156" icon={Building2Icon} />
+				<StatCard title="Active Schools" value="142" icon={SchoolIcon} />
+				<StatCard title="Pending Approval" value="8" icon={GraduationCapIcon} />
+				<StatCard title="Suspended" value="6" icon={UsersIcon} />
+			</div>
+
+			<Card className="mt-8">
+				<CardHeader className="flex flex-row items-center justify-between">
+					<div>
+						<CardTitle>All Schools</CardTitle>
+						<CardDescription>
+							Manage and monitor all registered schools
+						</CardDescription>
+					</div>
+				</CardHeader>
+				<CardContent>
+					<div className="space-y-4">
+						<SchoolTable />
+					</div>
+				</CardContent>
+			</Card>
+		</>
 	);
 }
 

@@ -2,7 +2,7 @@
 
 import { BellIcon } from "@/components/icons";
 import { usePathname } from "next/navigation";
-import { navs } from "./sidebar";
+import { navs } from "./nav-sidebar";
 
 export default function Header() {
 	const pathname = usePathname();
