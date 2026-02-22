@@ -28,4 +28,5 @@ export {
 	UserCheckIcon,
 	UsersIcon,
 	XIcon,
+	MenuIcon,
 } from "lucide-react";
