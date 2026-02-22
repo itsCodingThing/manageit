@@ -155,3 +155,6 @@ const result = await db.select().from(tableName).where(...);
 - All code must pass Biome linting before committing
 - Use `bun` as the package manager (not npm/yarn/pnpm)
 - Frontend uses Tailwind CSS 4 with `@tailwindcss/postcss`
+- **UI Components**: Always use shadcn CLI (`bunx shadcn@latest add <component>`) to add components, never manually create them
+- **Component Location**: Page-specific components should be in the same folder as the page. Only common/shared components go in the `components/` folder
+- **Icon Naming**: Always use the `Icon` suffix for lucide-react imports (e.g., `PlusIcon`, `EyeIcon`, `EyeOffIcon`, `SearchIcon`)

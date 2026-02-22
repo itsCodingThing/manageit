@@ -16,7 +16,11 @@ const api = ky.create({
 			async function jsonResponse(_req, _opt, res) {
 				try {
 					const result = await res.json<{ message: string; data: unknown }>();
-					const json = { success: true, message: result.message, data: result.data };
+					const json = {
+						success: true,
+						message: result.message,
+						data: result.data,
+					};
 
 					if (!res.ok) {
 						json.success = false;
@@ -91,9 +95,9 @@ export interface Admin {
 }
 
 export interface CreateAdminPayload {
-	userId: string;
 	name: string;
 	email: string;
+	password: string;
 	phoneNumber: string;
 	status?: "active" | "inactive";
 }

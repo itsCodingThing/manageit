@@ -4,6 +4,7 @@ import { authMiddleware } from "@/middleware/auth";
 import { ApiError } from "@/utils/error";
 import { createJsonResponse } from "@/utils/response";
 import { zod } from "@/utils/validation";
+import { betterAuthApi } from "@/services/auth";
 import { eq } from "drizzle-orm";
 import { Elysia } from "elysia";
 
@@ -55,14 +56,23 @@ const admin = new Elysia({ prefix: "/api/admin" })
 	.post(
 		"/",
 		async ({ body }) => {
+			const user = await betterAuthApi.signUpEmail({
+				body: {
+					name: body.name,
+					email: body.email,
+					password: body.password,
+					phoneNumber: body.phoneNumber,
+				},
+			});
+
 			const [newAdmin] = await db
 				.insert(adminTable)
 				.values({
-					userId: body.userId,
+					userId: user.user.id,
 					name: body.name,
 					email: body.email,
 					phoneNumber: body.phoneNumber,
-					status: body.status ?? "pending",
+					status: body.status ?? "active",
 				})
 				.returning();
 
@@ -73,9 +83,9 @@ const admin = new Elysia({ prefix: "/api/admin" })
 		},
 		{
 			body: zod.object({
-				userId: zod.string("userId required"),
 				name: zod.string("name required"),
 				email: zod.email("email required"),
+				password: zod.string("password required").min(5),
 				phoneNumber: zod.string("phoneNumber required"),
 				status: zod.literal(["active", "inactive"]).optional(),
 			}),

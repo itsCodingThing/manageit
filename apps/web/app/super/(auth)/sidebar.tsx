@@ -2,15 +2,15 @@
 
 import Link from "next/link";
 import {
-	Home,
-	Building2,
-	Users,
-	CreditCard,
-	TrendingUp,
-	Settings,
-	LogOut,
-	Shield,
-} from "lucide-react";
+	HomeIcon,
+	Building2Icon,
+	UsersIcon,
+	CreditCardIcon,
+	TrendingUpIcon,
+	SettingsIcon,
+	LogOutIcon,
+	ShieldIcon,
+} from "@/components/icons";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { logoutAction } from "@/app/action";
@@ -47,22 +47,22 @@ export default function Sidebar() {
 	const pathname = usePathname();
 
 	const navItems = [
-		{ href: "/super", icon: Home, label: "Dashboard" },
-		{ href: "/super/admins", icon: Users, label: "Admins" },
-		{ href: "/super/schools", icon: Building2, label: "Schools" },
+		{ href: "/super", icon: HomeIcon, label: "Dashboard" },
+		{ href: "/super/admins", icon: UsersIcon, label: "Admins" },
+		{ href: "/super/schools", icon: Building2Icon, label: "Schools" },
 		{
 			href: "/super/subscriptions",
-			icon: CreditCard,
+			icon: CreditCardIcon,
 			label: "Subscriptions",
 		},
-		{ href: "/super/analytics", icon: TrendingUp, label: "Analytics" },
-		{ href: "/super/settings", icon: Settings, label: "Settings" },
+		{ href: "/super/analytics", icon: TrendingUpIcon, label: "Analytics" },
+		{ href: "/super/settings", icon: SettingsIcon, label: "Settings" },
 	];
 
 	return (
 		<aside className="fixed left-0 top-0 z-40 h-screen w-64 border-r border-zinc-200 bg-white">
 			<div className="flex h-16 items-center gap-2 border-b border-zinc-200 px-6">
-				<Shield className="h-8 w-8 text-zinc-900" />
+				<ShieldIcon className="h-8 w-8 text-zinc-900" />
 				<span className="text-xl font-bold text-zinc-900">Super Admin</span>
 			</div>
 
@@ -83,7 +83,7 @@ export default function Sidebar() {
 				className="absolute bottom-0 left-0 right-0 border-t border-zinc-200 p-4"
 			>
 				<Button className="w-full rounded-lg px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50">
-					<LogOut className="h-5 w-5" />
+					<LogOutIcon className="h-5 w-5" />
 					Sign Out
 				</Button>
 			</form>

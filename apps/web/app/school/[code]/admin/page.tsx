@@ -8,17 +8,17 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import {
-	GraduationCap,
-	Users,
-	UserCheck,
-	BookOpen,
-	Calendar,
-	TrendingUp,
-	Bell,
-	Settings,
-	LogOut,
-	Home,
-} from "lucide-react";
+	GraduationCapIcon,
+	UsersIcon,
+	UserCheckIcon,
+	BookOpenIcon,
+	CalendarIcon,
+	TrendingUpIcon,
+	BellIcon,
+	SettingsIcon,
+	LogOutIcon,
+	HomeIcon,
+} from "@/components/icons";
 
 export default async function AdminDashboard() {
 	return (
@@ -26,26 +26,26 @@ export default async function AdminDashboard() {
 			{/* Sidebar */}
 			<aside className="fixed left-0 top-0 z-40 h-screen w-64 border-r border-zinc-200 bg-white">
 				<div className="flex h-16 items-center gap-2 border-b border-zinc-200 px-6">
-					<GraduationCap className="h-8 w-8 text-zinc-900" />
+					<GraduationCapIcon className="h-8 w-8 text-zinc-900" />
 					<span className="text-xl font-bold text-zinc-900">ManageIt</span>
 				</div>
 
 				<nav className="space-y-1 p-4">
-					<SidebarLink href="/admin" icon={Home} label="Dashboard" active />
-					<SidebarLink href="#" icon={Users} label="Students" />
-					<SidebarLink href="#" icon={UserCheck} label="Teachers" />
-					<SidebarLink href="#" icon={BookOpen} label="Classes" />
-					<SidebarLink href="#" icon={Calendar} label="Attendance" />
-					<SidebarLink href="#" icon={TrendingUp} label="Reports" />
+					<SidebarLink href="/admin" icon={HomeIcon} label="Dashboard" active />
+					<SidebarLink href="#" icon={UsersIcon} label="Students" />
+					<SidebarLink href="#" icon={UserCheckIcon} label="Teachers" />
+					<SidebarLink href="#" icon={BookOpenIcon} label="Classes" />
+					<SidebarLink href="#" icon={CalendarIcon} label="Attendance" />
+					<SidebarLink href="#" icon={TrendingUpIcon} label="Reports" />
 				</nav>
 
 				<div className="absolute bottom-0 left-0 right-0 border-t border-zinc-200 p-4">
-					<SidebarLink href="#" icon={Settings} label="Settings" />
+					<SidebarLink href="#" icon={SettingsIcon} label="Settings" />
 					<Link
 						href="/"
 						className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50"
 					>
-						<LogOut className="h-5 w-5" />
+						<LogOutIcon className="h-5 w-5" />
 						Sign Out
 					</Link>
 				</div>
@@ -63,7 +63,7 @@ export default async function AdminDashboard() {
 							type="button"
 							className="relative rounded-lg p-2 text-zinc-600 hover:bg-zinc-100"
 						>
-							<Bell className="h-5 w-5" />
+							<BellIcon className="h-5 w-5" />
 							<span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-red-500" />
 						</button>
 						<div className="flex items-center gap-3">

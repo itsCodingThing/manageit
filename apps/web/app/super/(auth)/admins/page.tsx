@@ -8,22 +8,23 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { getAdmins } from "@/lib/api";
+import { AddAdminModal } from "./add-admin-modal";
 import {
-	Users,
-	Bell,
-	Search,
-	Plus,
-	MoreVertical,
-	Mail,
-	Shield,
-	UserCheck,
-	Filter,
-} from "lucide-react";
+	UsersIcon,
+	BellIcon,
+	SearchIcon,
+	PlusIcon,
+	MoreVerticalIcon,
+	MailIcon,
+	ShieldIcon,
+	UserCheckIcon,
+	FilterIcon,
+} from "@/components/icons";
 
 export default async function AdminsPage() {
 	const res = await getAdmins();
 
-  console.log(res);
+	console.log(res);
 	return (
 		<div className="min-h-screen bg-zinc-50">
 			<div className="ml-64">
@@ -34,7 +35,7 @@ export default async function AdminsPage() {
 							type="button"
 							className="relative rounded-lg p-2 text-zinc-600 hover:bg-zinc-100"
 						>
-							<Bell className="h-5 w-5" />
+							<BellIcon className="h-5 w-5" />
 							<span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-red-500" />
 						</button>
 						<div className="flex items-center gap-3">
@@ -53,25 +54,27 @@ export default async function AdminsPage() {
 					<div className="mb-6 flex items-center justify-between">
 						<div className="flex items-center gap-4">
 							<div className="relative">
-								<Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
+								<SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
 								<Input placeholder="Search admins..." className="w-80 pl-10" />
 							</div>
 							<Button variant="outline" size="sm">
-								<Filter className="mr-2 h-4 w-4" />
+								<FilterIcon className="mr-2 h-4 w-4" />
 								Filter
 							</Button>
 						</div>
-						<Button>
-							<Plus className="mr-2 h-4 w-4" />
-							Add Admin
-						</Button>
+						<AddAdminModal>
+							<Button>
+								<PlusIcon className="mr-2 h-4 w-4" />
+								Add Admin
+							</Button>
+						</AddAdminModal>
 					</div>
 
 					<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-						<StatCard title="Total Admins" value="342" icon={Users} />
-						<StatCard title="Active Admins" value="328" icon={UserCheck} />
-						<StatCard title="Pending Invites" value="12" icon={Mail} />
-						<StatCard title="Suspended" value="2" icon={Shield} />
+						<StatCard title="Total Admins" value="342" icon={UsersIcon} />
+						<StatCard title="Active Admins" value="328" icon={UserCheckIcon} />
+						<StatCard title="Pending Invites" value="12" icon={MailIcon} />
+						<StatCard title="Suspended" value="2" icon={ShieldIcon} />
 					</div>
 
 					<Card className="mt-8">
@@ -162,7 +165,7 @@ function AdminRow({
 				<div>
 					<p className="font-medium text-zinc-900">{name}</p>
 					<div className="flex items-center gap-2 text-sm text-zinc-500">
-						<Mail className="h-3 w-3" />
+						<MailIcon className="h-3 w-3" />
 						{email}
 					</div>
 				</div>
@@ -187,7 +190,7 @@ function AdminRow({
 					<p className="mt-1 text-xs text-zinc-400">{lastActive}</p>
 				</div>
 				<Button variant="ghost" size="sm">
-					<MoreVertical className="h-4 w-4" />
+					<MoreVerticalIcon className="h-4 w-4" />
 				</Button>
 			</div>
 		</div>

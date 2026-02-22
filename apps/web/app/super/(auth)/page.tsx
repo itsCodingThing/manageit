@@ -7,16 +7,13 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import {
-	Building2,
-	Users,
-	GraduationCap,
-	School,
-	TrendingUp,
-	Bell,
-	Plus,
-	CreditCard,
-	Settings,
-} from "lucide-react";
+	SchoolIcon,
+	TrendingUpIcon,
+	BellIcon,
+	PlusIcon,
+	CreditCardIcon,
+	SettingsIcon,
+} from "@/components/icons";
 
 export default function SuperAdminDashboard() {
 	return (
@@ -33,7 +30,7 @@ export default function SuperAdminDashboard() {
 							type="button"
 							className="relative rounded-lg p-2 text-zinc-600 hover:bg-zinc-100"
 						>
-							<Bell className="h-5 w-5" />
+							<BellIcon className="h-5 w-5" />
 							<span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-red-500" />
 						</button>
 						<div className="flex items-center gap-3">
@@ -135,23 +132,23 @@ export default function SuperAdminDashboard() {
 							</CardHeader>
 							<CardContent className="space-y-2">
 								<Button variant="outline" className="w-full justify-start">
-									<Plus className="mr-2 h-4 w-4" />
+									<PlusIcon className="mr-2 h-4 w-4" />
 									Add New School
 								</Button>
 								<Button variant="outline" className="w-full justify-start">
-									<Users className="mr-2 h-4 w-4" />
+									<UsersIcon className="mr-2 h-4 w-4" />
 									Create School Admin
 								</Button>
 								<Button variant="outline" className="w-full justify-start">
-									<CreditCard className="mr-2 h-4 w-4" />
+									<CreditCardIcon className="mr-2 h-4 w-4" />
 									Manage Subscriptions
 								</Button>
 								<Button variant="outline" className="w-full justify-start">
-									<TrendingUp className="mr-2 h-4 w-4" />
+									<TrendingUpIcon className="mr-2 h-4 w-4" />
 									View Analytics
 								</Button>
 								<Button variant="outline" className="w-full justify-start">
-									<Settings className="mr-2 h-4 w-4" />
+									<SettingsIcon className="mr-2 h-4 w-4" />
 									System Settings
 								</Button>
 							</CardContent>
@@ -298,7 +295,7 @@ function SchoolRow({
 		<div className="flex items-center justify-between rounded-lg border border-zinc-100 p-4">
 			<div className="flex items-center gap-4">
 				<div className="flex h-10 w-10 items-center justify-center rounded-lg bg-zinc-100">
-					<School className="h-5 w-5 text-zinc-600" />
+					<SchoolIcon className="h-5 w-5 text-zinc-600" />
 				</div>
 				<div>
 					<p className="font-medium text-zinc-900">{name}</p>

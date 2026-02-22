@@ -7,16 +7,16 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { AddSchoolModal } from "./add-school-modal";
 import {
-	Building2,
-	Users,
-	Bell,
-	Search,
-	Plus,
-	GraduationCap,
-	School,
-	Filter,
-} from "lucide-react";
+	Building2Icon,
+	UsersIcon,
+	BellIcon,
+	SearchIcon,
+	GraduationCapIcon,
+	SchoolIcon,
+	FilterIcon,
+} from "@/components/icons";
 import { SchoolTable } from "./school-table";
 
 export default function SchoolsPage() {
@@ -30,7 +30,7 @@ export default function SchoolsPage() {
 							type="button"
 							className="relative rounded-lg p-2 text-zinc-600 hover:bg-zinc-100"
 						>
-							<Bell className="h-5 w-5" />
+							<BellIcon className="h-5 w-5" />
 							<span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-red-500" />
 						</button>
 						<div className="flex items-center gap-3">
@@ -49,25 +49,22 @@ export default function SchoolsPage() {
 					<div className="mb-6 flex items-center justify-between">
 						<div className="flex items-center gap-4">
 							<div className="relative">
-								<Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
+								<SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
 								<Input placeholder="Search schools..." className="w-80 pl-10" />
 							</div>
 							<Button variant="outline" size="sm">
-								<Filter className="mr-2 h-4 w-4" />
+								<FilterIcon className="mr-2 h-4 w-4" />
 								Filter
 							</Button>
 						</div>
-						<Button>
-							<Plus className="mr-2 h-4 w-4" />
-							Add School
-						</Button>
+						<AddSchoolModal/>
 					</div>
 
 					<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-						<StatCard title="Total Schools" value="156" icon={Building2} />
-						<StatCard title="Active Schools" value="142" icon={School} />
-						<StatCard title="Pending Approval" value="8" icon={GraduationCap} />
-						<StatCard title="Suspended" value="6" icon={Users} />
+						<StatCard title="Total Schools" value="156" icon={Building2Icon} />
+						<StatCard title="Active Schools" value="142" icon={SchoolIcon} />
+						<StatCard title="Pending Approval" value="8" icon={GraduationCapIcon} />
+						<StatCard title="Suspended" value="6" icon={UsersIcon} />
 					</div>
 
 					<Card className="mt-8">
@@ -81,8 +78,8 @@ export default function SchoolsPage() {
 						</CardHeader>
 						<CardContent>
 							<div className="space-y-4">
-                  <SchoolTable/>
-              </div>
+								<SchoolTable />
+							</div>
 						</CardContent>
 					</Card>
 				</main>

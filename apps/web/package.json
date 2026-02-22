@@ -9,6 +9,7 @@
 		"type": "tsgo"
 	},
 	"dependencies": {
+		"@radix-ui/react-dialog": "^1.1.15",
 		"@tailwindcss/postcss": "^4.1.18",
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",

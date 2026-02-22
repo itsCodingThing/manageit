@@ -8,17 +8,14 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
-	CreditCard,
-	Bell,
-	Search,
-	Plus,
-	Building2,
-	TrendingUp,
-	DollarSign,
-	Calendar,
-	MoreVertical,
-	Filter,
-} from "lucide-react";
+	CreditCardIcon,
+	BellIcon,
+	SearchIcon,
+	PlusIcon,
+	Building2Icon,
+	MoreVerticalIcon,
+	FilterIcon,
+} from "@/components/icons";
 
 export default function SubscriptionsPage() {
 	return (
@@ -31,7 +28,7 @@ export default function SubscriptionsPage() {
 							type="button"
 							className="relative rounded-lg p-2 text-zinc-600 hover:bg-zinc-100"
 						>
-							<Bell className="h-5 w-5" />
+							<BellIcon className="h-5 w-5" />
 							<span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-red-500" />
 						</button>
 						<div className="flex items-center gap-3">
@@ -50,19 +47,19 @@ export default function SubscriptionsPage() {
 					<div className="mb-6 flex items-center justify-between">
 						<div className="flex items-center gap-4">
 							<div className="relative">
-								<Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
+								<SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
 								<Input
 									placeholder="Search subscriptions..."
 									className="w-80 pl-10"
 								/>
 							</div>
 							<Button variant="outline" size="sm">
-								<Filter className="mr-2 h-4 w-4" />
+								<FilterIcon className="mr-2 h-4 w-4" />
 								Filter
 							</Button>
 						</div>
 						<Button>
-							<Plus className="mr-2 h-4 w-4" />
+							<PlusIcon className="mr-2 h-4 w-4" />
 							New Plan
 						</Button>
 					</div>
@@ -216,7 +213,7 @@ function SubscriptionRow({
 		<div className="flex items-center justify-between rounded-lg border border-zinc-100 p-4">
 			<div className="flex items-center gap-4">
 				<div className="flex h-10 w-10 items-center justify-center rounded-lg bg-zinc-100">
-					<CreditCard className="h-5 w-5 text-zinc-600" />
+					<CreditCardIcon className="h-5 w-5 text-zinc-600" />
 				</div>
 				<div>
 					<p className="font-medium text-zinc-900">{plan} Plan</p>
@@ -232,7 +229,7 @@ function SubscriptionRow({
 					{status}
 				</span>
 				<Button variant="ghost" size="sm">
-					<MoreVertical className="h-4 w-4" />
+					<MoreVerticalIcon className="h-4 w-4" />
 				</Button>
 			</div>
 		</div>
@@ -254,7 +251,7 @@ function RenewalRow({
 		<div className="flex items-center justify-between rounded-lg border border-zinc-100 p-4">
 			<div className="flex items-center gap-4">
 				<div className="flex h-10 w-10 items-center justify-center rounded-lg bg-zinc-100">
-					<Building2 className="h-5 w-5 text-zinc-600" />
+					<Building2Icon className="h-5 w-5 text-zinc-600" />
 				</div>
 				<div>
 					<p className="font-medium text-zinc-900">{school}</p>

@@ -8,15 +8,13 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
-	Bell,
-	Shield,
-	Mail,
-	Database,
-	Globe,
-	Key,
-	ToggleLeft,
-	ToggleRight,
-} from "lucide-react";
+	BellIcon,
+	ShieldIcon,
+	MailIcon,
+	DatabaseIcon,
+	GlobeIcon,
+	KeyIcon,
+} from "@/components/icons";
 
 export default function SettingsPage() {
 	return (
@@ -29,7 +27,7 @@ export default function SettingsPage() {
 							type="button"
 							className="relative rounded-lg p-2 text-zinc-600 hover:bg-zinc-100"
 						>
-							<Bell className="h-5 w-5" />
+							<BellIcon className="h-5 w-5" />
 							<span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-red-500" />
 						</button>
 						<div className="flex items-center gap-3">
@@ -49,7 +47,7 @@ export default function SettingsPage() {
 						<Card>
 							<CardHeader>
 								<div className="flex items-center gap-2">
-									<Globe className="h-5 w-5 text-zinc-600" />
+									<GlobeIcon className="h-5 w-5 text-zinc-600" />
 									<CardTitle>General Settings</CardTitle>
 								</div>
 								<CardDescription>
@@ -81,7 +79,7 @@ export default function SettingsPage() {
 						<Card>
 							<CardHeader>
 								<div className="flex items-center gap-2">
-									<Shield className="h-5 w-5 text-zinc-600" />
+									<ShieldIcon className="h-5 w-5 text-zinc-600" />
 									<CardTitle>Security</CardTitle>
 								</div>
 								<CardDescription>
@@ -110,7 +108,7 @@ export default function SettingsPage() {
 						<Card>
 							<CardHeader>
 								<div className="flex items-center gap-2">
-									<Mail className="h-5 w-5 text-zinc-600" />
+									<MailIcon className="h-5 w-5 text-zinc-600" />
 									<CardTitle>Notifications</CardTitle>
 								</div>
 								<CardDescription>
@@ -141,7 +139,7 @@ export default function SettingsPage() {
 						<Card>
 							<CardHeader>
 								<div className="flex items-center gap-2">
-									<Database className="h-5 w-5 text-zinc-600" />
+									<DatabaseIcon className="h-5 w-5 text-zinc-600" />
 									<CardTitle>System Health</CardTitle>
 								</div>
 								<CardDescription>
@@ -175,7 +173,7 @@ export default function SettingsPage() {
 						<Card>
 							<CardHeader>
 								<div className="flex items-center gap-2">
-									<Key className="h-5 w-5 text-zinc-600" />
+									<KeyIcon className="h-5 w-5 text-zinc-600" />
 									<CardTitle>API Keys</CardTitle>
 								</div>
 								<CardDescription>Manage API access credentials</CardDescription>

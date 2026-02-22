@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { getSchools } from "@/lib/api";
-import { MoreVerticalIcon, MapPinIcon, SchoolIcon } from "lucide-react";
+import { MoreVerticalIcon, MapPinIcon, SchoolIcon } from "@/components/icons";
 
 function SchoolRow({
 	name,
@@ -55,23 +55,23 @@ function SchoolRow({
 	);
 }
 export async function SchoolTable() {
-  const res = await getSchools();
-  console.log(res)
+	const res = await getSchools();
+	console.log(res);
 
-  if (!res.success) {
-    return null;
-  }
+	if (!res.success) {
+		return null;
+	}
 
-  return res.data.map((s) => {
-      return (
-        <SchoolRow
-          key={s.id}
-          name="Lincoln High School"
-          location="New York, USA"
-          students={1248}
-          plan="Enterprise"
-          status="Active"
-        />
-      );
-    })
+	return res.data.map((s) => {
+		return (
+			<SchoolRow
+				key={s.id}
+				name="Lincoln High School"
+				location="New York, USA"
+				students={1248}
+				plan="Enterprise"
+				status="Active"
+			/>
+		);
+	});
 }

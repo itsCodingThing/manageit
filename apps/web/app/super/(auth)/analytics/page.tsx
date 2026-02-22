@@ -6,14 +6,11 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import {
-	TrendingUp,
-	Bell,
-	Users,
-	Building2,
-	GraduationCap,
-	ArrowUpRight,
-	ArrowDownRight,
-} from "lucide-react";
+	TrendingUpIcon,
+	BellIcon,
+	UsersIcon,
+	Building2Icon,
+} from "@/components/icons";
 
 export default function AnalyticsPage() {
 	return (
@@ -26,7 +23,7 @@ export default function AnalyticsPage() {
 							type="button"
 							className="relative rounded-lg p-2 text-zinc-600 hover:bg-zinc-100"
 						>
-							<Bell className="h-5 w-5" />
+							<BellIcon className="h-5 w-5" />
 							<span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-red-500" />
 						</button>
 						<div className="flex items-center gap-3">
@@ -48,21 +45,21 @@ export default function AnalyticsPage() {
 							value="$582K"
 							change="+15.3%"
 							trend="up"
-							icon={TrendingUp}
+							icon={TrendingUpIcon}
 						/>
 						<StatCard
 							title="New Schools"
 							value="23"
 							change="+8.2%"
 							trend="up"
-							icon={Building2}
+							icon={Building2Icon}
 						/>
 						<StatCard
 							title="Active Users"
 							value="48.5K"
 							change="-2.1%"
 							trend="down"
-							icon={Users}
+							icon={UsersIcon}
 						/>
 						<StatCard
 							title="Churn Rate"
