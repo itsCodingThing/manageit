@@ -62,12 +62,7 @@ export default async function AdminsPage() {
 								Filter
 							</Button>
 						</div>
-						<AddAdminModal>
-							<Button>
-								<PlusIcon className="mr-2 h-4 w-4" />
-								Add Admin
-							</Button>
-						</AddAdminModal>
+						<AddAdminModal />
 					</div>
 
 					<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">

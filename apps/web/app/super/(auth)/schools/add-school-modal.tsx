@@ -111,10 +111,10 @@ export function AddSchoolModal() {
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
-					<Button>
-						<PlusIcon className="mr-2 h-4 w-4" />
-						Add School
-					</Button>
+				<Button>
+					<PlusIcon className="mr-2 h-4 w-4" />
+					Add School
+				</Button>
 			</DialogTrigger>
 			<DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
 				<DialogHeader>

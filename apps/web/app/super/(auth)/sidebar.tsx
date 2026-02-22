@@ -82,7 +82,7 @@ export default function Sidebar() {
 				action={logoutAction}
 				className="absolute bottom-0 left-0 right-0 border-t border-zinc-200 p-4"
 			>
-				<Button className="w-full rounded-lg px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50">
+				<Button className="w-full rounded-lg px-3 py-2 text-sm font-medium">
 					<LogOutIcon className="h-5 w-5" />
 					Sign Out
 				</Button>

@@ -1,5 +1,5 @@
 export const GET = () => {
-  return Response.json({
-    message: "hello world"
-  })
+	return Response.json({
+		message: "hello world",
+	});
 };

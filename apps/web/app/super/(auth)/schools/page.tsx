@@ -57,13 +57,17 @@ export default function SchoolsPage() {
 								Filter
 							</Button>
 						</div>
-						<AddSchoolModal/>
+						<AddSchoolModal />
 					</div>
 
 					<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
 						<StatCard title="Total Schools" value="156" icon={Building2Icon} />
 						<StatCard title="Active Schools" value="142" icon={SchoolIcon} />
-						<StatCard title="Pending Approval" value="8" icon={GraduationCapIcon} />
+						<StatCard
+							title="Pending Approval"
+							value="8"
+							icon={GraduationCapIcon}
+						/>
 						<StatCard title="Suspended" value="6" icon={UsersIcon} />
 					</div>
 

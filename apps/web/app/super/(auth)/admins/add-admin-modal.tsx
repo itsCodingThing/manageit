@@ -15,11 +15,7 @@ import {
 import { createAdmin } from "@/lib/api";
 import { PlusIcon } from "@/components/icons";
 
-interface AddAdminModalProps {
-	children?: React.ReactNode;
-}
-
-export function AddAdminModal({ children }: AddAdminModalProps) {
+export function AddAdminModal() {
 	const [open, setOpen] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState("");
@@ -61,12 +57,10 @@ export function AddAdminModal({ children }: AddAdminModalProps) {
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
-				{children || (
-					<Button>
-						<PlusIcon className="mr-2 h-4 w-4" />
-						Add Admin
-					</Button>
-				)}
+				<Button>
+					<PlusIcon className="mr-2 h-4 w-4" />
+					Add Admin
+				</Button>
 			</DialogTrigger>
 			<DialogContent className="sm:max-w-[500px]">
 				<DialogHeader>
