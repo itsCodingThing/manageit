@@ -7,7 +7,7 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Admin, ApiResponse, safeApi } from "@/lib/api";
+import { getAdmins } from "@/lib/api";
 import {
 	Users,
 	Bell,
@@ -21,9 +21,9 @@ import {
 } from "lucide-react";
 
 export default async function AdminsPage() {
-	const res = await safeApi.get("admin/").json<ApiResponse<Admin[]>>();
-	console.log(res.message);
+	const res = await getAdmins();
 
+  console.log(res);
 	return (
 		<div className="min-h-screen bg-zinc-50">
 			<div className="ml-64">

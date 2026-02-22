@@ -1,11 +1,12 @@
 {
 	"name": "web",
 	"scripts": {
-		"dev": "next dev --turbo",
+		"dev": "next dev --turbo -p 3001",
 		"build": "next build --turbo",
 		"start": "next start",
 		"lint": "biome lint",
-		"fmt": "biome format --write"
+		"fmt": "biome format --write",
+		"type": "tsgo"
 	},
 	"dependencies": {
 		"@tailwindcss/postcss": "^4.1.18",

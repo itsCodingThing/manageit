@@ -17,6 +17,7 @@ import {
 	School,
 	Filter,
 } from "lucide-react";
+import { SchoolTable } from "./school-table";
 
 export default function SchoolsPage() {
 	return (
@@ -79,7 +80,9 @@ export default function SchoolsPage() {
 							</div>
 						</CardHeader>
 						<CardContent>
-							<div className="space-y-4"></div>
+							<div className="space-y-4">
+                  <SchoolTable/>
+              </div>
 						</CardContent>
 					</Card>
 				</main>

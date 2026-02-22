@@ -3,7 +3,7 @@
 import { createSession, deleteSession } from "@/lib/session";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { login } from "@/lib/api";
+import { adminSignIn } from "@/lib/api";
 
 const LoginFormSchema = z.object({
 	email: z.email({ error: "Please enter a valid email." }).trim(),
@@ -14,7 +14,6 @@ const LoginFormSchema = z.object({
 });
 
 type LoginFormInput = z.input<typeof LoginFormSchema>;
-
 export type LoginFormState = { error: string | null; state: LoginFormInput };
 
 export async function loginAction(
@@ -31,7 +30,7 @@ export async function loginAction(
 		};
 	}
 
-	const res = await login(result.data);
+	const res = await adminSignIn(result.data);
 	if (!res.success) {
 		return { state: state.state, error: res.message };
 	}
