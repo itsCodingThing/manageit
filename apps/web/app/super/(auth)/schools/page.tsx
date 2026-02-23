@@ -7,7 +7,7 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { AddSchoolModal } from "./add-school-modal";
+import AddSchoolModal from "./add-school-modal";
 import {
 	Building2Icon,
 	UsersIcon,
@@ -17,6 +17,8 @@ import {
 	FilterIcon,
 } from "@/components/icons";
 import { SchoolTable } from "./school-table";
+import { Suspense } from "react";
+import { Loader } from "@/components/loader";
 
 export default function SchoolsPage() {
 	return (
@@ -53,7 +55,9 @@ export default function SchoolsPage() {
 				</CardHeader>
 				<CardContent>
 					<div className="space-y-4">
-						<SchoolTable />
+						<Suspense fallback={<Loader />}>
+							<SchoolTable />
+						</Suspense>
 					</div>
 				</CardContent>
 			</Card>

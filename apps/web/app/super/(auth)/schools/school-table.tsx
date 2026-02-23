@@ -56,7 +56,6 @@ function SchoolRow({
 }
 export async function SchoolTable() {
 	const res = await getSchools();
-	console.log(res);
 
 	if (!res.success) {
 		return null;

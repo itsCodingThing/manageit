@@ -6,38 +6,20 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { getAdmins } from "@/lib/api";
-import { AddAdminModal } from "./add-admin-modal";
 import {
 	UsersIcon,
-	SearchIcon,
 	MoreVerticalIcon,
 	MailIcon,
 	ShieldIcon,
 	UserCheckIcon,
-	FilterIcon,
 } from "@/components/icons";
+import { AdminTable } from "./admin-table";
+import { Suspense } from "react";
+import { Loader } from "@/components/loader";
 
-export default async function AdminsPage() {
-	const res = await getAdmins();
-
+export default function AdminsPage() {
 	return (
 		<>
-			<div className="mb-6 flex items-center justify-between">
-				<div className="flex items-center gap-4">
-					<div className="relative">
-						<SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
-						<Input placeholder="Search admins..." className="w-80 pl-10" />
-					</div>
-					<Button variant="outline" size="sm">
-						<FilterIcon className="mr-2 h-4 w-4" />
-						Filter
-					</Button>
-				</div>
-				<AddAdminModal />
-			</div>
-
 			<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
 				<StatCard title="Total Admins" value="342" icon={UsersIcon} />
 				<StatCard title="Active Admins" value="328" icon={UserCheckIcon} />
@@ -56,19 +38,9 @@ export default async function AdminsPage() {
 				</CardHeader>
 				<CardContent>
 					<div className="space-y-4">
-						{res.data.map((admin) => {
-							return (
-								<AdminRow
-									key={admin.id}
-									name={admin.name}
-									email={admin.email}
-									school="Lincoln High School"
-									jobTitle="Principal"
-									status="Active"
-									lastActive="2 hours ago"
-								/>
-							);
-						})}
+						<Suspense fallback={<Loader />}>
+							<AdminTable />
+						</Suspense>
 					</div>
 				</CardContent>
 			</Card>
