@@ -20,7 +20,7 @@ import { SchoolTable } from "./school-table";
 import { Suspense } from "react";
 import { Loader } from "@/components/loader";
 
-export default function SchoolsPage() {
+export default async function SchoolsPage() {
 	return (
 		<>
 			<div className="mb-6 flex items-center justify-between">

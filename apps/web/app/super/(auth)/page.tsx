@@ -16,26 +16,34 @@ import {
 	UsersIcon,
 	GraduationCapIcon,
 } from "@/components/icons";
+import Link from "next/link";
+import { getAdminStats } from "@/lib/api";
 
-export default function SuperAdminDashboard() {
+export default async function SuperAdminDashboard() {
+  const result = await getAdminStats();
+
+  if (!result.success) {
+    return null;
+  }
+
 	return (
 		<>
 			<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
 				<StatCard
 					title="Total Schools"
-					value="156"
+					value={result.data.totalSchools.toString()}
 					change="+12"
 					icon={Building2Icon}
 				/>
 				<StatCard
 					title="School Admins"
-					value="342"
+					value={result.data.totalAdmins.toString()}
 					change="+8"
 					icon={UsersIcon}
 				/>
 				<StatCard
 					title="Total Students"
-					value="48.5K"
+					value={result.data.totalStudents.toString()}
 					change="+2.3K"
 					icon={GraduationCapIcon}
 				/>
@@ -100,13 +108,17 @@ export default function SuperAdminDashboard() {
 						<CardDescription>Common super admin tasks</CardDescription>
 					</CardHeader>
 					<CardContent className="space-y-2">
-						<Button variant="outline" className="w-full justify-start">
-							<PlusIcon className="mr-2 h-4 w-4" />
-							Add New School
+						<Button asChild variant="outline" className="w-full justify-start">
+							<Link href="/super/schools">
+								<PlusIcon className="mr-2 h-4 w-4" />
+								Add New School
+							</Link>
 						</Button>
-						<Button variant="outline" className="w-full justify-start">
-							<UsersIcon className="mr-2 h-4 w-4" />
-							Create School Admin
+						<Button asChild variant="outline" className="w-full justify-start">
+							<Link href="/super/admins">
+								<UsersIcon className="mr-2 h-4 w-4" />
+								Create School Admin
+							</Link>
 						</Button>
 						<Button variant="outline" className="w-full justify-start">
 							<CreditCardIcon className="mr-2 h-4 w-4" />

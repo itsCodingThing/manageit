@@ -1,7 +1,7 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { decrypt, encrypt, SessionPayload } from "./jwt";
+import { decrypt, encrypt, type SessionPayload } from "./jwt";
 
 export async function createSession(data: {
 	token: string;

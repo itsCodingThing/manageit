@@ -1,4 +1,5 @@
 export {
+	ChevronDownIcon,
 	ArrowUpDownIcon,
 	ArrowDownRightIcon,
 	ArrowUpRightIcon,
