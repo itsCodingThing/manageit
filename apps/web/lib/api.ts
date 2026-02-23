@@ -266,6 +266,42 @@ export interface UpdateSchoolPayload {
 	facilities?: string;
 }
 
+export interface StatusCount {
+	status: string;
+	count: number;
+}
+
+export interface AdminStats {
+	totalAdmins: number;
+	totalSchools: number;
+	totalStudents: number;
+	totalTeachers: number;
+	totalBatches: number;
+	schoolsByStatus: StatusCount[];
+	studentsByStatus: StatusCount[];
+	teachersByStatus: StatusCount[];
+}
+
+export interface SchoolStats {
+	totalSchools: number;
+	totalStudents: number;
+	totalTeachers: number;
+	totalBatches: number;
+	schoolsByStatus: StatusCount[];
+	studentsByStatus: StatusCount[];
+	teachersByStatus: StatusCount[];
+}
+
+export interface SchoolStatsById {
+	schoolId: string;
+	totalStudents: number;
+	totalTeachers: number;
+	totalBatches: number;
+	studentsByStatus: StatusCount[];
+	teachersByStatus: StatusCount[];
+	batchesByStatus: StatusCount[];
+}
+
 // School Admin Types
 export interface SchoolAdmin {
 	id: string;
@@ -468,4 +504,19 @@ export async function deleteSchoolAdmin(id: string) {
 	return await safeApi
 		.delete(`school-admin/${id}`)
 		.json<ApiResponse<{ message: string }>>();
+}
+
+// Stats API
+export async function getAdminStats() {
+	return await safeApi.get("admin/stats").json<ApiResponse<AdminStats>>();
+}
+
+export async function getSchoolStats() {
+	return await safeApi.get("school/stats").json<ApiResponse<SchoolStats>>();
+}
+
+export async function getSchoolStatsById(schoolId: string) {
+	return await safeApi
+		.get(`school/stats/${schoolId}`)
+		.json<ApiResponse<SchoolStatsById>>();
 }
