@@ -196,6 +196,25 @@
 			"name": "Admin",
 			"item": [
 				{
+					"name": "Get Admin Stats",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/stats",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "stats"]
+						},
+						"description": "Get aggregate statistics for all schools, students, teachers, and admins"
+					},
+					"response": []
+				},
+				{
 					"name": "Get All Admins",
 					"request": {
 						"method": "GET",
@@ -721,6 +740,44 @@
 							"path": ["school"]
 						},
 						"description": "Get all schools"
+					},
+					"response": []
+				},
+				{
+					"name": "Get School Stats",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/school/stats",
+							"host": ["{{base_url}}"],
+							"path": ["school", "stats"]
+						},
+						"description": "Get aggregate statistics across all schools including total students, teachers, and batches"
+					},
+					"response": []
+				},
+				{
+					"name": "Get School Stats By ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/school/stats/REPLACE_WITH_SCHOOL_ID",
+							"host": ["{{base_url}}"],
+							"path": ["school", "stats", "REPLACE_WITH_SCHOOL_ID"]
+						},
+						"description": "Get aggregate statistics for a specific school including students, teachers, and batches"
 					},
 					"response": []
 				},

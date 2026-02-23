@@ -1,11 +1,11 @@
 import { db } from "@/database/db";
-import { schoolTable, teacherTable } from "@/database/schema";
+import { schoolTable, teacherTable, studentTable, batchTable } from "@/database/schema";
 import { authMiddleware } from "@/middleware/auth";
 import { ApiError } from "@/utils/error";
 import { createJsonResponse } from "@/utils/response";
 import { zod } from "@/utils/validation";
 import { betterAuthApi } from "@/services/auth";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { Elysia } from "elysia";
 
 const school = new Elysia({ prefix: "/api/school" })
@@ -42,6 +42,158 @@ const school = new Elysia({ prefix: "/api/school" })
 
 		return createJsonResponse({ data: schools });
 	})
+	.get("/stats", async () => {
+		const [totalSchools] = await db
+			.select({ count: sql<number>`count(*)` })
+			.from(schoolTable);
+
+		const totalStudentsResult = await db
+			.select({
+				schoolId: studentTable.schoolId,
+				count: sql<number>`count(*)`,
+			})
+			.from(studentTable)
+			.groupBy(studentTable.schoolId);
+
+		const totalStudents = totalStudentsResult.reduce(
+			(acc, row) => acc + Number(row.count),
+			0,
+		);
+
+		const totalTeachersResult = await db
+			.select({
+				schoolId: teacherTable.schoolId,
+				count: sql<number>`count(*)`,
+			})
+			.from(teacherTable)
+			.groupBy(teacherTable.schoolId);
+
+		const totalTeachers = totalTeachersResult.reduce(
+			(acc, row) => acc + Number(row.count),
+			0,
+		);
+
+		const totalBatchesResult = await db
+			.select({
+				schoolId: batchTable.schoolId,
+				count: sql<number>`count(*)`,
+			})
+			.from(batchTable)
+			.groupBy(batchTable.schoolId);
+
+		const totalBatches = totalBatchesResult.reduce(
+			(acc, row) => acc + Number(row.count),
+			0,
+		);
+
+		const schoolsByStatus = await db
+			.select({
+				status: schoolTable.status,
+				count: sql<number>`count(*)`,
+			})
+			.from(schoolTable)
+			.groupBy(schoolTable.status);
+
+		const studentsByStatus = await db
+			.select({
+				status: studentTable.status,
+				count: sql<number>`count(*)`,
+			})
+			.from(studentTable)
+			.groupBy(studentTable.status);
+
+		const teachersByStatus = await db
+			.select({
+				status: teacherTable.status,
+				count: sql<number>`count(*)`,
+			})
+			.from(teacherTable)
+			.groupBy(teacherTable.status);
+
+		return createJsonResponse({
+			data: {
+				totalSchools: Number(totalSchools?.count ?? 0),
+				totalStudents,
+				totalTeachers,
+				totalBatches,
+				schoolsByStatus,
+				studentsByStatus,
+				teachersByStatus,
+			},
+		});
+	})
+	.get(
+		"/stats/:schoolId",
+		async ({ params }) => {
+			const [existingSchool] = await db
+				.select({ id: schoolTable.id })
+				.from(schoolTable)
+				.where(eq(schoolTable.id, params.schoolId));
+
+			if (!existingSchool) {
+				throw new ApiError({ msg: "school not found", code: 404 });
+			}
+
+			const [totalStudents] = await db
+				.select({ count: sql<number>`count(*)` })
+				.from(studentTable)
+				.where(eq(studentTable.schoolId, params.schoolId));
+
+			const [totalTeachers] = await db
+				.select({ count: sql<number>`count(*)` })
+				.from(teacherTable)
+				.where(eq(teacherTable.schoolId, params.schoolId));
+
+			const [totalBatches] = await db
+				.select({ count: sql<number>`count(*)` })
+				.from(batchTable)
+				.where(eq(batchTable.schoolId, params.schoolId));
+
+			const studentsByStatus = await db
+				.select({
+					status: studentTable.status,
+					count: sql<number>`count(*)`,
+				})
+				.from(studentTable)
+				.where(eq(studentTable.schoolId, params.schoolId))
+				.groupBy(studentTable.status);
+
+			const teachersByStatus = await db
+				.select({
+					status: teacherTable.status,
+					count: sql<number>`count(*)`,
+				})
+				.from(teacherTable)
+				.where(eq(teacherTable.schoolId, params.schoolId))
+				.groupBy(teacherTable.status);
+
+			const batchesByStatus = await db
+				.select({
+					status: batchTable.status,
+					count: sql<number>`count(*)`,
+				})
+				.from(batchTable)
+				.where(eq(batchTable.schoolId, params.schoolId))
+				.groupBy(batchTable.status);
+
+			return createJsonResponse({
+				data: {
+					schoolId: params.schoolId,
+					totalStudents: Number(totalStudents?.count ?? 0),
+					totalTeachers: Number(totalTeachers?.count ?? 0),
+					totalBatches: Number(totalBatches?.count ?? 0),
+					studentsByStatus,
+					teachersByStatus,
+					batchesByStatus,
+				},
+			});
+		},
+		{
+			params: zod.object({
+				schoolId: zod.string("schoolId required"),
+			}),
+		},
+	)
 	.get(
 		"/:id",
 		async ({ params }) => {

@@ -1,11 +1,11 @@
 import { db } from "@/database/db";
-import { adminTable } from "@/database/schema";
+import { adminTable, schoolTable, studentTable, teacherTable, batchTable } from "@/database/schema";
 import { authMiddleware } from "@/middleware/auth";
 import { ApiError } from "@/utils/error";
 import { createJsonResponse } from "@/utils/response";
 import { zod } from "@/utils/validation";
 import { betterAuthApi } from "@/services/auth";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { Elysia } from "elysia";
 
 const admin = new Elysia({ prefix: "/api/admin" })
@@ -24,6 +24,64 @@ const admin = new Elysia({ prefix: "/api/admin" })
 			.from(adminTable);
 
 		return createJsonResponse({ data: admins });
+	})
+	.get("/stats", async () => {
+		const [totalAdmins] = await db
+			.select({ count: sql<number>`count(*)` })
+			.from(adminTable);
+
+		const [totalSchools] = await db
+			.select({ count: sql<number>`count(*)` })
+			.from(schoolTable);
+
+		const [totalStudents] = await db
+			.select({ count: sql<number>`count(*)` })
+			.from(studentTable);
+
+		const [totalTeachers] = await db
+			.select({ count: sql<number>`count(*)` })
+			.from(teacherTable);
+
+		const [totalBatches] = await db
+			.select({ count: sql<number>`count(*)` })
+			.from(batchTable);
+
+		const schoolsByStatus = await db
+			.select({
+				status: schoolTable.status,
+				count: sql<number>`count(*)`,
+			})
+			.from(schoolTable)
+			.groupBy(schoolTable.status);
+
+		const studentsByStatus = await db
+			.select({
+				status: studentTable.status,
+				count: sql<number>`count(*)`,
+			})
+			.from(studentTable)
+			.groupBy(studentTable.status);
+
+		const teachersByStatus = await db
+			.select({
+				status: teacherTable.status,
+				count: sql<number>`count(*)`,
+			})
+			.from(teacherTable)
+			.groupBy(teacherTable.status);
+
+		return createJsonResponse({
+			data: {
+				totalAdmins: Number(totalAdmins?.count ?? 0),
+				totalSchools: Number(totalSchools?.count ?? 0),
+				totalStudents: Number(totalStudents?.count ?? 0),
+				totalTeachers: Number(totalTeachers?.count ?? 0),
+				totalBatches: Number(totalBatches?.count ?? 0),
+				schoolsByStatus,
+				studentsByStatus,
+				teachersByStatus,
+			},
+		});
 	})
 	.get(
 		"/:id",
