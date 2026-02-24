@@ -1,5 +1,13 @@
 import { db } from "@/database/db";
-import { adminTable, schoolTable, studentTable, teacherTable, batchTable } from "@/database/schema";
+import {
+	adminTable,
+	schoolTable,
+	studentTable,
+	teacherTable,
+	batchTable,
+	subscriptionTable,
+	subscriptionPlanTable,
+} from "@/database/schema";
 import { authMiddleware } from "@/middleware/auth";
 import { ApiError } from "@/utils/error";
 import { createJsonResponse } from "@/utils/response";
@@ -46,6 +54,22 @@ const admin = new Elysia({ prefix: "/api/admin" })
 			.select({ count: sql<number>`count(*)` })
 			.from(batchTable);
 
+		const [totalSubscriptions] = await db
+			.select({ count: sql<number>`count(*)` })
+			.from(subscriptionTable);
+
+		const [totalSubscriptionPlans] = await db
+			.select({ count: sql<number>`count(*)` })
+			.from(subscriptionPlanTable);
+
+		const subscriptionsByStatus = await db
+			.select({
+				status: subscriptionTable.status,
+				count: sql<number>`count(*)`,
+			})
+			.from(subscriptionTable)
+			.groupBy(subscriptionTable.status);
+
 		const schoolsByStatus = await db
 			.select({
 				status: schoolTable.status,
@@ -77,9 +101,12 @@ const admin = new Elysia({ prefix: "/api/admin" })
 				totalStudents: Number(totalStudents?.count ?? 0),
 				totalTeachers: Number(totalTeachers?.count ?? 0),
 				totalBatches: Number(totalBatches?.count ?? 0),
+				totalSubscriptions: Number(totalSubscriptions?.count ?? 0),
+				totalSubscriptionPlans: Number(totalSubscriptionPlans?.count ?? 0),
 				schoolsByStatus,
 				studentsByStatus,
 				teachersByStatus,
+				subscriptionsByStatus,
 			},
 		});
 	})

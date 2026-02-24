@@ -18,7 +18,7 @@ interface BaseErrorParams<Data> {
 
 export type ResponseErrorMsg = `${ErrorName}: ${string}`;
 
-export class BaseError<Data> extends Error {
+export class BaseError<Data = unknown> extends Error {
 	code: number;
 	msg: string;
 	status: number;

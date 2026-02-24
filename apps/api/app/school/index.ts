@@ -1,5 +1,10 @@
 import { db } from "@/database/db";
-import { schoolTable, teacherTable, studentTable, batchTable } from "@/database/schema";
+import {
+	schoolTable,
+	teacherTable,
+	studentTable,
+	batchTable,
+} from "@/database/schema";
 import { authMiddleware } from "@/middleware/auth";
 import { ApiError } from "@/utils/error";
 import { createJsonResponse } from "@/utils/response";
@@ -122,78 +127,6 @@ const school = new Elysia({ prefix: "/api/school" })
 			},
 		});
 	})
-	.get(
-		"/stats/:schoolId",
-		async ({ params }) => {
-			const [existingSchool] = await db
-				.select({ id: schoolTable.id })
-				.from(schoolTable)
-				.where(eq(schoolTable.id, params.schoolId));
-
-			if (!existingSchool) {
-				throw new ApiError({ msg: "school not found", code: 404 });
-			}
-
-			const [totalStudents] = await db
-				.select({ count: sql<number>`count(*)` })
-				.from(studentTable)
-				.where(eq(studentTable.schoolId, params.schoolId));
-
-			const [totalTeachers] = await db
-				.select({ count: sql<number>`count(*)` })
-				.from(teacherTable)
-				.where(eq(teacherTable.schoolId, params.schoolId));
-
-			const [totalBatches] = await db
-				.select({ count: sql<number>`count(*)` })
-				.from(batchTable)
-				.where(eq(batchTable.schoolId, params.schoolId));
-
-			const studentsByStatus = await db
-				.select({
-					status: studentTable.status,
-					count: sql<number>`count(*)`,
-				})
-				.from(studentTable)
-				.where(eq(studentTable.schoolId, params.schoolId))
-				.groupBy(studentTable.status);
-
-			const teachersByStatus = await db
-				.select({
-					status: teacherTable.status,
-					count: sql<number>`count(*)`,
-				})
-				.from(teacherTable)
-				.where(eq(teacherTable.schoolId, params.schoolId))
-				.groupBy(teacherTable.status);
-
-			const batchesByStatus = await db
-				.select({
-					status: batchTable.status,
-					count: sql<number>`count(*)`,
-				})
-				.from(batchTable)
-				.where(eq(batchTable.schoolId, params.schoolId))
-				.groupBy(batchTable.status);
-
-			return createJsonResponse({
-				data: {
-					schoolId: params.schoolId,
-					totalStudents: Number(totalStudents?.count ?? 0),
-					totalTeachers: Number(totalTeachers?.count ?? 0),
-					totalBatches: Number(totalBatches?.count ?? 0),
-					studentsByStatus,
-					teachersByStatus,
-					batchesByStatus,
-				},
-			});
-		},
-		{
-			params: zod.object({
-				schoolId: zod.string("schoolId required"),
-			}),
-		},
-	)
 	.get(
 		"/:id",
 		async ({ params }) => {

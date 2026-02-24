@@ -1,6 +1,7 @@
 import { db } from "@/database/db";
 import { teacherTable } from "@/database/schema";
 import { authMiddleware } from "@/middleware/auth";
+import { checkSubscriptionLimit } from "@/services/subscription";
 import { ApiError } from "@/utils/error";
 import { createJsonResponse } from "@/utils/response";
 import { zod } from "@/utils/validation";
@@ -70,6 +71,8 @@ const teacher = new Elysia({ prefix: "/api/teacher" })
 	.post(
 		"/",
 		async ({ body }) => {
+			await checkSubscriptionLimit(body.schoolId, "teacher");
+
 			const [existingTeacher] = await db
 				.select({ id: teacherTable.id })
 				.from(teacherTable)
