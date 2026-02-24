@@ -13,8 +13,8 @@ export const batchTable = pgTable(
 			.notNull()
 			.references(() => schoolTable.id, { onDelete: "cascade" }),
 		name: text().notNull(),
-		description: text(),
-		image: text(),
+		description: text().default(""),
+		image: text().default(""),
 		status: text().default("active").notNull(),
 		teacherIds: text().array().default([]).notNull(), // Array of teacher IDs
 		studentIds: text().array().default([]).notNull(), // Array of student IDs
@@ -39,7 +39,7 @@ export const batchAssignmentHistoryTable = pgTable("batch_assignment_history", {
 		.notNull()
 		.references(() => batchTable.id, { onDelete: "cascade" }),
 	action: text().notNull(), // 'added' or 'removed'
-	createdBy: text(), // User ID who made the change
+	createdBy: text().default(""), // User ID who made the change
 	createdAt: timestamp().defaultNow().notNull(),
 	updatedAt: timestamp()
 		.defaultNow()

@@ -18,18 +18,18 @@ export const schoolTable = pgTable("school", {
 	state: text().notNull(),
 	country: text().notNull(),
 	postalCode: text().notNull(),
-	logo: text(),
-	website: text(),
-	description: text(),
-	establishedYear: text(),
-	board: text(),
+	logo: text().default(""),
+	website: text().default(""),
+	description: text().default(""),
+	establishedYear: text().default(""),
+	board: text().default(""),
 	status: text().default("active").notNull(),
-	maxStudents: text(),
+	maxStudents: text().default(""),
 	currentStudents: text().default("0"),
-	maxTeachers: text(),
+	maxTeachers: text().default(""),
 	currentTeachers: text().default("0"),
-	accreditation: text(),
-	facilities: text(), // JSON array of facilities
+	accreditation: text().default(""),
+	facilities: text().default(""), // JSON array of facilities
 	createdAt: timestamp().defaultNow().notNull(),
 	updatedAt: timestamp()
 		.defaultNow()
