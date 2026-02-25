@@ -17,7 +17,10 @@ import subscription from "./subscription";
 const app = new Elysia()
 	.error({ BaseError })
 	.onError(({ code, error, status }) => {
-		console.error("elysia error handler: ", error);
+		console.error(
+			"elysia error handler:-------------------------------------------------->",
+		);
+		console.error(error);
 
 		if (code === "VALIDATION") {
 			return createJsonResponse({
@@ -39,7 +42,7 @@ const app = new Elysia()
 			return status(
 				500,
 				createJsonResponse({
-					msg: error.message,
+					msg: "drizzle orm error check the logs",
 				}),
 			);
 		}
