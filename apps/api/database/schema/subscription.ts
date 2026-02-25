@@ -17,7 +17,7 @@ export const subscriptionPlanTable = pgTable(
 			.primaryKey()
 			.$defaultFn(() => createId()),
 		name: text().notNull(),
-		description: text(),
+		description: text().default(""),
 		price: integer().notNull().default(0),
 		currency: text().notNull().default("USD"),
 		interval: text().notNull().default("month"),
@@ -26,7 +26,9 @@ export const subscriptionPlanTable = pgTable(
 		maxExams: integer().notNull().default(0),
 		maxBatches: integer().notNull().default(0),
 		features: text().array().default([]).notNull(),
-		status: text().default("active").notNull(),
+		status: text({ enum: ["active", "inactive"] })
+			.default("active")
+			.notNull(),
 		isDefault: boolean().default(false).notNull(),
 		createdAt: timestamp().defaultNow().notNull(),
 		updatedAt: timestamp()
@@ -49,11 +51,15 @@ export const subscriptionTable = pgTable(
 		planId: text()
 			.notNull()
 			.references(() => subscriptionPlanTable.id, { onDelete: "cascade" }),
-		status: text().default("active").notNull(),
+		status: text({ enum: ["active", "inactive"] })
+			.default("active")
+			.notNull(),
 		startDate: timestamp().defaultNow().notNull(),
 		endDate: timestamp().notNull(),
-		autoRenew: text().default("true").notNull(),
-		paymentStatus: text().default("pending").notNull(),
+		autoRenew: boolean().default(false).notNull(),
+		paymentStatus: text({ enum: ["pending", "due", "paid", "failed"] })
+			.default("pending")
+			.notNull(),
 		createdAt: timestamp().defaultNow().notNull(),
 		updatedAt: timestamp()
 			.defaultNow()
