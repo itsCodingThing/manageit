@@ -14,7 +14,8 @@ const auth = new Elysia({ prefix: "/api/auth" })
 			const [school] = await db
 				.select({ id: schoolTable.id })
 				.from(schoolTable)
-				.where(eq(schoolTable.schoolCode, body.schoolCode));
+				.where(eq(schoolTable.schoolCode, body.schoolCode))
+				.limit(1);
 
 			if (!school) {
 				throw new ApiError({ msg: "invalid school code" });
