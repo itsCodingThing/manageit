@@ -1,49 +1,25 @@
-import { db } from "@/database/db";
+import { Elysia } from "elysia";
+import { eq, sql, desc } from "drizzle-orm";
+
 import {
 	schoolTable,
 	teacherTable,
 	studentTable,
 	batchTable,
+	subscriptionTable,
+	subscriptionPlanTable,
 } from "@/database/schema";
-import { authMiddleware } from "@/middleware/auth";
-import { ApiError } from "@/utils/error";
-import { createJsonResponse } from "@/utils/response";
+import { db } from "@/database/db";
 import { zod } from "@/utils/validation";
+import { ApiError } from "@/utils/error";
 import { betterAuthApi } from "@/services/auth";
-import { eq, sql } from "drizzle-orm";
-import { Elysia } from "elysia";
+import { authMiddleware } from "@/middleware/auth";
+import { createJsonResponse } from "@/utils/response";
 
 const school = new Elysia({ prefix: "/api/school" })
 	.use(authMiddleware)
 	.get("/", async () => {
-		const schools = await db
-			.select({
-				id: schoolTable.id,
-				schoolCode: schoolTable.schoolCode,
-				name: schoolTable.name,
-				email: schoolTable.email,
-				phone: schoolTable.phone,
-				address: schoolTable.address,
-				city: schoolTable.city,
-				state: schoolTable.state,
-				country: schoolTable.country,
-				postalCode: schoolTable.postalCode,
-				logo: schoolTable.logo,
-				website: schoolTable.website,
-				description: schoolTable.description,
-				establishedYear: schoolTable.establishedYear,
-				board: schoolTable.board,
-				status: schoolTable.status,
-				maxStudents: schoolTable.maxStudents,
-				currentStudents: schoolTable.currentStudents,
-				maxTeachers: schoolTable.maxTeachers,
-				currentTeachers: schoolTable.currentTeachers,
-				accreditation: schoolTable.accreditation,
-				facilities: schoolTable.facilities,
-				createdAt: schoolTable.createdAt,
-				updatedAt: schoolTable.updatedAt,
-			})
-			.from(schoolTable);
+		const schools = await db.select().from(schoolTable);
 
 		return createJsonResponse({ data: schools });
 	})
@@ -169,6 +145,55 @@ const school = new Elysia({ prefix: "/api/school" })
 		{
 			params: zod.object({
 				id: zod.string("id required"),
+			}),
+		},
+	)
+	.get(
+		"/:id/subscription",
+		async ({ query }) => {
+			const [subscriptionData] = await db
+				.select({
+					id: subscriptionTable.id,
+					schoolId: subscriptionTable.schoolId,
+					planId: subscriptionTable.planId,
+					status: subscriptionTable.status,
+					startDate: subscriptionTable.startDate,
+					endDate: subscriptionTable.endDate,
+					autoRenew: subscriptionTable.autoRenew,
+					paymentStatus: subscriptionTable.paymentStatus,
+					planName: subscriptionPlanTable.name,
+					planDescription: subscriptionPlanTable.description,
+					planPrice: subscriptionPlanTable.price,
+					planCurrency: subscriptionPlanTable.currency,
+					planInterval: subscriptionPlanTable.interval,
+					planMaxStudents: subscriptionPlanTable.maxStudents,
+					planMaxTeachers: subscriptionPlanTable.maxTeachers,
+					planMaxExams: subscriptionPlanTable.maxExams,
+					planMaxBatches: subscriptionPlanTable.maxBatches,
+					planFeatures: subscriptionPlanTable.features,
+					createdAt: subscriptionTable.createdAt,
+				})
+				.from(subscriptionTable)
+				.innerJoin(
+					subscriptionPlanTable,
+					eq(subscriptionTable.planId, subscriptionPlanTable.id),
+				)
+				.where(eq(subscriptionTable.schoolId, query.id))
+				.orderBy(desc(subscriptionTable.createdAt))
+				.limit(1);
+
+			if (!subscriptionData) {
+				throw new ApiError({
+					msg: "no active subscription found",
+					code: 404,
+				});
+			}
+
+			return createJsonResponse({ data: subscriptionData });
+		},
+		{
+			params: zod.object({
+				id: zod.string("schoodId required"),
 			}),
 		},
 	)

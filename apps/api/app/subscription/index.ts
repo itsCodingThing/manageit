@@ -117,6 +117,78 @@ const subscription = new Elysia({ prefix: "/api/subscription" })
 			}),
 		},
 	)
+	.post(
+		"/assign",
+		async ({ body }) => {
+			const [existingSchool] = await db
+				.select({ id: schoolTable.id })
+				.from(schoolTable)
+				.where(eq(schoolTable.id, body.schoolId))
+				.limit(1);
+
+			if (!existingSchool) {
+				throw new ApiError({ msg: "school not found", code: 404 });
+			}
+
+			const [existingPlan] = await db
+				.select({
+					id: subscriptionPlanTable.id,
+					maxStudents: subscriptionPlanTable.maxStudents,
+					maxTeachers: subscriptionPlanTable.maxTeachers,
+				})
+				.from(subscriptionPlanTable)
+				.where(eq(subscriptionPlanTable.id, body.planId))
+				.limit(1);
+
+			if (!existingPlan) {
+				throw new ApiError({ msg: "subscription plan not found", code: 404 });
+			}
+
+			const startDate = body.startDate ? new Date(body.startDate) : new Date();
+			const endDate = new Date();
+			if (body.interval === "year") {
+				endDate.setFullYear(endDate.getFullYear() + 1);
+			} else {
+				endDate.setMonth(endDate.getMonth() + 1);
+			}
+
+			const subscriptionEndDate = body.endDate
+				? new Date(body.endDate)
+				: endDate;
+
+			const [subscription] = await db
+				.insert(subscriptionTable)
+				.values({
+					schoolId: body.schoolId,
+					planId: body.planId,
+					startDate: startDate,
+					endDate: subscriptionEndDate,
+				})
+				.returning();
+
+			await db
+				.update(schoolTable)
+				.set({
+					maxStudents: String(existingPlan.maxStudents),
+					maxTeachers: String(existingPlan.maxTeachers),
+				})
+				.where(eq(schoolTable.id, body.schoolId));
+
+			return createJsonResponse({
+				data: subscription,
+				msg: "subscription assigned to school successfully",
+			});
+		},
+		{
+			body: zod.object({
+				schoolId: zod.string("schoolId required"),
+				planId: zod.string("planId required"),
+				startDate: zod.iso.datetime().optional(),
+				endDate: zod.iso.datetime().optional(),
+				interval: zod.literal(["month", "year"]).optional(),
+			}),
+		},
+	)
 	.put(
 		"/plans/:id",
 		async ({ params, body }) => {
@@ -195,84 +267,6 @@ const subscription = new Elysia({ prefix: "/api/subscription" })
 		{
 			params: zod.object({
 				id: zod.string("id required"),
-			}),
-		},
-	)
-	.post(
-		"/assign",
-		async ({ body }) => {
-			const [existingSchool] = await db
-				.select({ id: schoolTable.id })
-				.from(schoolTable)
-				.where(eq(schoolTable.id, body.schoolId));
-
-			if (!existingSchool) {
-				throw new ApiError({ msg: "school not found", code: 404 });
-			}
-
-			const [existingPlan] = await db
-				.select({
-					id: subscriptionPlanTable.id,
-					maxStudents: subscriptionPlanTable.maxStudents,
-					maxTeachers: subscriptionPlanTable.maxTeachers,
-				})
-				.from(subscriptionPlanTable)
-				.where(eq(subscriptionPlanTable.id, body.planId));
-
-			if (!existingPlan) {
-				throw new ApiError({ msg: "subscription plan not found", code: 404 });
-			}
-
-			const endDate = new Date();
-			if (body.interval === "year") {
-				endDate.setFullYear(endDate.getFullYear() + 1);
-			} else {
-				endDate.setMonth(endDate.getMonth() + 1);
-			}
-
-			const startDate = body.startDate ? new Date(body.startDate) : new Date();
-			const subscriptionEndDate = body.endDate
-				? new Date(body.endDate)
-				: endDate;
-
-			const [subscription] = await db
-				.insert(subscriptionTable)
-				.values({
-					schoolId: body.schoolId,
-					planId: body.planId,
-					status: body.status ?? "active",
-					startDate: startDate,
-					endDate: subscriptionEndDate,
-					autoRenew: body.autoRenew ?? "true",
-					paymentStatus: body.paymentStatus ?? "paid",
-				})
-				.returning();
-
-			await db
-				.update(schoolTable)
-				.set({
-					maxStudents: String(existingPlan.maxStudents),
-					maxTeachers: String(existingPlan.maxTeachers),
-				})
-				.where(eq(schoolTable.id, body.schoolId));
-
-			return createJsonResponse({
-				data: subscription,
-				msg: "subscription assigned to school successfully",
-			});
-		},
-		{
-			body: zod.object({
-				schoolId: zod.string("schoolId required"),
-				planId: zod.string("planId required"),
-				status: zod
-					.literal(["active", "inactive", "expired", "cancelled"])
-					.optional(),
-				startDate: zod.string().optional(),
-				endDate: zod.string().optional(),
-				autoRenew: zod.literal(["true", "false"]).optional(),
-				paymentStatus: zod.literal(["paid", "pending", "failed"]).optional(),
-				interval: zod.literal(["month", "year"]).optional(),
 			}),
 		},
 	);
