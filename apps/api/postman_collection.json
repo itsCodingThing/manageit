@@ -44,9 +44,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/auth/sign-up",
+							"raw": "{{base_url}}/api/auth/sign-up",
 							"host": ["{{base_url}}"],
-							"path": ["auth", "sign-up"]
+							"path": ["api", "auth", "sign-up"]
 						},
 						"body": {
 							"mode": "raw",
@@ -72,9 +72,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/auth/sign-in",
+							"raw": "{{base_url}}/api/auth/sign-in",
 							"host": ["{{base_url}}"],
-							"path": ["auth", "sign-in"]
+							"path": ["api", "auth", "sign-in"]
 						},
 						"body": {
 							"mode": "raw",
@@ -115,9 +115,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/auth/sign-in",
+							"raw": "{{base_url}}/api/auth/sign-in",
 							"host": ["{{base_url}}"],
-							"path": ["auth", "sign-in"]
+							"path": ["api", "auth", "sign-in"]
 						},
 						"body": {
 							"mode": "raw",
@@ -158,9 +158,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/auth/admin/sign-in",
+							"raw": "{{base_url}}/api/auth/admin/sign-in",
 							"host": ["{{base_url}}"],
-							"path": ["auth", "admin", "sign-in"]
+							"path": ["api", "auth", "admin", "sign-in"]
 						},
 						"body": {
 							"mode": "raw",
@@ -206,9 +206,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/admin/stats",
+							"raw": "{{base_url}}/api/admin/stats",
 							"host": ["{{base_url}}"],
-							"path": ["admin", "stats"]
+							"path": ["api", "admin", "stats"]
 						},
 						"description": "Get aggregate statistics for all schools, students, teachers, and admins"
 					},
@@ -225,9 +225,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/admin",
+							"raw": "{{base_url}}/api/admin",
 							"host": ["{{base_url}}"],
-							"path": ["admin"]
+							"path": ["api", "admin"]
 						},
 						"description": "Get all admins"
 					},
@@ -244,9 +244,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/admin/REPLACE_WITH_ADMIN_ID",
+							"raw": "{{base_url}}/api/admin/:adminId",
 							"host": ["{{base_url}}"],
-							"path": ["admin", "REPLACE_WITH_ADMIN_ID"]
+							"path": ["api", "admin", ":adminId"]
 						},
 						"description": "Get admin details by ID"
 					},
@@ -267,9 +267,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/admin",
+							"raw": "{{base_url}}/api/admin",
 							"host": ["{{base_url}}"],
-							"path": ["admin"]
+							"path": ["api", "admin"]
 						},
 						"body": {
 							"mode": "raw",
@@ -299,9 +299,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/admin/REPLACE_WITH_ADMIN_ID",
+							"raw": "{{base_url}}/api/admin/:adminId",
 							"host": ["{{base_url}}"],
-							"path": ["admin", "REPLACE_WITH_ADMIN_ID"]
+							"path": ["api", "admin", ":adminId"]
 						},
 						"body": {
 							"mode": "raw",
@@ -327,9 +327,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/admin/REPLACE_WITH_ADMIN_ID",
+							"raw": "{{base_url}}/api/admin/:adminId",
 							"host": ["{{base_url}}"],
-							"path": ["admin", "REPLACE_WITH_ADMIN_ID"]
+							"path": ["api", "admin", ":adminId"]
 						},
 						"description": "Delete an admin by ID"
 					},
@@ -351,13 +351,13 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/school-admin?schoolId=REPLACE_WITH_SCHOOL_ID",
+							"raw": "{{base_url}}/api/school-admin?schoolId=:schoolId",
 							"host": ["{{base_url}}"],
-							"path": ["school-admin"],
+							"path": ["api", "school-admin"],
 							"query": [
 								{
 									"key": "schoolId",
-									"value": "REPLACE_WITH_SCHOOL_ID"
+									"value": ":schoolId"
 								}
 							]
 						},
@@ -376,9 +376,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/school-admin/REPLACE_WITH_ADMIN_ID",
+							"raw": "{{base_url}}/api/school-admin/:adminId",
 							"host": ["{{base_url}}"],
-							"path": ["school-admin", "REPLACE_WITH_ADMIN_ID"]
+							"path": ["api", "school-admin", ":adminId"]
 						},
 						"description": "Get school admin details by ID"
 					},
@@ -399,13 +399,13 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/school-admin",
+							"raw": "{{base_url}}/api/school-admin",
 							"host": ["{{base_url}}"],
-							"path": ["school-admin"]
+							"path": ["api", "school-admin"]
 						},
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"schoolId\": \"REPLACE_WITH_SCHOOL_ID\",\n  \"name\": \"School Admin\",\n  \"email\": \"schooladmin@example.com\",\n  \"password\": \"password123\",\n  \"phoneNumber\": \"9876543215\",\n  \"dob\": \"1990-01-01T00:00:00Z\",\n  \"image\": \"https://example.com/admin.png\",\n  \"address\": \"123 Admin Street\",\n  \"role\": \"admin\",\n  \"status\": \"pending\"\n}",
+							"raw": "{\n  \"schoolId\": \":schoolId\",\n  \"name\": \"School Admin\",\n  \"email\": \"schooladmin@example.com\",\n  \"password\": \"password123\",\n  \"phoneNumber\": \"9876543215\",\n  \"dob\": \"1990-01-01T00:00:00Z\",\n  \"image\": \"https://example.com/admin.png\",\n  \"address\": \"123 Admin Street\",\n  \"role\": \"admin\",\n  \"status\": \"pending\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -431,9 +431,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/school-admin/REPLACE_WITH_ADMIN_ID",
+							"raw": "{{base_url}}/api/school-admin/:adminId",
 							"host": ["{{base_url}}"],
-							"path": ["school-admin", "REPLACE_WITH_ADMIN_ID"]
+							"path": ["api", "school-admin", ":adminId"]
 						},
 						"body": {
 							"mode": "raw",
@@ -459,9 +459,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/school-admin/REPLACE_WITH_ADMIN_ID",
+							"raw": "{{base_url}}/api/school-admin/:adminId",
 							"host": ["{{base_url}}"],
-							"path": ["school-admin", "REPLACE_WITH_ADMIN_ID"]
+							"path": ["api", "school-admin", ":adminId"]
 						},
 						"description": "Delete a school admin"
 					},
@@ -483,9 +483,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/student",
+							"raw": "{{base_url}}/api/student",
 							"host": ["{{base_url}}"],
-							"path": ["student"]
+							"path": ["api", "student"]
 						},
 						"description": "Get all students"
 					},
@@ -502,9 +502,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/student/REPLACE_WITH_STUDENT_ID",
+							"raw": "{{base_url}}/api/student/:studentId",
 							"host": ["{{base_url}}"],
-							"path": ["student", "REPLACE_WITH_STUDENT_ID"]
+							"path": ["api", "student", ":studentId"]
 						},
 						"description": "Get student details by ID"
 					},
@@ -525,13 +525,13 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/student",
+							"raw": "{{base_url}}/api/student",
 							"host": ["{{base_url}}"],
-							"path": ["student"]
+							"path": ["api", "student"]
 						},
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"schoolId\": \"REPLACE_WITH_SCHOOL_ID\",\n  \"name\": \"Jane Student\",\n  \"email\": \"student@example.com\",\n  \"phoneNumber\": \"9876543211\",\n  \"dob\": \"2010-01-01T00:00:00Z\",\n  \"image\": \"https://example.com/student.png\",\n  \"address\": \"123 Student Street\",\n  \"batchIds\": [],\n  \"status\": \"pending\"\n}",
+							"raw": "{\n  \"schoolId\": \":schoolId\",\n  \"name\": \"Jane Student\",\n  \"email\": \"student@example.com\",\n  \"phoneNumber\": \"9876543211\",\n  \"dob\": \"2010-01-01T00:00:00Z\",\n  \"image\": \"https://example.com/student.png\",\n  \"address\": \"123 Student Street\",\n  \"batchIds\": [],\n  \"status\": \"pending\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -557,9 +557,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/student/REPLACE_WITH_STUDENT_ID",
+							"raw": "{{base_url}}/api/student/:studentId",
 							"host": ["{{base_url}}"],
-							"path": ["student", "REPLACE_WITH_STUDENT_ID"]
+							"path": ["api", "student", ":studentId"]
 						},
 						"body": {
 							"mode": "raw",
@@ -585,9 +585,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/student/REPLACE_WITH_STUDENT_ID",
+							"raw": "{{base_url}}/api/student/:studentId",
 							"host": ["{{base_url}}"],
-							"path": ["student", "REPLACE_WITH_STUDENT_ID"]
+							"path": ["api", "student", ":studentId"]
 						},
 						"description": "Delete a student account"
 					},
@@ -609,9 +609,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/teacher",
+							"raw": "{{base_url}}/api/teacher",
 							"host": ["{{base_url}}"],
-							"path": ["teacher"]
+							"path": ["api", "teacher"]
 						},
 						"description": "Get all teachers"
 					},
@@ -632,13 +632,13 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/teacher",
+							"raw": "{{base_url}}/api/teacher",
 							"host": ["{{base_url}}"],
-							"path": ["teacher"]
+							"path": ["api", "teacher"]
 						},
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"name\": \"Mr. Smith\",\n  \"email\": \"teacher@example.com\",\n  \"phone\": \"9876543212\",\n  \"schoolId\": \"REPLACE_WITH_SCHOOL_ID\",\n  \"password\": \"password123\",\n  \"address\": \"789 Teacher Road\",\n  \"image\": \"https://example.com/teacher.png\",\n  \"roles\": [\"teacher\"],\n  \"status\": \"pending\"\n}",
+							"raw": "{\n  \"name\": \"Mr. Smith\",\n  \"email\": \"teacher@example.com\",\n  \"phone\": \"9876543212\",\n  \"schoolId\": \":schoolId\",\n  \"password\": \"password123\",\n  \"address\": \"789 Teacher Road\",\n  \"image\": \"https://example.com/teacher.png\",\n  \"roles\": [\"teacher\"],\n  \"status\": \"pending\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -660,9 +660,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/teacher/REPLACE_WITH_TEACHER_ID",
+							"raw": "{{base_url}}/api/teacher/:teacherId",
 							"host": ["{{base_url}}"],
-							"path": ["teacher", "REPLACE_WITH_TEACHER_ID"]
+							"path": ["api", "teacher", ":teacherId"]
 						},
 						"description": "Get teacher details by ID"
 					},
@@ -683,9 +683,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/teacher/REPLACE_WITH_TEACHER_ID",
+							"raw": "{{base_url}}/api/teacher/:teacherId",
 							"host": ["{{base_url}}"],
-							"path": ["teacher", "REPLACE_WITH_TEACHER_ID"]
+							"path": ["api", "teacher", ":teacherId"]
 						},
 						"body": {
 							"mode": "raw",
@@ -711,9 +711,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/teacher/REPLACE_WITH_TEACHER_ID",
+							"raw": "{{base_url}}/api/teacher/:teacherId",
 							"host": ["{{base_url}}"],
-							"path": ["teacher", "REPLACE_WITH_TEACHER_ID"]
+							"path": ["api", "teacher", ":teacherId"]
 						},
 						"description": "Delete a teacher account"
 					},
@@ -735,9 +735,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/school",
+							"raw": "{{base_url}}/api/school",
 							"host": ["{{base_url}}"],
-							"path": ["school"]
+							"path": ["api", "school"]
 						},
 						"description": "Get all schools"
 					},
@@ -754,9 +754,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/school/stats",
+							"raw": "{{base_url}}/api/school/stats",
 							"host": ["{{base_url}}"],
-							"path": ["school", "stats"]
+							"path": ["api", "school", "stats"]
 						},
 						"description": "Get aggregate statistics across all schools including total students, teachers, and batches"
 					},
@@ -773,9 +773,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/school/stats/REPLACE_WITH_SCHOOL_ID",
+							"raw": "{{base_url}}/api/school/stats/:schoolId",
 							"host": ["{{base_url}}"],
-							"path": ["school", "stats", "REPLACE_WITH_SCHOOL_ID"]
+							"path": ["api", "school", "stats", ":schoolId"]
 						},
 						"description": "Get aggregate statistics for a specific school including students, teachers, and batches"
 					},
@@ -796,9 +796,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/school",
+							"raw": "{{base_url}}/api/school",
 							"host": ["{{base_url}}"],
-							"path": ["school"]
+							"path": ["api", "school"]
 						},
 						"body": {
 							"mode": "raw",
@@ -824,11 +824,30 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/school/REPLACE_WITH_SCHOOL_ID",
+							"raw": "{{base_url}}/api/school/:schoolId",
 							"host": ["{{base_url}}"],
-							"path": ["school", "REPLACE_WITH_SCHOOL_ID"]
+							"path": ["api", "school", ":schoolId"]
 						},
 						"description": "Get school details by ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Get School Subscription",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/school/:schoolId/subscription",
+							"host": ["{{base_url}}"],
+							"path": ["api", "school", ":schoolId", "subscription"]
+						},
+						"description": "Get the active subscription for a specific school"
 					},
 					"response": []
 				},
@@ -847,9 +866,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/school/REPLACE_WITH_SCHOOL_ID",
+							"raw": "{{base_url}}/api/school/:schoolId",
 							"host": ["{{base_url}}"],
-							"path": ["school", "REPLACE_WITH_SCHOOL_ID"]
+							"path": ["api", "school", ":schoolId"]
 						},
 						"body": {
 							"mode": "raw",
@@ -875,11 +894,169 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/school/REPLACE_WITH_SCHOOL_ID",
+							"raw": "{{base_url}}/api/school/:schoolId",
 							"host": ["{{base_url}}"],
-							"path": ["school", "REPLACE_WITH_SCHOOL_ID"]
+							"path": ["api", "school", ":schoolId"]
 						},
 						"description": "Delete a school"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Subscription",
+			"item": [
+				{
+					"name": "Get All Subscription Plans",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/subscription/plans",
+							"host": ["{{base_url}}"],
+							"path": ["api", "subscription", "plans"]
+						},
+						"description": "Get all active subscription plans"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Subscription Plan By ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/subscription/plans/:planId",
+							"host": ["{{base_url}}"],
+							"path": ["api", "subscription", "plans", ":planId"]
+						},
+						"description": "Get subscription plan details by ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Subscription Plan",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/subscription/plans",
+							"host": ["{{base_url}}"],
+							"path": ["api", "subscription", "plans"]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Basic Plan\",\n  \"description\": \"Basic subscription plan\",\n  \"price\": 29.99,\n  \"currency\": \"USD\",\n  \"interval\": \"month\",\n  \"maxStudents\": 100,\n  \"maxTeachers\": 10,\n  \"maxExams\": 5,\n  \"maxBatches\": 10,\n  \"features\": [\"Basic Support\", \"Standard Reports\"],\n  \"status\": \"active\",\n  \"isDefault\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "Create a new subscription plan"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Subscription Plan",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/subscription/plans/:planId",
+							"host": ["{{base_url}}"],
+							"path": ["api", "subscription", "plans", ":planId"]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Basic Plan Updated\",\n  \"description\": \"Updated description\",\n  \"price\": 39.99,\n  \"maxStudents\": 200\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "Update subscription plan details"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Subscription Plan",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/subscription/plans/:planId",
+							"host": ["{{base_url}}"],
+							"path": ["api", "subscription", "plans", ":planId"]
+						},
+						"description": "Delete a subscription plan"
+					},
+					"response": []
+				},
+				{
+					"name": "Assign Subscription to School",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/subscription/assign",
+							"host": ["{{base_url}}"],
+							"path": ["api", "subscription", "assign"]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"schoolId\": \"REPLACE_WITH_SCHOOL_ID\",\n  \"planId\": \"REPLACE_WITH_PLAN_ID\",\n  \"startDate\": \"2024-01-01T00:00:00.000Z\",\n  \"endDate\": \"2025-01-01T00:00:00.000Z\",\n  \"interval\": \"month\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "Assign a subscription plan to a school. Updates school's maxStudents and maxTeachers based on plan limits."
 					},
 					"response": []
 				}
