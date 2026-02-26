@@ -23,13 +23,13 @@ export const schoolTable = pgTable("school", {
 	description: text().default(""),
 	establishedYear: text().default(""),
 	board: text().default(""),
-	status: text().default("active").notNull(),
-	maxStudents: text().default(""),
+	status: text({enum: ["active", "inactive"]}).default("active").notNull(),
 	currentStudents: text().default("0"),
-	maxTeachers: text().default(""),
 	currentTeachers: text().default("0"),
+	maxTeachers: text().default(""),
+	maxStudents: text().default(""),
 	accreditation: text().default(""),
-	facilities: text().default(""), // JSON array of facilities
+	facilities: text().array().default([]), // JSON array of facilities
 	createdAt: timestamp().defaultNow().notNull(),
 	updatedAt: timestamp()
 		.defaultNow()

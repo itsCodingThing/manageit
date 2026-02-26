@@ -1,13 +1,13 @@
-import { db } from "@/database/db";
-import { studentTable } from "@/database/schema";
-import { authMiddleware } from "@/middleware/auth";
-import { checkSubscriptionLimit } from "@/services/subscription";
-import { ApiError } from "@/utils/error";
-import { createJsonResponse } from "@/utils/response";
-import { zod } from "@/utils/validation";
-import { betterAuthApi } from "@/services/auth";
 import { eq } from "drizzle-orm";
 import { Elysia } from "elysia";
+import { db } from "@/database/db";
+import { ApiError } from "@/utils/error";
+import { zod } from "@/utils/validation";
+import { betterAuthApi } from "@/services/auth";
+import { studentTable } from "@/database/schema";
+import { authMiddleware } from "@/middleware/auth";
+import { createJsonResponse } from "@/utils/response";
+import { checkSubscriptionLimit } from "@/database/helpers/subscription";
 
 const student = new Elysia({ prefix: "/api/student" })
 	.use(authMiddleware)

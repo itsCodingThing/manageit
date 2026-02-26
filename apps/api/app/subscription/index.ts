@@ -145,14 +145,15 @@ const subscription = new Elysia({ prefix: "/api/subscription" })
 			}
 
 			const startDate = body.startDate ? new Date(body.startDate) : new Date();
-			const endDate = new Date();
+			let endDate = new Date();
+
 			if (body.interval === "year") {
 				endDate.setFullYear(endDate.getFullYear() + 1);
 			} else {
 				endDate.setMonth(endDate.getMonth() + 1);
 			}
 
-			const subscriptionEndDate = body.endDate
+			endDate = body.endDate
 				? new Date(body.endDate)
 				: endDate;
 
@@ -162,15 +163,15 @@ const subscription = new Elysia({ prefix: "/api/subscription" })
 					schoolId: body.schoolId,
 					planId: body.planId,
 					startDate: startDate,
-					endDate: subscriptionEndDate,
+					endDate: endDate,
 				})
 				.returning();
 
 			await db
 				.update(schoolTable)
 				.set({
-					maxStudents: String(existingPlan.maxStudents),
-					maxTeachers: String(existingPlan.maxTeachers),
+					maxStudents: existingPlan.maxStudents.toString(),
+					maxTeachers: existingPlan.maxTeachers.toString(),
 				})
 				.where(eq(schoolTable.id, body.schoolId));
 

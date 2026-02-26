@@ -1,7 +1,7 @@
 import { db } from "@/database/db";
 import { teacherTable } from "@/database/schema";
 import { authMiddleware } from "@/middleware/auth";
-import { checkSubscriptionLimit } from "@/services/subscription";
+import { checkSubscriptionLimit } from "@/database/helpers/subscription";
 import { ApiError } from "@/utils/error";
 import { createJsonResponse } from "@/utils/response";
 import { zod } from "@/utils/validation";
